@@ -84,7 +84,7 @@ void OutputCondition(State state) {
 void ReportAction(State state) {
   switch (state.action) {
     case EXIT:
-      Serial.print("EXIT -");
+      Serial.print("\nEXIT -");
       Serial.println(state.id);
       break;
     case ENTRY:
