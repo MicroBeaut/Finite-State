@@ -1,0 +1,30 @@
+#######################################
+# Syntax Coloring Map For Finite-State
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+Finite          KEYWORD1
+Actions         KEYWORD1
+Transition      KEYWORD1
+
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+InputFunc       KEYWORD2
+TransitionFunc  KEYWORD2
+state           KEYWORD2
+execute         KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+STATE_TRANSITION_MIN  LITERAL1
+STATE_TRANSITION_MAX  LITERAL1
+NONE                  LITERAL1
+EXIT                  LITERAL1
+ENTRY                 LITERAL1
