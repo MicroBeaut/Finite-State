@@ -1,4 +1,4 @@
-#include "Finite.h"
+#include "FiniteState.h"
 
 #define pbPin1 6
 #define pbPin2 4
@@ -18,24 +18,25 @@ void Transition1(State state);
 void Transition2(State state);
 void Transition3(State state);
 bool Input1(State state);
+void Event(State state);
 
-#define numberOfStateTransitions 3
 
 Transition transitions[] = {
-  {Transition1, Input1, 0, 1},
-  {Transition2, Input1, 1, 2},
-  {Transition3, Input1, 2, 1}
+  {Transition1, Input1, 0, 1, Event},
+  {Transition2, Input1, 1, 2, Event},
+  {Transition3, Input1, 2, 1, Event}
 };
+const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition);
 
-Finite finiteStateMachine(transitions, numberOfStateTransitions);
+FiniteState finiteStateMachine(transitions, numberOftransitions);
 
 void setup() {
   Serial.begin(115200);
-  for (uint8_t index = 0; index < numberOfStateTransitions; index ++) {
+  for (uint8_t index = 0; index < numberOftransitions; index ++) {
     pinMode(pbPins[index], INPUT_PULLUP);
     pinMode(ledPins[index], OUTPUT);
   }
-  finiteStateMachine.begin();
+  finiteStateMachine.begin(0);
 }
 
 void loop() {
@@ -62,9 +63,25 @@ bool Input1(State state) {
   return !digitalRead(pbPins[state.id]);
 }
 
+void Event(State state) {
+  Serial.print("State-");
+  Serial.print(state.id);
+  Serial.print(" Action:= ");
+  switch (state.action) {
+    case ENTRY:
+      Serial.println("ENTRY");
+      break;
+
+    case EXIT:
+      Serial.println("EXIT");
+      break;
+  }
+}
+
+
 
 void InputLED(State state) {
-  for (uint8_t index = 0; index < numberOfStateTransitions; index ++) {
+  for (uint8_t index = 0; index < numberOftransitions; index ++) {
     digitalWrite(ledPins[index], LOW);
     if ( index == state.id) digitalWrite(ledPins[state.id], HIGH);
   }

@@ -5,21 +5,20 @@
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-Finite          KEYWORD1
+FiniteState     KEYWORD1
 Actions         KEYWORD1
 Transition      KEYWORD1
-
-
+State           KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-InputFunc       KEYWORD2
 TransitionFunc  KEYWORD2
+InputFunc       KEYWORD2
+EventFunc       KEYWORD2
 begin           KEYWORD2
-state           KEYWORD2
+transition      KEYWORD2
 execute         KEYWORD2
-end             KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
@@ -29,4 +28,3 @@ STATE_TRANSITION_MAX  LITERAL1
 NONE                  LITERAL1
 EXIT                  LITERAL1
 ENTRY                 LITERAL1
-END                   LITERAL1
