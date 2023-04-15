@@ -35,8 +35,8 @@ void FiniteState::execute() {
 }
 
 void FiniteState::InternalTransition() {
-  if (_transitions[_state.id].inputFun) {
-    if (_transitions[_state.id].inputFun(_state)) {
+  if (_transitions[_state.id].inputFunc) {
+    if (_transitions[_state.id].inputFunc(_state)) {
       this->InternalSetId(_transitions[_state.id].next);
     } else {
       this->InternalSetId(_transitions[_state.id].current);

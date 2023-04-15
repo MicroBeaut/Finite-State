@@ -33,7 +33,7 @@ typedef void (*EventFunc)(State);       //  Event Function Pointer
 
 typedef struct {
   TransitionFunc transitionFunc;  // Transition Function
-  InputFunc inputFun;             // Input Function
+  InputFunc inputFunc;            // Input Function
   uint8_t current;                // Current State
   uint8_t next;                   // Next State
   EventFunc eventFunc;            // Event Function
