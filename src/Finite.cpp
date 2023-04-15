@@ -43,6 +43,7 @@ void Finite::execute() {
 }
 
 void Finite::end() {
+  if (_state.id == 0) return;
   _end = true;
 }
 
@@ -87,6 +88,11 @@ void Finite::InternalAction() {
   _state.action = EXIT;
   _transitions[_prevId].transition(_state);
   _state.id = tempId;
+  if (_end) {
+    _state.action = END;
+    _transitions[_state.id].transition(_state);
+    _state.action = NONE;
+  }
   _state.action = ENTRY;
   _transitions[_state.id].transition(_state);
   _state.action = NONE;

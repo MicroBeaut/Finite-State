@@ -29,3 +29,4 @@ STATE_TRANSITION_MAX  LITERAL1
 NONE                  LITERAL1
 EXIT                  LITERAL1
 ENTRY                 LITERAL1
+END                   LITERAL1

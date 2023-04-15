@@ -18,7 +18,8 @@
 enum Actions : int8_t {
   NONE = - 1,
   EXIT = 0,
-  ENTRY = 1
+  ENTRY = 1,
+  END = 2
 };
 
 typedef struct {
