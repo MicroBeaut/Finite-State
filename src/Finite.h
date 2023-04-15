@@ -1,5 +1,5 @@
 /*
-  Finite.cpp
+  Finite.h
   Created:  14-Apr-2023
   Author:   MicroBeaut
 
@@ -46,6 +46,10 @@ class Finite {
     uint8_t _prevId;              // Previous id
     uint8_t _prevAction;          // Previous action
 
+    bool  _initial;               // Initial State
+    bool _end;
+
+    bool InternalEnd();
     void InternalTransition();
     void InternalAction();
     const uint8_t InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max);
@@ -53,8 +57,10 @@ class Finite {
     uint8_t &size;
 
     Finite(Transition *transitions, const uint8_t numberOfTransition);
+    void begin();
     void state(const uint8_t state);
     void execute();
+    void end();
 };
 
 #endif // FINITE_H

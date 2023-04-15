@@ -17,26 +17,53 @@ Finite::Finite(Transition *transitions, const uint8_t numberOfTransition): size(
   _prevId = 0;
   _state.action = NONE;
   _prevAction = NONE;
-  _state.firstScan = true;
+  _initial = false;
+  _end = false;
+  _state.firstScan = false;
 }
 
+void Finite::begin() {
+  _initial = true;
+  _state.id = 0;
+  _prevId = 0;
+  _state.action = ENTRY;
+  _transitions[_state.id].transition(_state);
+  _state.action = NONE;
+}
 
 void Finite::state(const uint8_t state) {
   _prevId = _state.id;
   _state.id = this->InternalLimit(state, 0, _numberOfTransitions - 1);
+  this->InternalAction();
 }
 
 void Finite::execute() {
+  if (!_initial) return;
   this->InternalTransition();
+}
+
+void Finite::end() {
+  _end = true;
+}
+
+bool Finite::InternalEnd() {
+  if (!_end) return false;
+  _prevId = _state.id;
+  _state.id = 0;
+  this->InternalAction();
+  _end = false;
+  return true;
 }
 
 void Finite::InternalTransition() {
   if (_transitions[_state.id].input) {
     if (_transitions[_state.id].input(_state)) {
+      if (this->InternalEnd()) return;
       _prevId = _state.id;
       _state.id = _transitions[_state.id].next;
       this->InternalAction();
     } else {
+      if (this->InternalEnd()) return;
       _prevId = _state.id;
       _state.id = _transitions[_state.id].current;
       this->InternalAction();

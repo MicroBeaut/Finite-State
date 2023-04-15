@@ -27,7 +27,7 @@ Transition transitions[] = {
   {Transition3, Input1, 2, 1}
 };
 
-Finite finiteStateTransition(transitions, numberOfStateTransitions);
+Finite finiteStateMachine(transitions, numberOfStateTransitions);
 
 void setup() {
   Serial.begin(115200);
@@ -35,11 +35,11 @@ void setup() {
     pinMode(pbPins[index], INPUT_PULLUP);
     pinMode(ledPins[index], OUTPUT);
   }
-  finiteStateTransition.state(0);
+  finiteStateMachine.begin();
 }
 
 void loop() {
-  finiteStateTransition.execute();
+  finiteStateMachine.execute();
 }
 
 void Transition1(State state) {

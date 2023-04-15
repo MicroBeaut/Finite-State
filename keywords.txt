@@ -16,9 +16,10 @@ Transition      KEYWORD1
 #######################################
 InputFunc       KEYWORD2
 TransitionFunc  KEYWORD2
+begin           KEYWORD2
 state           KEYWORD2
 execute         KEYWORD2
-
+end             KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
