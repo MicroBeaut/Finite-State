@@ -237,9 +237,9 @@ const long ThermostatRead() {
 ### State-Transition Table
 |Id|Predicate (Input)|Current State|Next State|State (Output)|Event|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|
-|0|`InputFunction`|0|1|nullptr|EventFunction|
-|1|`InputFunction`|1|2|nullptr|EventFunction|
-|2|`InputFunction`|2|0|nullptr|EventFunction|
+|0|`InputFunction`|0|1|nullptr|`EventFunction`|
+|1|`InputFunction`|1|2|nullptr|`EventFunction`|
+|2|`InputFunction`|2|0|nullptr|`EventFunction`|
 
 ### State-Transition Table -> Transition Declaration
 ```C
