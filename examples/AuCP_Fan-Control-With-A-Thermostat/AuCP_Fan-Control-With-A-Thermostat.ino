@@ -33,7 +33,6 @@ void FanControl(id_t id);
 long temperature;
 
 void setup() {
-  Serial.begin(115200);
   for (uint8_t index = 0; index < numberOfStatus; index++) {
     pinMode(statusPins[index], OUTPUT);
     digitalWrite(statusPins[index], LOW);

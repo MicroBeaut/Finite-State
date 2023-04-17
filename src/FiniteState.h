@@ -30,7 +30,7 @@ typedef struct {
 
 typedef struct {
   id_t id;          // State id
-  bool firstScan;   // First Scan when Activated
+  bool firstScan;   // First Scan when State Activated
 } State;
 
 typedef bool (*PredicateFunc)(id_t);    //  Predicate Function Pointer
@@ -51,7 +51,7 @@ class FiniteState {
     Transition *_transitions;       // Tranistion Pointer
     uint8_t _numberOfTransitions;   // Number of Transitions
     State _state;                   // State
-    EventArgs _eventArgs;           // Event argument
+    EventArgs _eventArgs;           // Event Argument
     bool _initial;                  // Initial State
 
     void InternalTransition();

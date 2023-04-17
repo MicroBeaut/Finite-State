@@ -14,12 +14,12 @@ Finite-State provides a bounded state machine that combines `state transitions`,
 
 ```C
 typedef struct {
-  StateFunc stateFunc;          // State Function
   PredicateFunc predicateFunc;  // Predicate Function
   id_t current;                 // Current State
   id_t next;                    // Next State
+  StateFunc stateFunc;          // State Function
   EventFunc eventFunc;          // Event Function
-} StateTransition;
+} Transition;
 ```
 ## Initial State
 The Finite-State require to initial with an initial id.
@@ -28,6 +28,10 @@ The Finite-State require to initial with an initial id.
 void begin(const id_t id);
 ```
 
+Example:
+```C
+objectName.begin(3);  // FSM begins with Initial Transition Id 3
+```
 
 ## Predicate Function (Input)
 
@@ -72,7 +76,7 @@ State:
 ```C
 typedef struct {
   id_t id;          // State id
-  bool firstScan;   // First Scan when Activated
+  bool firstScan;   // First Scan when State Activated
 } State;
 ```
 NOTE: The Id can also be obtained from `objectName.id`.
@@ -173,7 +177,6 @@ void FanControl(id_t id);
 long temperature;
 
 void setup() {
-  Serial.begin(115200);
   for (uint8_t index = 0; index < numberOfStatus; index++) {
     pinMode(statusPins[index], OUTPUT);
     digitalWrite(statusPins[index], LOW);
