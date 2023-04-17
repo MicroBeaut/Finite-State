@@ -6,25 +6,29 @@
 # Datatypes (KEYWORD1)
 #######################################
 FiniteState     KEYWORD1
-Actions         KEYWORD1
+Events          KEYWORD1
+EventArgs       KEYWORD1
 Transition      KEYWORD1
 State           KEYWORD1
+id_t            KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-TransitionFunc  KEYWORD2
-InputFunc       KEYWORD2
+PredicateFunc   KEYWORD2
+StateFunc       KEYWORD2
 EventFunc       KEYWORD2
 begin           KEYWORD2
 transition      KEYWORD2
 execute         KEYWORD2
+id              KEYWORD2
+size            KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
 STATE_TRANSITION_MIN  LITERAL1
 STATE_TRANSITION_MAX  LITERAL1
-NONE                  LITERAL1
+LOOP                  LITERAL1
 EXIT                  LITERAL1
 ENTRY                 LITERAL1

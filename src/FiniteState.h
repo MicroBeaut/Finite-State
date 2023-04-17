@@ -15,48 +15,56 @@
 #define STATE_TRANSITION_MIN 1
 #define STATE_TRANSITION_MAX 36
 
-enum Actions : int8_t {
-  NONE = - 1,
-  EXIT = 0,
-  ENTRY = 1,
+#define id_t uint8_t
+
+enum Events : int8_t {
+  LOOP,
+  EXIT,
+  ENTRY,
 };
 
 typedef struct {
-  uint8_t id;             // State id
-  Actions action;         // State Action
-  bool firstScan;         // First Scan when Activated
-} State;
-
-typedef void (*TransitionFunc)(State);  //  Tranistion Function Pointer 
-typedef bool (*InputFunc)(State);       //  Input Function Pointer
-typedef void (*EventFunc)(State);       //  Event Function Pointer
+  id_t id;          // State id
+  Events event;     // Event State
+} EventArgs;
 
 typedef struct {
-  TransitionFunc transitionFunc;  // Transition Function
-  InputFunc inputFunc;            // Input Function
-  uint8_t current;                // Current State
-  uint8_t next;                   // Next State
-  EventFunc eventFunc;            // Event Function
+  id_t id;          // State id
+  bool firstScan;   // First Scan when Activated
+} State;
+
+typedef bool (*PredicateFunc)(id_t);    //  Predicate Function Pointer
+typedef void (*StateFunc)(State);       //  State Function Pointer
+typedef void (*EventFunc)(EventArgs);   //  Event Function Pointer
+
+typedef struct {
+  PredicateFunc predicateFunc;  // Predicate Function
+  id_t current;                 // Current State
+  id_t next;                    // Next State
+  StateFunc stateFunc;          // State Function
+  EventFunc eventFunc;          // Event Function
 } Transition;
 
 
 class FiniteState {
   private:
-    Transition *_transitions;     // Tranistion
-    uint8_t _numberOfTransitions; // Number of Transition
-    State _state;                 // State
-    bool _initial;                // Initial State
+    Transition *_transitions;       // Tranistion Pointer
+    uint8_t _numberOfTransitions;   // Number of Transitions
+    State _state;                   // State
+    EventArgs _eventArgs;           // Event argument
+    bool _initial;                  // Initial State
 
     void InternalTransition();
-    void InternalSetAction(Actions action);
-    void InternalSetId(uint8_t id);
+    void InternalSetAction(const Events event);
+    void InternalSetId(const id_t id);
     const uint8_t InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max);
   public:
+    uint8_t &id;
     uint8_t &size;
 
-    FiniteState(Transition *transitions, const uint8_t numberOfTransition);
-    void begin(const uint8_t id);
-    void transition(const uint8_t id);
+    FiniteState(Transition *transitions, const uint8_t numberOfTransitions);
+    void begin(const id_t id);
+    void transition(const id_t id);
     void execute();
 };
 
