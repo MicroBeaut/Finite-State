@@ -15,8 +15,8 @@ Finite-State provides a bounded state machine that combines `state transitions`,
 ```C
 typedef struct {
   PredicateFunc predicateFunc;  // Predicate Function
-  id_t current;                 // Current State
-  id_t next;                    // Next State
+  id_t nextF;                   // Nest State on FALSE
+  id_t nextT;                   // Next State on TRUE
   StateFunc stateFunc;          // State Function
   EventFunc eventFunc;          // Event Function
 } Transition;
@@ -51,13 +51,13 @@ bool PredicateFunction(id_t id);       //  Predicate Function
 ## Target
 A Target has two destinations:
 
-  1. **Current State**
+  1. **Next State On FALSE (`nextF`)**
 
-     A **Current State** will be defined by the Id number when the return value from Predicate function is `FALSE`.
+     A **nextF** will be defined by the Id number when the return value from Predicate function is `FALSE`.
 
-  2. **Next State** 
+  2. **Next State On TRUE (`nextT`)** 
 
-     A **Next State** will be defined by the Id number when the return value from Predicate function is `TRUE`.
+     A **Next State On TURE** will be defined by the Id number when the return value from Predicate function is `TRUE`.
 
 
 ## State Function (Output)
@@ -116,7 +116,7 @@ enum Events : int8_t {
 };
 ```
 
-# Examples
+# Example
 ## Fan Control With A Thermostat
 
 
@@ -133,7 +133,7 @@ enum Events : int8_t {
 
 
 ### State-Transition Table
-|Id|Predicate (Input)|Current State|Next State|State (Output)|Event|
+|Id|Predicate (Input)|Next State - F|Next State - T|State (Output)|Event|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|
 |0|`FanStartPredicate`|0|1|`StartFan`|`nullptr`|
 |1|`FanStopPredicate`|1|0|`StopFan`|`nullptr`|
@@ -235,7 +235,7 @@ const long ThermostatRead() {
 
 
 ### State-Transition Table
-|Id|Predicate (Input)|Current State|Next State|State (Output)|Event|
+|Id|Predicate (Input)|Next State - F|Next State - T|State (Output)|Event|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|
 |0|`Inputs`|0|1|nullptr|EventStates|
 |1|`Inputs`|1|2|nullptr|EventStates|

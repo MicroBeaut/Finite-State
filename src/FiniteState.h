@@ -16,6 +16,7 @@
 #define STATE_TRANSITION_MAX 36
 
 #define id_t uint8_t
+#define BADID(id,maxId) (id<maxId?false:true)
 
 enum Events : int8_t {
   LOOP,
@@ -39,8 +40,8 @@ typedef void (*EventFunc)(EventArgs);   //  Event Function Pointer
 
 typedef struct {
   PredicateFunc predicateFunc;  // Predicate Function
-  id_t current;                 // Current State
-  id_t next;                    // Next State
+  id_t nextF;                   // Nest State on FALSE
+  id_t nextT;                   // Next State on TRUE
   StateFunc stateFunc;          // State Function
   EventFunc eventFunc;          // Event Function
 } Transition;
@@ -56,7 +57,6 @@ class FiniteState {
 
     void InternalTransition();
     void InternalSetAction(const Events event);
-    bool InternalBadId(const id_t id);
     void InternalSetId(const id_t id);
     const uint8_t InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max);
   public:

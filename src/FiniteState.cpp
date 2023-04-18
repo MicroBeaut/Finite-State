@@ -7,7 +7,6 @@
   Copyright (c) 2023 MicroBeaut
 */
 
-
 #include "FiniteState.h"
 
 FiniteState::FiniteState(Transition *transitions, const uint8_t numberOfTransitions): size(_numberOfTransitions), id(_state.id) {
@@ -17,7 +16,7 @@ FiniteState::FiniteState(Transition *transitions, const uint8_t numberOfTransiti
 }
 
 void FiniteState::begin(const id_t id) {
-  if (this->InternalBadId(id)) return;
+  if (BADID(id, _numberOfTransitions)) return;
   _initial = true;
   _state.id = id;
   _state.firstScan = true;
@@ -25,7 +24,7 @@ void FiniteState::begin(const id_t id) {
 }
 
 void FiniteState::transition(const id_t id) {
-  if (this->InternalBadId(id)) return;
+  if (BADID(id, _numberOfTransitions)) return;
   this->InternalSetId(id);
 }
 
@@ -37,9 +36,9 @@ void FiniteState::execute() {
 void FiniteState::InternalTransition() {
   if (_transitions[_state.id].predicateFunc) {
     if (_transitions[_state.id].predicateFunc(_state.id)) {
-      this->InternalSetId(_transitions[_state.id].next);
+      this->InternalSetId(_transitions[_state.id].nextT);
     } else {
-      this->InternalSetId(_transitions[_state.id].current);
+      this->InternalSetId(_transitions[_state.id].nextF);
     }
   }
 
@@ -66,11 +65,6 @@ void FiniteState::InternalSetAction(const Events event) {
     _transitions[_state.id].eventFunc(_eventArgs);
   }
   _eventArgs.event = LOOP;
-}
-
-bool FiniteState::InternalBadId(const id_t id) {
-  if (id < _numberOfTransitions) return false;
-  return true;
 }
 
 const uint8_t FiniteState::InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max) {
