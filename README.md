@@ -1,9 +1,9 @@
 <p align="center">
 	<img src="./images/Finite-State-Machine.svg" width="63%" />
-  <h1 align="center">Finite-State</h1>
+  <h1 align="center">Finite-State Machine</h1>
 </p>
 
-# Finite-State For Arduino
+# Finite-State Machine for Arduino
 Finite-State provides a bounded state machine that combines `state transitions`, which has the following part:
 
 - [Initial State](#initial-state)
