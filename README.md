@@ -11,9 +11,7 @@ Finite-State provides a bounded state machine that combines `state transitions`,
 - [Target](#target)
 - [State Functon (Output)](#state-function-output)
 - [Event](#event-function)
-- [Timer](#timer)
 
-#### Transition:
 ```C
 typedef struct {
   PredicateFunc predicateFunc;  // Predicate Function
@@ -21,35 +19,35 @@ typedef struct {
   id_t next;                    // Next State
   StateFunc stateFunc;          // State Function
   EventFunc eventFunc;          // Event Function
-  unsigned long delayTime;      // Delay Time
-  bool manualStart;             // Manual Start
 } Transition;
 ```
 ## Initial State
 The Finite-State require to initial with an initial id.
-#### Syntax:
+
 ```C
 void begin(const id_t id);
 ```
-#### Example:
+
+Example:
 ```C
 objectName.begin(3);  // FSM begins with Initial Transition Id 3
 ```
 
 ## Predicate Function (Input)
 
-A Predicate Function will determine whether the specified object meets the criteria. The following function accepts `id` from a caller; type is a parameter of type `id_t`. The return type is `boolean`. It will be used to determine a Target for the ***current state*** and ***next state***.
-##### Syntax:
+A Predicate Function will determine whether the specified object meets the criteria.
+
+```C
+typedef bool (*PredicateFunc)(id_t);    //  Predicate Function Pointer
+```
+
+The following function accepts `id` from a caller; type is a parameter of type `id_t`. The return type is `boolean`. It will be used to determine a Target for the ***current state*** and ***next state***:
+
 ```C
 bool PredicateFunction(id_t id);       //  Predicate Function
 ```
-##### Example:
-```C
-bool PredicateFunction(id_t id) {
-  // TODO: PREDICATE FUNCTION
-  return predicateValue; 
-}
-```
+
+
 ## Target
 A Target has two destinations:
 
@@ -63,8 +61,14 @@ A Target has two destinations:
 
 
 ## State Function (Output)
-The State Function is a function to implement Input/Output control, read/write data, etc. The following function accepts `state` from a caller; type is parameters of type `State`.
-##### Syntax:
+The State Function is a function to implement Input/Output control, read/write data, etc.
+
+```C
+typedef void (*StateFunc)(State);       //  State Function Pointer
+```
+
+The following function accepts `state` from a caller; type is parameters of type `State`:
+
 ```C
 void StateFunction(State state);       //  State Function
 ```
@@ -75,38 +79,27 @@ typedef struct {
   bool firstScan;   // First Scan when State Activated
 } State;
 ```
-##### Example:
-```c
-void MotorControl (State state) {
-  Status status;
-  if (state.firstScan) {
-    Serial.Println("Motor Control Functon");
-  }
-
-  if (motor[state.id].timerON) {
-    if (motor[state.id].running) {
-      status = RUNNING;
-    } else {
-      status = FAULT;
-    }
-  }
-  digitalWrite(motorp[state.id].status, status);
-}
-```
-
 NOTE: The Id can also be obtained from `objectName.id`.
 ```C
 id_t id = finiteStateMachine.id;
 ```
 
 ## Event Function
-An Event Function is an option. Finite-State will handle events when the state changes for `ENTRY` and `EXIT` actions. The following function accepts `state` from a caller; type is parameters of type `State`:
-##### Syntax:
+An Event Function is an option. Finite-State will handle events when the state changes for `ENTRY` and `EXIT` actions.
+
+
+```C
+typedef void (*EventFunc)(EventArgs);   //  Event Function Pointer
+```
+
+The following function accepts `state` from a caller; type is parameters of type `State`:
+
 ```C
 void EventFunction(State state);       //  Event Function
 ```
 
-##### EventArgs:
+EventArgs:
+
 ```C
 typedef struct {
   id_t id;          // State id
@@ -114,7 +107,7 @@ typedef struct {
 } EventArgs;
 ```
 
-##### Events:
+Events:
 ```C
 enum Events : int8_t {
   LOOP,
@@ -123,82 +116,7 @@ enum Events : int8_t {
 };
 ```
 
-##### Example:
-```c
-void MotorEvent (EventArgs e) {
-  switch(e.event){
-    case ENTRY:
-      digitalWrite(motor[e.id].output, true);
-      break;
-    case EXIT:
-      digitalWrite(motor[e.id].output, false);
-      break;
-  }
-}
-```
-
-## Timer
-The timer is optional to determine the criteria for the next step. Timer has two parameters:
-
-### Delay Time
-  
-When entering to step, if the delay time is greater than 0, Timer will be started depending on manual start mode. The delay time can be changed by:
-  
-#### Syntax:
-```C
-finiteStateName.delayTime(const id_t id, unsigned long msDelayTime);
-```
-#### Example:
-```C
-finiteStateName.delayTime(0, 1000UL); // Step Id: 0, Delay Time 1,000 milliseconds
-```
-
-### Manual Start Mode
-Default manualStart is an auto-start timer. The below function can change the manual start mode.
-##### Syntax:
-```C
-finiteStateName.manualStart(const id_t id, const bool manualMode);
-```
-##### Manual Start:
-```C
-finiteStateName.manualStart(1, true); // Step Id: 1, Manual Start
-```
-##### Auto Start:
-```C
-finiteStateName.manualStart(1, false); // Step Id: 1, Auto Start
-```
-The manual start mode can get by a `isManualStart`.
-##### Syntax:
-```C
-bool manulaStartMode = finiteStateName.isManualStart(const id_t id);
-```
-##### Example:
-```C
-bool manulaStartMode = finiteStateName.isManualStart(2);  // Get manual start mode from step id 2.
-```
-
-#### Start Timer
-The start Timer function uses for starting a timer in manual mode manually.
-##### Syntax:
-```C
-finiteStateName.startTimer(const id_t id);
-```
-##### Example:
-```C
-finiteStateName.startTimer(0);;  // Get manual start mode from step id 0.
-```
-#### Stop Timer
-The stop timer function uses for manual stop timers in manual and auto start modes.
-##### Syntax:
-```C
-finiteStateName.stopTimer(const id_t id);
-```
-##### Example:
-```C
-finiteStateName.startTimer(0);;  // Get manual start mode from step id 0.
-```
-
-# Example
+# Examples
 ## Fan Control With A Thermostat
 
 
@@ -319,16 +237,16 @@ const long ThermostatRead() {
 ### State-Transition Table
 |Id|Predicate (Input)|Current State|Next State|State (Output)|Event|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|
-|0|`InputFunction`|0|1|nullptr|`EventFunction`|
-|1|`InputFunction`|1|2|nullptr|`EventFunction`|
-|2|`InputFunction`|2|0|nullptr|`EventFunction`|
+|0|`Inputs`|0|1|nullptr|EventStates|
+|1|`Inputs`|1|2|nullptr|EventStates|
+|2|`Inputs`|2|0|nullptr|EventStates|
 
 ### State-Transition Table -> Transition Declaration
 ```C
 Transition transitions[] = {
-  {InputFunction, 0, 1, nullptr, EventFunction}, // State-0 -  Current-State = 0, Next-State = 1
-  {InputFunction, 1, 2, nullptr, EventFunction}, // State-1 -  Current-State = 1, Next-State = 2
-  {InputFunction, 2, 0, nullptr, EventFunction}, // State-2 -  Current-State = 2, Next-State = 0
+  {Inputs, 0, 1, nullptr, EventStates}, // State-0 -  Current-State = 0, Next-State = 1
+  {Inputs, 1, 2, nullptr, EventStates}, // State-0 -  Current-State = 1, Next-State = 2
+  {Inputs, 2, 0, nullptr, EventStates}, // State-0 -  Current-State = 2, Next-State = 0
 };
 ```
 
@@ -354,13 +272,13 @@ Timer delayTimes[] = {
   {3000},   // YELLOW Delay Time 3 seconds
 };
 
-bool InputFunction(id_t id);           // Predicate (Input)
-void EventFunction(EventArgs e);  // Event State
+bool Inputs(id_t id);           // Predicate (Input)
+void EventStates(EventArgs e);  // Event State
 
 Transition transitions[] = {
-  {InputFunction, 0, 1, nullptr, EventFunction}, // State-0 -  Current-State = 0, Next-State = 1
-  {InputFunction, 1, 2, nullptr, EventFunction}, // State-1 -  Current-State = 1, Next-State = 2
-  {InputFunction, 2, 0, nullptr, EventFunction}, // State-2 -  Current-State = 2, Next-State = 0
+  {Inputs, 0, 1, nullptr, EventStates}, // State-0 -  Current-State = 0, Next-State = 1
+  {Inputs, 1, 2, nullptr, EventStates}, // State-0 -  Current-State = 1, Next-State = 2
+  {Inputs, 2, 0, nullptr, EventStates}, // State-0 -  Current-State = 2, Next-State = 0
 };
 const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
@@ -378,11 +296,11 @@ void loop() {
   finiteStateMachine.execute();  // Execute the FSM
 }
 
-bool InputFunction(id_t id) {
+bool Inputs(id_t id) {
   return (millis() - delayTimes[id].startTime >= delayTimes[id].delayTime); // Determine Time Delay
 }
 
-void EventFunction(EventArgs e) {
+void EventStates(EventArgs e) {
   switch (e.event) {
     case ENTRY:
       delayTimes[e.id].startTime  = millis(); // Reload start time

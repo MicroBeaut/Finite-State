@@ -43,8 +43,6 @@ typedef struct {
   id_t next;                    // Next State
   StateFunc stateFunc;          // State Function
   EventFunc eventFunc;          // Event Function
-  unsigned long delayTime;      // Delay Time
-  bool manualStart;             // Manual Start
 } Transition;
 
 
@@ -56,16 +54,9 @@ class FiniteState {
     EventArgs _eventArgs;           // Event Argument
     bool _initial;                  // Initial State
 
-    bool _startTimer;               // Start Timer
-    unsigned long _startTime;       // Start Time
-    unsigned long _elapsedTime;     // Elapsed Time
-
     void InternalTransition();
     void InternalSetAction(const Events event);
     void InternalSetId(const id_t id);
-    bool InternalIDBAD(const id_t id);
-    void InternalAutoStartTimer(const id_t id);
-    bool InternalTimer(const id_t id);
     const uint8_t InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max);
   public:
     uint8_t &id;
@@ -75,12 +66,6 @@ class FiniteState {
     void begin(const id_t id);
     void transition(const id_t id);
     void execute();
-    void delayTime(const id_t id, unsigned long msDelayTime);
-    void manualStart(const id_t id, const bool manualMode);
-    bool isManualStart(const id_t id);
-    void startTimer();
-    void stopTimer();
-    bool isStart();
 };
 
 #endif // FINITESTATE_H

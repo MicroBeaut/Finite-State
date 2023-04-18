@@ -18,13 +18,13 @@ Timer delayTimes[] = {
   {3000},   // YELLOW Delay Time 3 seconds
 };
 
-bool InputFunction(id_t id);           // Predicate (Input)
-void EventFunction(EventArgs e);  // Event State
+bool Inputs(id_t id);           // Predicate (Input)
+void EventStates(EventArgs e);  // Event State
 
 Transition transitions[] = {
-  {InputFunction, 0, 1, nullptr, EventFunction}, // State-0 -  Current-State = 0, Next-State = 1
-  {InputFunction, 1, 2, nullptr, EventFunction}, // State-1 -  Current-State = 1, Next-State = 2
-  {InputFunction, 2, 0, nullptr, EventFunction}, // State-2 -  Current-State = 2, Next-State = 0
+  {Inputs, 0, 1, nullptr, EventStates}, // State-0 -  Current-State = 0, Next-State = 1
+  {Inputs, 1, 2, nullptr, EventStates}, // State-0 -  Current-State = 1, Next-State = 2
+  {Inputs, 2, 0, nullptr, EventStates}, // State-0 -  Current-State = 2, Next-State = 0
 };
 const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
@@ -42,11 +42,11 @@ void loop() {
   finiteStateMachine.execute();  // Execute the FSM
 }
 
-bool InputFunction(id_t id) {
+bool Inputs(id_t id) {
   return (millis() - delayTimes[id].startTime >= delayTimes[id].delayTime); // Determine Time Delay
 }
 
-void EventFunction(EventArgs e) {
+void EventStates(EventArgs e) {
   switch (e.event) {
     case ENTRY:
       delayTimes[e.id].startTime  = millis(); // Reload start time
