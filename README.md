@@ -24,6 +24,7 @@ typedef struct {
 ## Initial State
 The Finite-State require to initial with an initial id.
 
+Syntax:
 ```C
 void begin(const id_t id);
 ```
@@ -43,10 +44,19 @@ typedef bool (*PredicateFunc)(id_t);    //  Predicate Function Pointer
 
 The following function accepts `id` from a caller; type is a parameter of type `id_t`. The return type is `boolean`. It will be used to determine a Target for the ***current state*** and ***next state***:
 
+Syntax:
 ```C
 bool PredicateFunction(id_t id);       //  Predicate Function
 ```
 
+Example:
+```C
+bool PredicateInput(id_t id) {
+  // TODO: PREDICATE FUNCTION
+  
+  return button.isKeyPressed(); 
+}
+```
 
 ## Target
 A Target has two destinations:
@@ -66,12 +76,6 @@ The State Function is a function to implement Input/Output control, read/write d
 ```C
 typedef void (*StateFunc)(State);       //  State Function Pointer
 ```
-
-The following function accepts `state` from a caller; type is parameters of type `State`:
-
-```C
-void StateFunction(State state);       //  State Function
-```
 State:
 ```C
 typedef struct {
@@ -79,6 +83,33 @@ typedef struct {
   bool firstScan;   // First Scan when State Activated
 } State;
 ```
+
+The following function accepts `state` from a caller; type is parameters of type `State`:
+
+Syntax:
+```C
+void StateFunction(State state);       //  State Function
+```
+Example:
+```C
+void MotorStatus(State state) {
+  StatusState status;
+
+  if (state.firstScan) {
+    Serial.println("Motor Status Function")
+  }
+
+  if (motor[state.id].timerON) {
+    if (motor[state.id].running) {
+      status = RUNNING;
+    } else {
+      status = FAULT;
+    }
+    digitalWrite(motor[state.in].faultPin, status == FAULT);
+  }
+}
+```
+
 NOTE: The Id can also be obtained from `objectName.id`.
 ```C
 id_t id = finiteStateMachine.id;
@@ -87,19 +118,11 @@ id_t id = finiteStateMachine.id;
 ## Event Function
 An Event Function is an option. Finite-State will handle events when the state changes for `ENTRY` and `EXIT` actions.
 
-
 ```C
 typedef void (*EventFunc)(EventArgs);   //  Event Function Pointer
 ```
 
-The following function accepts `state` from a caller; type is parameters of type `State`:
-
-```C
-void EventFunction(State state);       //  Event Function
-```
-
 EventArgs:
-
 ```C
 typedef struct {
   id_t id;          // State id
@@ -115,6 +138,27 @@ enum Events : int8_t {
   ENTRY,
 };
 ```
+
+The following function accepts `state` from a caller; type is parameters of type `State`:
+Syntax:
+```C
+void EventFunction(State state);       //  Event Function
+```
+
+Example:
+```C
+void EventMotorControl(EventArgs e) {
+  switch (e.event) {
+    case ENTRY:
+      digitalWrite(motor[state.in].output, true);
+      break;
+    case EXIT:
+      digitalWrite(motor[state.in].output, false);
+      break;
+  }
+}
+```
+
 
 # Example
 ## Fan Control With A Thermostat
