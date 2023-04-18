@@ -141,8 +141,8 @@ enum Events : int8_t {
 ### State-Transition Table -> Transition Declaration
 ```C
 Transition transitions[] = {
-  {FanStartPredicate, 0, 1, StartFan}, // State-0 -  Current-State = 0, Next-State = 1
-  {FanStopPredicate, 1, 0, StopFan}    // State-1 -  Current-State = 1, Next-State = 0
+  {FanStartPredicate, 0, 1, StartFan}, // State-0 - Current-State = 0, Next-State = 1
+  {FanStopPredicate, 1, 0, StopFan}    // State-1 - Current-State = 1, Next-State = 0
 };
 ```
 
@@ -164,8 +164,8 @@ bool FanStartPredicate(id_t state);
 bool FanStopPredicate(id_t state);
 
 Transition transitions[] = {
-  {FanStartPredicate, 0, 1, StartFan}, // State-0 -  Current-State = 0, Next-State = 1
-  {FanStopPredicate, 1, 0, StopFan}    // State-1 -  Current-State = 1, Next-State = 0
+  {FanStartPredicate, 0, 1, StartFan}, // State-0 - Current-State = 0, Next-State = 1
+  {FanStopPredicate, 1, 0, StopFan}    // State-1 - Current-State = 1, Next-State = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);
 
@@ -244,9 +244,9 @@ const long ThermostatRead() {
 ### State-Transition Table -> Transition Declaration
 ```C
 Transition transitions[] = {
-  {Inputs, 0, 1, nullptr, EventStates}, // State-0 -  Current-State = 0, Next-State = 1
-  {Inputs, 1, 2, nullptr, EventStates}, // State-0 -  Current-State = 1, Next-State = 2
-  {Inputs, 2, 0, nullptr, EventStates}, // State-0 -  Current-State = 2, Next-State = 0
+  {Inputs, 0, 1, nullptr, EventStates}, // State-0 - Current-State = 0, Next-State = 1
+  {Inputs, 1, 2, nullptr, EventStates}, // State-1 - Current-State = 1, Next-State = 2
+  {Inputs, 2, 0, nullptr, EventStates}, // State-2 - Current-State = 2, Next-State = 0
 };
 ```
 
@@ -276,9 +276,9 @@ bool Inputs(id_t id);           // Predicate (Input)
 void EventStates(EventArgs e);  // Event State
 
 Transition transitions[] = {
-  {Inputs, 0, 1, nullptr, EventStates}, // State-0 -  Current-State = 0, Next-State = 1
-  {Inputs, 1, 2, nullptr, EventStates}, // State-0 -  Current-State = 1, Next-State = 2
-  {Inputs, 2, 0, nullptr, EventStates}, // State-0 -  Current-State = 2, Next-State = 0
+  {Inputs, 0, 1, nullptr, EventStates}, // State-0 - Current-State = 0, Next-State = 1
+  {Inputs, 1, 2, nullptr, EventStates}, // State-1 - Current-State = 1, Next-State = 2
+  {Inputs, 2, 0, nullptr, EventStates}, // State-2 - Current-State = 2, Next-State = 0
 };
 const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 

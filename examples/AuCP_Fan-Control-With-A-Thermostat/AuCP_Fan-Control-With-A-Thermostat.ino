@@ -20,8 +20,8 @@ bool FanStartPredicate(id_t state);
 bool FanStopPredicate(id_t state);
 
 Transition transitions[] = {
-  {FanStartPredicate, 0, 1, StartFan}, // State-0 -  Current-State = 0, Next-State = 1
-  {FanStopPredicate, 1, 0, StopFan}    // State-1 -  Current-State = 1, Next-State = 0
+  {FanStartPredicate, 0, 1, StartFan}, // State-0 - Current-State = 0, Next-State = 1
+  {FanStopPredicate, 1, 0, StopFan}    // State-1 - Current-State = 1, Next-State = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);
 

@@ -56,6 +56,7 @@ class FiniteState {
 
     void InternalTransition();
     void InternalSetAction(const Events event);
+    bool InternalBadId(const id_t id);
     void InternalSetId(const id_t id);
     const uint8_t InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max);
   public:

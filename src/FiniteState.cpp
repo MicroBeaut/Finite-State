@@ -17,7 +17,7 @@ FiniteState::FiniteState(Transition *transitions, const uint8_t numberOfTransiti
 }
 
 void FiniteState::begin(const id_t id) {
-  if (!(id < _numberOfTransitions)) return;
+  if (this->InternalBadId(id)) return;
   _initial = true;
   _state.id = id;
   _state.firstScan = true;
@@ -25,7 +25,7 @@ void FiniteState::begin(const id_t id) {
 }
 
 void FiniteState::transition(const id_t id) {
-  if (!(id < _numberOfTransitions)) return;
+  if (this->InternalBadId(id)) return;
   this->InternalSetId(id);
 }
 
@@ -66,6 +66,11 @@ void FiniteState::InternalSetAction(const Events event) {
     _transitions[_state.id].eventFunc(_eventArgs);
   }
   _eventArgs.event = LOOP;
+}
+
+bool FiniteState::InternalBadId(const id_t id) {
+  if (id < _numberOfTransitions) return false;
+  return true;
 }
 
 const uint8_t FiniteState::InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max) {
