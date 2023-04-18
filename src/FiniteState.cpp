@@ -17,15 +17,16 @@ FiniteState::FiniteState(Transition *transitions, const uint8_t numberOfTransiti
 }
 
 void FiniteState::begin(const id_t id) {
-  if (!(id < _numberOfTransitions)) return;
-  _initial = true;
+  if (this->InternalIDBAD(id)) return;
   _state.id = id;
+  _initial = true;
   _state.firstScan = true;
   this->InternalSetAction(ENTRY);
+  this->InternalAutoStartTimer(id);
 }
 
 void FiniteState::transition(const id_t id) {
-  if (!(id < _numberOfTransitions)) return;
+  if (this->InternalIDBAD(id)) return;
   this->InternalSetId(id);
 }
 
@@ -34,13 +35,50 @@ void FiniteState::execute() {
   this->InternalTransition();
 }
 
+void FiniteState::delayTime(const id_t id, unsigned long msDelayTime) {
+  if (this->InternalIDBAD(id)) return;
+  _transitions[id].delayTime = msDelayTime;
+}
+
+void FiniteState::manualStart(const id_t id, const bool manualMode) {
+  if (this->InternalIDBAD(id)) return;
+  if (!(_transitions[id].delayTime > 0)) return;
+  _transitions[id].manualStart = manualMode;
+}
+
+bool FiniteState::isManualStart(const id_t id) {
+  if (this->InternalIDBAD(id)) return false;
+  return _transitions[id].manualStart;
+}
+
+void FiniteState::startTimer() {
+  if (!(_transitions[id].delayTime > 0)) return;
+  _startTime = millis();
+  _startTimer = true;
+}
+
+void FiniteState::stopTimer() {
+  if (!_startTimer) return;
+  _startTimer = false;
+}
+
+bool FiniteState::isStart() {
+  return _startTimer;
+}
+
 void FiniteState::InternalTransition() {
+  bool nextState = false;
   if (_transitions[_state.id].predicateFunc) {
-    if (_transitions[_state.id].predicateFunc(_state.id)) {
-      this->InternalSetId(_transitions[_state.id].next);
-    } else {
-      this->InternalSetId(_transitions[_state.id].current);
-    }
+    nextState = _transitions[_state.id].predicateFunc(_state.id);
+  }
+
+  bool timeDone = this->InternalTimer(_state.id);
+  nextState |= timeDone;
+
+  if (nextState) {
+    this->InternalSetId(_transitions[_state.id].next);
+  } else {
+    this->InternalSetId(_transitions[_state.id].current);
   }
 
   if (_transitions[_state.id].stateFunc) {
@@ -56,6 +94,29 @@ void FiniteState::InternalSetId(const id_t id) {
   _state.id = id;
   _state.firstScan = true;
   this->InternalSetAction(ENTRY);
+  this->InternalAutoStartTimer(id);
+}
+
+bool FiniteState::InternalIDBAD(const id_t id) {
+  if (id < _numberOfTransitions) return false;
+  return true;
+}
+
+void FiniteState::InternalAutoStartTimer(const id_t id) {
+  _elapsedTime = 0UL;
+  _startTimer = false;
+  if (_transitions[id].manualStart) return;
+  if (!(_transitions[id].delayTime > 0)) return;
+  _startTime = millis();
+  _startTimer = true;
+}
+
+bool FiniteState::InternalTimer(const id_t id) {
+  if (!_startTimer) return false;
+  _elapsedTime = millis() - _startTime;
+  if (_elapsedTime < _transitions[id].delayTime) return false;
+  _elapsedTime = _transitions[id].delayTime;
+  return true;
 }
 
 void FiniteState::InternalSetAction(const Events event) {
