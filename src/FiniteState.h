@@ -19,7 +19,7 @@
 #define BADID(id,maxId) (id<maxId?false:true)
 
 enum Events : int8_t {
-  LOOP,
+  PROCESS,
   EXIT,
   ENTRY,
 };
@@ -34,18 +34,17 @@ typedef struct {
   bool firstScan;   // First Scan when State Activated
 } State;
 
-typedef bool (*PredicateFunc)(id_t);    //  Predicate Function Pointer
-typedef void (*StateFunc)(State);       //  State Function Pointer
-typedef void (*EventFunc)(EventArgs);   //  Event Function Pointer
+typedef bool (*Predicate)(id_t);          //  Predicate Function Pointer
+typedef void (*Process)(State);           //  Process Function Pointer
+typedef void (*EventHandler)(EventArgs);  //  Event Handler Function Pointer
 
 typedef struct {
-  PredicateFunc predicateFunc;  // Predicate Function
-  id_t nextF;                   // Nest State on FALSE
-  id_t nextT;                   // Next State on TRUE
-  StateFunc stateFunc;          // State Function
-  EventFunc eventFunc;          // Event Function
+  Predicate predicate;        // Predicate Function
+  id_t nextF;                 // Next State on FALSE
+  id_t nextT;                 // Next State on TRUE
+  Process process;            // Process Function
+  EventHandler eventHandler;  // Event Function
 } Transition;
-
 
 class FiniteState {
   private:
@@ -55,12 +54,15 @@ class FiniteState {
     EventArgs _eventArgs;           // Event Argument
     bool _initial;                  // Initial State
 
-    void InternalTransition();
-    void InternalSetAction(const Events event);
-    void InternalSetId(const id_t id);
+    void InternalPredicate();
+    void InternalEventHandler(const Events e);
+    void InternalProcess();
+    void InternalExitEntry(const id_t id);
+    void InternalEntry(const id_t id);
+    void InternalExit();
     const uint8_t InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max);
   public:
-    uint8_t &id;
+    id_t &id;
     uint8_t &size;
 
     FiniteState(Transition *transitions, const uint8_t numberOfTransitions);

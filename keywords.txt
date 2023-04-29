@@ -15,9 +15,9 @@ id_t            KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-PredicateFunc   KEYWORD2
-StateFunc       KEYWORD2
-EventFunc       KEYWORD2
+Predicate       KEYWORD2
+Process         KEYWORD2
+EventHandler    KEYWORD2
 begin           KEYWORD2
 transition      KEYWORD2
 execute         KEYWORD2
@@ -29,6 +29,6 @@ size            KEYWORD2
 #######################################
 STATE_TRANSITION_MIN  LITERAL1
 STATE_TRANSITION_MAX  LITERAL1
-LOOP                  LITERAL1
+PROCESS               LITERAL1
 EXIT                  LITERAL1
 ENTRY                 LITERAL1

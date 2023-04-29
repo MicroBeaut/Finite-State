@@ -7,18 +7,18 @@
 Finite-State provides a bounded state machine that combines `state transitions`, which has the following part:
 
 - [Initial State](#initial-state)
-- [Predicate Function (Input)](#predicate-function-input)
-- [Target](#target)
-- [State Functon (Output)](#state-function-output)
-- [Event](#event-function)
+- [Predicate Function](#predicate-function)
+- [Next State](#next-state)
+- [Process Function](#process-function)
+- [Event Handler](#event-handler-function)
 
 ```C
 typedef struct {
-  PredicateFunc predicateFunc;  // Predicate Function
-  id_t nextF;                   // Nest State on FALSE
-  id_t nextT;                   // Next State on TRUE
-  StateFunc stateFunc;          // State Function
-  EventFunc eventFunc;          // Event Function
+  Predicate predicate;        // Predicate Function Pointer
+  id_t nextF;                 // Next State on FALSE
+  id_t nextT;                 // Next State on TRUE
+  Process process;            // Process Function Pointer
+  EventHandler eventHandler;  // Event Handler Function Pointer
 } Transition;
 ```
 ## Initial State
@@ -34,15 +34,15 @@ Example:
 objectName.begin(3);  // FSM begins with Initial Transition Id 3
 ```
 
-## Predicate Function (Input)
+## Predicate Function
 
 A Predicate Function will determine whether the specified object meets the criteria.
 
 ```C
-typedef bool (*PredicateFunc)(id_t);    //  Predicate Function Pointer
+typedef bool (*Predicate)(id_t);    //  Predicate Function Pointer
 ```
 
-The following function accepts `id` from a caller; type is a parameter of type `id_t`. The return type is `boolean`. It will be used to determine a Target for the ***current state*** and ***next state***:
+The following function accepts `id` from a caller; type is a parameter of type `id_t`. The return type is `boolean`. It will be used to determine a Next-State for the ***current state*** and ***next state***:
 
 Syntax:
 ```C
@@ -51,15 +51,23 @@ bool PredicateFunction(id_t id);       //  Predicate Function
 
 Example:
 ```C
-bool PredicateInput(id_t id) {
+bool PredicateFunction(id_t id) {
   // TODO: PREDICATE FUNCTION
   
-  return button.isKeyPressed(); 
+  return button[id].isPressed(); 
+}
+```
+Or,
+```C
+bool PredicateFunction(id_t id) {
+  // TODO: PREDICATE FUNCTION
+  
+  return array[id] == 10; 
 }
 ```
 
-## Target
-A Target has two destinations:
+## Next State
+A Next-State has two destinations:
 
   1. **Next State On FALSE (`nextF`)**
 
@@ -70,11 +78,11 @@ A Target has two destinations:
      A **Next State On TURE** will be defined by the Id number when the return value from Predicate function is `TRUE`.
 
 
-## State Function (Output)
-The State Function is a function to implement Input/Output control, read/write data, etc.
+## Process Function
+The Process Function is a function to implement Input/Output control, read/write data, etc.
 
 ```C
-typedef void (*StateFunc)(State);       //  State Function Pointer
+typedef void (*Process)(State);       //  Process Function Pointer
 ```
 State:
 ```C
@@ -88,11 +96,11 @@ The following function accepts `state` from a caller; type is parameters of type
 
 Syntax:
 ```C
-void StateFunction(State state);       //  State Function
+void ProcessFunction(State state);       //  Process Function
 ```
 Example:
 ```C
-void MotorStatus(State state) {
+void MotorProcess(State state) {
   StatusState status;
 
   if (state.firstScan) {
@@ -115,11 +123,11 @@ NOTE: The Id can also be obtained from `objectName.id`.
 id_t id = finiteStateMachine.id;
 ```
 
-## Event Function
-An Event Function is an option. Finite-State will handle events when the state changes for `ENTRY` and `EXIT` actions.
+## Event Handler Function
+An Event Handler Function is an option. Finite-State will handle events when the state changes for `ENTRY` and `EXIT` actions.
 
 ```C
-typedef void (*EventFunc)(EventArgs);   //  Event Function Pointer
+typedef void (*EventHandler)(EventArgs);   //  Event Handler Function Pointer
 ```
 
 EventArgs:
@@ -133,7 +141,7 @@ typedef struct {
 Events:
 ```C
 enum Events : int8_t {
-  LOOP,
+  PROCESS,
   EXIT,
   ENTRY,
 };
@@ -142,12 +150,12 @@ enum Events : int8_t {
 The following function accepts `state` from a caller; type is parameters of type `State`:
 Syntax:
 ```C
-void EventFunction(State state);       //  Event Function
+void EventHandlerFunction(EventArgs e);       //  Event Handler Function Pointer
 ```
 
 Example:
 ```C
-void EventMotorControl(EventArgs e) {
+void OnEventChanged(EventArgs e) {
   switch (e.event) {
     case ENTRY:
       digitalWrite(motor[state.in].output, true);
@@ -177,7 +185,7 @@ void EventMotorControl(EventArgs e) {
 
 
 ### State-Transition Table
-|Id|Predicate (Input)|Next State - F|Next State - T|State (Output)|Event|
+|Id|Predicate|Next State - F|Next State - T|Process|Event|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|
 |0|`FanStartPredicate`|0|1|`StartFan`|`nullptr`|
 |1|`FanStopPredicate`|1|0|`StopFan`|`nullptr`|
@@ -279,18 +287,18 @@ const long ThermostatRead() {
 
 
 ### State-Transition Table
-|Id|Predicate (Input)|Next State - F|Next State - T|State (Output)|Event|
+|Id|Predicate|Next State - F|Next State - T|Process|Event|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|
-|0|`Inputs`|0|1|nullptr|EventStates|
-|1|`Inputs`|1|2|nullptr|EventStates|
-|2|`Inputs`|2|0|nullptr|EventStates|
+|0|`DelayTimePredicate`|0|1|nullptr|EventStates|
+|1|`DelayTimePredicate`|1|2|nullptr|EventStates|
+|2|`DelayTimePredicate`|2|0|nullptr|EventStates|
 
 ### State-Transition Table -> Transition Declaration
 ```C
 Transition transitions[] = {
-  {Inputs, 0, 1, nullptr, EventStates}, // State-0 - Current-State = 0, Next-State = 1
-  {Inputs, 1, 2, nullptr, EventStates}, // State-1 - Current-State = 1, Next-State = 2
-  {Inputs, 2, 0, nullptr, EventStates}, // State-2 - Current-State = 2, Next-State = 0
+  {DelayTimePredicate, 0, 1, nullptr, EventStates}, // State-0 - Current-State = 0, Next-State = 1
+  {DelayTimePredicate, 1, 2, nullptr, EventStates}, // State-1 - Current-State = 1, Next-State = 2
+  {DelayTimePredicate, 2, 0, nullptr, EventStates}, // State-2 - Current-State = 2, Next-State = 0
 };
 ```
 
@@ -316,13 +324,13 @@ Timer delayTimes[] = {
   {3000},   // YELLOW Delay Time 3 seconds
 };
 
-bool Inputs(id_t id);           // Predicate (Input)
-void EventStates(EventArgs e);  // Event State
+bool DelayTimePredicate(id_t id); // Predicate Function
+void EventStates(EventArgs e);    // Event State
 
 Transition transitions[] = {
-  {Inputs, 0, 1, nullptr, EventStates}, // State-0 - Current-State = 0, Next-State = 1
-  {Inputs, 1, 2, nullptr, EventStates}, // State-1 - Current-State = 1, Next-State = 2
-  {Inputs, 2, 0, nullptr, EventStates}, // State-2 - Current-State = 2, Next-State = 0
+  {DelayTimePredicate, 0, 1, nullptr, EventStates}, // State-0 - Current-State = 0, Next-State = 1
+  {DelayTimePredicate, 1, 2, nullptr, EventStates}, // State-1 - Current-State = 1, Next-State = 2
+  {DelayTimePredicate, 2, 0, nullptr, EventStates}, // State-2 - Current-State = 2, Next-State = 0
 };
 const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
@@ -340,7 +348,7 @@ void loop() {
   finiteStateMachine.execute();  // Execute the FSM
 }
 
-bool Inputs(id_t id) {
+bool DelayTimePredicate(id_t id) {
   return (millis() - delayTimes[id].startTime >= delayTimes[id].delayTime); // Determine Time Delay
 }
 
@@ -356,3 +364,6 @@ void EventStates(EventArgs e) {
   }
 }
 ```
+
+# Reference
+Wikipedia [Finite-State Machine](https://en.wikipedia.org/wiki/Finite-state_machine)
