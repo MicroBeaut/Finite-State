@@ -1,9 +1,3 @@
-/*
-  Sketch:   AuCP_Fan-Control-With-A-Thermostat.ino
-  Created:  17-Apr-2023
-  Author:   MicroBeaut (μB)
-*/
-
 #include "FiniteState.h"
 
 #define thermostatPin   A0
@@ -14,14 +8,14 @@
 uint8_t statusPins[] = {stopStatusPin, startStatusPin};
 const uint8_t numberOfStatus = sizeof(statusPins) / sizeof(uint8_t);
 
-void StartFan(State state);
-void StopFan(State state);
+void StartFanProcess(State state);
+void StopFanProcess(State state);
 bool FanStartPredicate(id_t state);
 bool FanStopPredicate(id_t state);
 
 Transition transitions[] = {
-  {FanStartPredicate, 0, 1, StartFan}, // State-0 - Current-State = 0, Next-State = 1
-  {FanStopPredicate, 1, 0, StopFan}    // State-1 - Current-State = 1, Next-State = 0
+  {FanStartPredicate, 0, 1, StartFanProcess}, // State-0 - NextF = 0, NextT = 1
+  {FanStopPredicate, 1, 0, StopFanProcess}    // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);
 
@@ -50,7 +44,7 @@ bool FanStartPredicate(id_t state) {
   return temperature >= 40;       // Determine Fan Start Action
 }
 
-void StartFan(State state) {
+void StartFanProcess(State state) {
   FanControl(state.id);           // Fan control output
 }
 
@@ -58,7 +52,7 @@ bool FanStopPredicate(id_t state) {
   return temperature <= 30;       // Determine Fan Stop Action
 }
 
-void StopFan(State state) {
+void StopFanProcess(State state) {
   FanControl(state.id);           // Fan control output
 }
 

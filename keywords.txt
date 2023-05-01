@@ -6,11 +6,14 @@
 # Datatypes (KEYWORD1)
 #######################################
 FiniteState     KEYWORD1
-Events          KEYWORD1
+Action          KEYWORD1
+TimerType       KEYWORD1
+TriState        KEYWORD1
 EventArgs       KEYWORD1
 Transition      KEYWORD1
 State           KEYWORD1
 id_t            KEYWORD1
+time_t          KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -29,6 +32,14 @@ size            KEYWORD2
 #######################################
 STATE_TRANSITION_MIN  LITERAL1
 STATE_TRANSITION_MAX  LITERAL1
-PROCESS               LITERAL1
+DURING                LITERAL1
 EXIT                  LITERAL1
 ENTRY                 LITERAL1
+NOT_USED              LITERAL1
+TRANS_TIMER           LITERAL1
+PREDIC_TIMER          LITERAL1
+FALSE_TIMER           LITERAL1
+TRUE_TIMER            LITERAL1
+Unspecified           LITERAL1
+False                 LITERAL1
+True                  LITERAL1

@@ -13,20 +13,35 @@
 #include "Arduino.h"
 
 #define STATE_TRANSITION_MIN 1
-#define STATE_TRANSITION_MAX 36
+#define STATE_TRANSITION_MAX 63
 
 #define id_t uint8_t
+#define time_t unsigned long
 #define BADID(id,maxId) (id<maxId?false:true)
 
-enum Events : int8_t {
-  PROCESS,
+enum Action {
+  DURING,
   EXIT,
-  ENTRY,
+  ENTRY
+};
+
+enum TimerType {
+  NOT_USED,       // Not Used Timer
+  TRANS_TIMER,    // Transition Timer
+  PREDIC_TIMER,   // Predicate Timer
+  FALSE_TIMER,    // False State Timer
+  TRUE_TIMER,     // True State Timer
+};
+
+enum TriState {
+  Unspecified = -1,
+  False = 0,
+  True = 1
 };
 
 typedef struct {
   id_t id;          // State id
-  Events event;     // Event State
+  Action action;    // Action State
 } EventArgs;
 
 typedef struct {
@@ -39,28 +54,52 @@ typedef void (*Process)(State);           //  Process Function Pointer
 typedef void (*EventHandler)(EventArgs);  //  Event Handler Function Pointer
 
 typedef struct {
-  Predicate predicate;        // Predicate Function
-  id_t nextF;                 // Next State on FALSE
-  id_t nextT;                 // Next State on TRUE
-  Process process;            // Process Function
-  EventHandler eventHandler;  // Event Function
+  Predicate predicate;                    // Predicate Function Pointer
+  id_t nextF;                             // Next State on FALSE
+  id_t nextT;                             // Next State on TRUE
+  Process process;                        // Process Function Pointer
+  EventHandler eventHandler;              // Event Function Pointer
+  time_t delayTime;                       // Delay Time
+  TimerType timerType;                    // Timer Type
 } Transition;
 
 class FiniteState {
   private:
-    Transition *_transitions;       // Tranistion Pointer
-    uint8_t _numberOfTransitions;   // Number of Transitions
-    State _state;                   // State
-    EventArgs _eventArgs;           // Event Argument
-    bool _initial;                  // Initial State
+#define MS2US(ms) (ms * 1000UL)
+    Transition *_transitions;             // Tranistion Pointer
+    uint8_t _numberOfTransitions;         // Number of Transitions
+    State _state;                         // State
+    EventArgs _eventArgs;                 // Event Argument
+    bool _initial;                        // Initial State
+    time_t _startTime;                    // Start Time
+    bool _timeout;                        // Timeout State
 
-    void InternalPredicate();
-    void InternalEventHandler(const Events e);
+
+    void InternalTimerCondition();
     void InternalProcess();
-    void InternalExitEntry(const id_t id);
-    void InternalEntry(const id_t id);
-    void InternalExit();
+
+    void InternalNotUsedTimerCondition();
+    void InternalTransitionTimerCondition();
+    void InternalInputTimerCondition();
+    void InternalFalseStateTimerCondition();
+    void InternalTrueStateTimerCondition();
+
+    const TriState InternalPredicate();
+
+    void InternalNextState(TriState state);
+    void InternalNextStateAction(const id_t id);
+
+    void InternalEntryAction(const id_t id);
+    void InternalDuringAction();
+    void InternalExitAction();
+
+    void InternalEventHandler(const Action e);
+
+    const TriState InternalTimer();
+    const bool InternalTimeout();
+
     const uint8_t InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max);
+
   public:
     id_t &id;
     uint8_t &size;

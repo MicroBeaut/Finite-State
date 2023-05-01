@@ -18,13 +18,13 @@ Timer delayTimes[] = {
   {3000},   // YELLOW Delay Time 3 seconds
 };
 
-bool DelayTimePredicate(id_t id);         // Predicate (Input)
-void EventOnActionChanged(EventArgs e);   // Event State
+bool DelayTimePredicate(id_t id); // Predicate (Input)
+void EventOnActionChanged(EventArgs e);    // Event State
 
 Transition transitions[] = {
-  {DelayTimePredicate, 0, 1, nullptr, EventOnActionChanged},  // State-1 - NextF = 0, NextT = 1
-  {DelayTimePredicate, 1, 2, nullptr, EventOnActionChanged},  // State-2 - NextF = 1, NextT = 2
-  {DelayTimePredicate, 2, 0, nullptr, EventOnActionChanged},  // State-3 - NextF = 2, NextT = 0
+  {DelayTimePredicate, 0, 1, nullptr, EventOnActionChanged}, // State-1 - NextF = 0, NextT = 1
+  {DelayTimePredicate, 1, 2, nullptr, EventOnActionChanged}, // State-2 - NextF = 1, NextT = 2
+  {DelayTimePredicate, 2, 0, nullptr, EventOnActionChanged}, // State-3 - NextF = 2, NextT = 0
 };
 const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 

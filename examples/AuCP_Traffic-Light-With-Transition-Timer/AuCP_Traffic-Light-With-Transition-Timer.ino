@@ -7,24 +7,12 @@
 uint8_t lightPins[] = {redLightPin, greenLightPin, yellowLightPin}; // Define an array of light pins.
 const uint8_t numberOfLights = sizeof(lightPins) / sizeof(uint8_t); // Calculate the number of lights.
 
-typedef struct {
-  unsigned long delayTime;
-  unsigned long startTime;
-} Timer;
-
-Timer delayTimes[] = {
-  {5000},   // RED Delay Time 5 seconds
-  {10000},  // GREEN Delay Time 10 seconds
-  {3000},   // YELLOW Delay Time 3 seconds
-};
-
-bool DelayTimePredicate(id_t id);         // Predicate (Input)
-void EventOnActionChanged(EventArgs e);   // Event State
+void EventOnActionChanged(EventArgs e);  // Event State
 
 Transition transitions[] = {
-  {DelayTimePredicate, 0, 1, nullptr, EventOnActionChanged},  // State-1 - NextF = 0, NextT = 1
-  {DelayTimePredicate, 1, 2, nullptr, EventOnActionChanged},  // State-2 - NextF = 1, NextT = 2
-  {DelayTimePredicate, 2, 0, nullptr, EventOnActionChanged},  // State-3 - NextF = 2, NextT = 0
+  {nullptr, 0, 1, nullptr, EventOnActionChanged, 5000, TRANS_TIMER},          // State-1 - NextF = 0, NextT = 1
+  {nullptr, 1, 2, nullptr, EventOnActionChanged, 10000, TRANS_TIMER},         // State-2 - NextF = 1, NextT = 2
+  {nullptr, 2, 0, nullptr, EventOnActionChanged, 3000, TRANS_TIMER},          // State-3 - NextF = 2, NextT = 0
 };
 const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
@@ -42,14 +30,9 @@ void loop() {
   finiteStateMachine.execute();  // Execute the FSM
 }
 
-bool DelayTimePredicate(id_t id) {
-  return (millis() - delayTimes[id].startTime >= delayTimes[id].delayTime); // Determine Time Delay
-}
-
 void EventOnActionChanged(EventArgs e) {
   switch (e.action) {
     case ENTRY:
-      delayTimes[e.id].startTime  = millis(); // Reload start time
       digitalWrite(lightPins[e.id], HIGH);    // Set Light with the HIGH state.
       break;
     case EXIT:

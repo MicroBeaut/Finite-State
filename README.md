@@ -6,32 +6,27 @@
 # Finite-State Machine for Arduino
 Finite-State provides a bounded state machine that combines `state transitions`, which has the following part:
 
-- [Initial State](#initial-state)
 - [Predicate Function](#predicate-function)
 - [Next State](#next-state)
 - [Process Function](#process-function)
-- [Event Handler](#event-handler-function)
+- [Event Handler Function](#event-handler-function)
+- [Timer](#timer)
+
+<p align="center">
+	<img src="./images/Transition-Member.svg" width="36%" />
+  <h3 align="center"></h3>
+</p>
 
 ```C
 typedef struct {
-  Predicate predicate;        // Predicate Function Pointer
-  id_t nextF;                 // Next State on FALSE
-  id_t nextT;                 // Next State on TRUE
-  Process process;            // Process Function Pointer
-  EventHandler eventHandler;  // Event Handler Function Pointer
+  Predicate predicate;                  // Predicate Function Pointer
+  id_t nextF;                           // Next State on FALSE
+  id_t nextT;                           // Next State on TRUE
+  Process process;                      // Process Function Pointer
+  EventHandler eventHandler;            // Event Function Pointer
+  time_t delayTime;                     // Delay Time
+  TimerType timerType;                  // Timer Type
 } Transition;
-```
-## Initial State
-The Finite-State require to initial with an initial id.
-
-Syntax:
-```C
-void begin(const id_t id);
-```
-
-Example:
-```C
-objectName.begin(3);  // FSM begins with Initial Transition Id 3
 ```
 
 ## Predicate Function
@@ -39,27 +34,31 @@ objectName.begin(3);  // FSM begins with Initial Transition Id 3
 A Predicate Function will determine whether the specified object meets the criteria.
 
 ```C
-typedef bool (*Predicate)(id_t);    //  Predicate Function Pointer
+typedef bool (*Predicate)(id_t);        //  Predicate Function Pointer
 ```
 
 The following function accepts `id` from a caller; type is a parameter of type `id_t`. The return type is `boolean`. It will be used to determine a Next-State for the ***current state*** and ***next state***:
 
 Syntax:
+
 ```C
-bool PredicateFunction(id_t id);       //  Predicate Function
+bool PredicateCallbackFunction(id_t id);  //  Predicate Callback Function
 ```
 
 Example:
+
 ```C
-bool PredicateFunction(id_t id) {
+bool PredicateCallbackFunction(id_t id) {
   // TODO: PREDICATE FUNCTION
   
   return button[id].isPressed(); 
 }
 ```
+
 Or,
+
 ```C
-bool PredicateFunction(id_t id) {
+bool PredicateCallbackFunction(id_t id) {
   // TODO: PREDICATE FUNCTION
   
   return array[id] == 10; 
@@ -67,24 +66,28 @@ bool PredicateFunction(id_t id) {
 ```
 
 ## Next State
+
 A Next-State has two destinations:
 
   1. **Next State On FALSE (`nextF`)**
 
-     A **nextF** will be defined by the Id number when the return value from Predicate function is `FALSE`.
+     A **nextF** will be defined by the Id number when the return value from the condition of the Timer and Predicate function is `FALSE`.
 
   2. **Next State On TRUE (`nextT`)** 
 
-     A **Next State On TURE** will be defined by the Id number when the return value from Predicate function is `TRUE`.
+     A **Next State On TURE** will be defined by the Id number when the return value from the condition of the Timer and Predicate function is `TRUE`.
 
 
 ## Process Function
+
 The Process Function is a function to implement Input/Output control, read/write data, etc.
 
 ```C
 typedef void (*Process)(State);       //  Process Function Pointer
 ```
+
 State:
+
 ```C
 typedef struct {
   id_t id;          // State id
@@ -95,10 +98,13 @@ typedef struct {
 The following function accepts `state` from a caller; type is parameters of type `State`:
 
 Syntax:
+
 ```C
-void ProcessFunction(State state);       //  Process Function
+void ProcessCallbackFunction(State state);       //  Process Callback Function
 ```
+
 Example:
+
 ```C
 void MotorProcess(State state) {
   StatusState status;
@@ -119,46 +125,56 @@ void MotorProcess(State state) {
 ```
 
 NOTE: The Id can also be obtained from `objectName.id`.
+
 ```C
 id_t id = finiteStateMachine.id;
 ```
 
 ## Event Handler Function
-An Event Handler Function is an option. Finite-State will handle events when the state changes for `ENTRY` and `EXIT` actions.
+
+An Event Handler Function is an option. Finite-State will handle events when the state changes for `ENTRY`, `DURINT`, and `EXIT` actions.
 
 ```C
-typedef void (*EventHandler)(EventArgs);   //  Event Handler Function Pointer
+typedef void (*EventHandler)(EventArgs);    //  Event Handler Function Pointer
 ```
 
 EventArgs:
+
 ```C
 typedef struct {
   id_t id;          // State id
-  Events event;     // Event State
+  Action action;    // Action State
 } EventArgs;
 ```
 
-Events:
+Action:
+
 ```C
-enum Events : int8_t {
-  PROCESS,
+enum Action {
+  DURING,
   EXIT,
-  ENTRY,
+  ENTRY
 };
 ```
 
-The following function accepts `state` from a caller; type is parameters of type `State`:
+The following function accepts `EventArgs` from a caller; type is the parameters of type `id_t`, and `Action`:
+
 Syntax:
+
 ```C
-void EventHandlerFunction(EventArgs e);       //  Event Handler Function Pointer
+void EventCallbackFunction(EventArgs e);   //  Event Callback Function
 ```
 
 Example:
+
 ```C
-void OnEventChanged(EventArgs e) {
-  switch (e.event) {
+void EvnetOnActionChanged(EventArgs e) {
+  switch (e.action) {
     case ENTRY:
       digitalWrite(motor[state.in].output, true);
+      break;
+    case DURING:
+      // TODO: SOMETHING
       break;
     case EXIT:
       digitalWrite(motor[state.in].output, false);
@@ -167,38 +183,218 @@ void OnEventChanged(EventArgs e) {
 }
 ```
 
+## Timer
 
-# Example
-## Fan Control With A Thermostat
+A Timer is an option. Finite-State will predict the condition for the next state with a timer when the timer type selects and the delay time value is greater than zero.
 
+```c
+enum TimerType {
+  NOT_USED,       // Not Used Timer
+  TRANS_TIMER,    // Transition Timer
+  PREDIC_TIMER,   // Predicate Timer
+  FALSE_TIMER,    // False State Timer
+  TRUE_TIMER,     // True State Timer
+};
+```
+
+### Not Used Timer (`NOT_USED`)
+
+When Timer is not used, The condition for the next state is determined by the Predicate function's return value.
 
 <p align="center">
-	<img src="./images/Fan-Control-With-A-Thermostat.svg" width="63%" />
+	<img src="./images/timer-type/Not-Used-Timer-State-Diagram.svg" width="63%" />
+  <h3 align="center">Not-Used Timer Next-State Flow</h3>
+</p>
+
+<p align="center">
+	<img src="./images/timer-type/Not-Used-Timer-Typical-State-Diagram.svg" width="63%" />
+  <h3 align="center">Typical Not-Used Timer State Diagram</h3>
+</p>
+
+### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`PredicateCallbackFunction`|0|1|`ProcessCallbackFunction`|`EventCallbackFunction`|-|-|
+|1|`PredicateCallbackFunction`|1|0|`ProcessCallbackFunction`|`EventCallbackFunction`|-|-|
+
+### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {PredicateCallbackFunction, 0, 1, ProcessCallbackFunction, EventCallbackFunction},  // State-0 - NextF = 0, NextT = 1
+  {PredicateCallbackFunction, 1, 0, ProcessCallbackFunction, EventCallbackFunction}   // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);         // Number of Transitions
+
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                     // Finite-State Object
+```
+
+### Transition Timer (`TRANS_TIMER`)
+
+When selecting the transition timer, the condition for the next state will ignore the Predicate function's return value. It is the only `NextT` condition possible during the timer timeout.
+
+<p align="center">
+	<img src="./images/timer-type/Transition-Timer-State-Diagram.svg" width="63%" />
+  <h3 align="center">Transition-Timer Next-State Flow</h3>
+</p>
+
+<p align="center">
+	<img src="./images/timer-type/Transition-Timer-Typical-State-Diagram.svg" width="63%" />
+  <h3 align="center">Typical Transition-Timer State Diagram</h3>|
+</p>
+
+### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`nullptr`|0|1|`ProcessCallbackFunction`|`EventCallbackFunction`|`3,000`|`TRANS_TIMER`|
+|1|`nullptr`|1|0|`ProcessCallbackFunction`|`EventCallbackFunction`|`5,000`|`TRANS_TIMER`|
+
+### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {nullptr, 0, 1, ProcessCallbackFunction, EventCallbackFunction, 3000, TRANS_TIMER},   // State-0 - NextF = 0, NextT = 1
+  {nullptr, 1, 0, ProcessCallbackFunction, EventCallbackFunction, 5000, TRANS_TIMER}    // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);           // Number of Transitions
+
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                       // Finite-State Object
+```
+
+### Predicate Timer (`PREDIC_TIMER`)
+
+When selecting the predicate timer, the condition for the next state will ignore the Predicate function's return value during the timer running. The Predicate function's return value will be used for the state selection when the timer timeout.
+
+<p align="center">
+	<img src="./images/timer-type/Predicate-Timer-State-Diagram.svg" width="63%" />
+  <h3 align="center">Predicate-Timer Next-State Flow</h3>
+</p>
+
+<p align="center">
+	<img src="./images/timer-type/Predicate-Timer-Typical-State-Diagram.svg" width="63%" />
+  <h3 align="center">Typical Predicate-Timer State Diagram</h3>
+</p>
+
+### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`PredicateCallbackFunction`|0|1|`ProcessCallbackFunction`|`EventCallbackFunction`|`3,000`|`PREDIC_TIMER`|
+|1|`PredicateCallbackFunction`|1|0|`ProcessCallbackFunction`|`EventCallbackFunction`|`5,000`|`PREDIC_TIMER`|
+
+### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {PredicateCallbackFunction, 0, 1, ProcessCallbackFunction, EventCallbackFunction, 3000, PREDIC_TIMER},  // State-0 - NextF = 0, NextT = 1
+  {PredicateCallbackFunction, 1, 0, ProcessCallbackFunction, EventCallbackFunction, 5000, PREDIC_TIMER}   // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);                             // Number of Transitions
+
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                                         // Finite-State Object
+```
+
+### False-State Timer (`FALSE_TIMER`)
+
+When selecting the false-state timer, the condition for the next state will ignore the Predicate function's `False` value except for the `True` deal during the timer running. The state will be accepted the "False" when the timer timeout.
+
+<p align="center">
+	<img src="./images/timer-type/False-Timer-State-Diagram.svg" width="63%" />
+  <h3 align="center">False-Timer Next-State Flow</h3>
+</p>
+
+<p align="center">
+	<img src="./images/timer-type/False-Timer-Typical-State-Diagram.svg" width="63%" />
+  <h3 align="center">Typical False-Timer State Diagram</h3>
+</p>
+
+### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`PredicateCallbackFunction`|1|0|`ProcessCallbackFunction`|`EventCallbackFunction`|`3,000`|`FALSE_TIMER`|
+|1|`PredicateCallbackFunction`|0|1|`ProcessCallbackFunction`|`EventCallbackFunction`|`5,000`|`FALSE_TIMER`|
+
+### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {PredicateCallbackFunction, 1, 0, ProcessCallbackFunction, EventCallbackFunction, 3000, FALSE_TIMER},   // State-0 - NextF = 1, NextT = 0
+  {PredicateCallbackFunction, 0, 1, ProcessCallbackFunction, EventCallbackFunction, 5000, FALSE_TIMER}    // State-1 - NextF = 0, NextT = 1
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);                             // Number of Transitions
+
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                                         // Finite-State Object
+```
+
+### True-State Timer (`TRUE_TIMER`)
+
+When selecting the true-state timer, the condition for the next state will ignore the Predicate function's `True` value except for the `False` deal during the timer running. The state will be accepted the `True` when the timer timeout.
+
+<p align="center">
+	<img src="./images/timer-type/True-Timer-State-Diagram.svg" width="63%" />
+  <h3 align="center">True-Timer Next-State Flow</h3>
+</p>
+
+<p align="center">
+	<img src="./images/timer-type/True-Timer-Typical-State-Diagram.svg" width="63%" />
+  <h3 align="center">Typical True-Timer State Diagram</h3>
+</p>
+
+### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`PredicateCallbackFunction`|0|1|`ProcessCallbackFunction`|`EventCallbackFunction`|`3,000`|`TRUE_TIMER`|
+|1|`PredicateCallbackFunction`|1|0|`ProcessCallbackFunction`|`EventCallbackFunction`|`5,000`|`TRUE_TIMER`|
+
+### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {PredicateCallbackFunction, 0, 1, ProcessCallbackFunction, EventCallbackFunction, 3000, TRUE_TIMER},  // State-0 - NextF = 0, NextT = 1
+  {PredicateCallbackFunction, 1, 0, ProcessCallbackFunction, EventCallbackFunction, 5000, TRUE_TIMER}   // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);                           // Number of Transitions
+
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                                       // Finite-State Object
+```
+
+# Example
+
+## Fan Control With A Thermostat
+
+<p align="center">
+	<img src="./images/example/Fan-Control-With-A-Thermostat.svg" width="63%" />
   <h3 align="center">State Diagram</h3>
 </p>
 
-
 <p align="center">
-	<img src="./images/Fan-Control-With-A-Thermostat-Diagram.png" width="30%" /> 
+	<img src="./images/example/Fan-Control-With-A-Thermostat-Diagram.png" width="30%" /> 
   <h3 align="center">Wiring Diagram</h3>
 </p>
 
 
 ### State-Transition Table
-|Id|Predicate|Next State - F|Next State - T|Process|Event|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|
-|0|`FanStartPredicate`|0|1|`StartFan`|`nullptr`|
-|1|`FanStopPredicate`|1|0|`StopFan`|`nullptr`|
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`FanStartPredicate`|0|1|`StartFanProcess`|-|-|-|
+|1|`FanStopPredicate`|1|0|`StopFanProcess`|-|-|-|
 
 ### State-Transition Table -> Transition Declaration
+
 ```C
 Transition transitions[] = {
-  {FanStartPredicate, 0, 1, StartFan}, // State-0 - Current-State = 0, Next-State = 1
-  {FanStopPredicate, 1, 0, StopFan}    // State-1 - Current-State = 1, Next-State = 0
+  {FanStartPredicate, 0, 1, StartFanProcess}, // State-0 - NextF = 0, NextT = 1
+  {FanStopPredicate, 1, 0, StopFanProcess}    // State-1 - NextF = 1, NextT = 0
 };
 ```
 
 ### Sketch
+
 ```C
 #include "FiniteState.h"
 
@@ -210,14 +406,14 @@ Transition transitions[] = {
 uint8_t statusPins[] = {stopStatusPin, startStatusPin};
 const uint8_t numberOfStatus = sizeof(statusPins) / sizeof(uint8_t);
 
-void StartFan(State state);
-void StopFan(State state);
+void StartFanProcess(State state);
+void StopFanProcess(State state);
 bool FanStartPredicate(id_t state);
 bool FanStopPredicate(id_t state);
 
 Transition transitions[] = {
-  {FanStartPredicate, 0, 1, StartFan}, // State-0 - Current-State = 0, Next-State = 1
-  {FanStopPredicate, 1, 0, StopFan}    // State-1 - Current-State = 1, Next-State = 0
+  {FanStartPredicate, 0, 1, StartFanProcess}, // State-0 - NextF = 0, NextT = 1
+  {FanStopPredicate, 1, 0, StopFanProcess}    // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);
 
@@ -246,7 +442,7 @@ bool FanStartPredicate(id_t state) {
   return temperature >= 40;       // Determine Fan Start Action
 }
 
-void StartFan(State state) {
+void StartFanProcess(State state) {
   FanControl(state.id);           // Fan control output
 }
 
@@ -254,7 +450,7 @@ bool FanStopPredicate(id_t state) {
   return temperature <= 30;       // Determine Fan Stop Action
 }
 
-void StopFan(State state) {
+void StopFanProcess(State state) {
   FanControl(state.id);           // Fan control output
 }
 
@@ -273,36 +469,39 @@ const long ThermostatRead() {
 
 ## Traffic Light
 
-
 <p align="center">
-	<img src="./images/Traffic-Light.svg" width="50%" />
+	<img src="./images/example/Traffic-Light.svg" width="50%" />
   <h3 align="center">State Diagram</h3>
 </p>
 
 
 <p align="center">
-	<img src="./images/Traffic-Light-Diagram.png" width="30%" /> 
+	<img src="./images/example/Traffic-Light-Diagram.png" width="30%" /> 
   <h3 align="center">Wiring Diagram</h3>
 </p>
 
+## Transitions with Customized Timer (Timer Type: `NOT_USED`)
 
 ### State-Transition Table
-|Id|Predicate|Next State - F|Next State - T|Process|Event|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|
-|0|`DelayTimePredicate`|0|1|nullptr|EventStates|
-|1|`DelayTimePredicate`|1|2|nullptr|EventStates|
-|2|`DelayTimePredicate`|2|0|nullptr|EventStates|
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`DelayTimePredicate`|0|1|`nullptr`|`EventOnActionChanged`|-|-|
+|1|`DelayTimePredicate`|1|2|`nullptr`|`EventOnActionChanged`|-|-|
+|2|`DelayTimePredicate`|2|0|`nullptr`|`EventOnActionChanged`|-|-|
 
 ### State-Transition Table -> Transition Declaration
+
 ```C
 Transition transitions[] = {
-  {DelayTimePredicate, 0, 1, nullptr, EventStates}, // State-0 - Current-State = 0, Next-State = 1
-  {DelayTimePredicate, 1, 2, nullptr, EventStates}, // State-1 - Current-State = 1, Next-State = 2
-  {DelayTimePredicate, 2, 0, nullptr, EventStates}, // State-2 - Current-State = 2, Next-State = 0
+  {DelayTimePredicate, 0, 1, nullptr, EventOnActionChanged}, // State-1 - NextF = 0, NextT = 1
+  {DelayTimePredicate, 1, 2, nullptr, EventOnActionChanged}, // State-2 - NextF = 1, NextT = 2
+  {DelayTimePredicate, 2, 0, nullptr, EventOnActionChanged}, // State-3 - NextF = 2, NextT = 0
 };
 ```
 
 ### Sketch
+
 ```C
 #include "FiniteState.h"
 
@@ -324,13 +523,13 @@ Timer delayTimes[] = {
   {3000},   // YELLOW Delay Time 3 seconds
 };
 
-bool DelayTimePredicate(id_t id); // Predicate Function
-void EventStates(EventArgs e);    // Event State
+bool DelayTimePredicate(id_t id); // Predicate (Input)
+void EventOnActionChanged(EventArgs e);    // Event State
 
 Transition transitions[] = {
-  {DelayTimePredicate, 0, 1, nullptr, EventStates}, // State-0 - Current-State = 0, Next-State = 1
-  {DelayTimePredicate, 1, 2, nullptr, EventStates}, // State-1 - Current-State = 1, Next-State = 2
-  {DelayTimePredicate, 2, 0, nullptr, EventStates}, // State-2 - Current-State = 2, Next-State = 0
+  {DelayTimePredicate, 0, 1, nullptr, EventOnActionChanged}, // State-1 - NextF = 0, NextT = 1
+  {DelayTimePredicate, 1, 2, nullptr, EventOnActionChanged}, // State-2 - NextF = 1, NextT = 2
+  {DelayTimePredicate, 2, 0, nullptr, EventOnActionChanged}, // State-3 - NextF = 2, NextT = 0
 };
 const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
@@ -352,8 +551,8 @@ bool DelayTimePredicate(id_t id) {
   return (millis() - delayTimes[id].startTime >= delayTimes[id].delayTime); // Determine Time Delay
 }
 
-void EventStates(EventArgs e) {
-  switch (e.event) {
+void EventOnActionChanged(EventArgs e) {
+  switch (e.action) {
     case ENTRY:
       delayTimes[e.id].startTime  = millis(); // Reload start time
       digitalWrite(lightPins[e.id], HIGH);    // Set Light with the HIGH state.
@@ -365,5 +564,75 @@ void EventStates(EventArgs e) {
 }
 ```
 
-# Reference
-Wikipedia [Finite-State Machine](https://en.wikipedia.org/wiki/Finite-state_machine)
+## Transition with Transition Timer (Timer Type: `TRANS_TIMER`)
+
+### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`nullptr`|0|1|`nullptr`|`EventOnActionChanged`|`5,000`|`TRANS_TIMER`|
+|1|`nullptr`|1|2|`nullptr`|`EventOnActionChanged`|`10,000`|`TRANS_TIMER`|
+|2|`nullptr`|2|0|`nullptr`|`EventOnActionChanged`|`3,000`|`TRANS_TIMER`|
+
+### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {nullptr, 0, 1, nullptr, EventOnActionChanged, 5000, TRANS_TIMER},          // State-1 - NextF = 0, NextT = 1
+  {nullptr, 1, 2, nullptr, EventOnActionChanged, 10000, TRANS_TIMER},         // State-2 - NextF = 1, NextT = 2
+  {nullptr, 2, 0, nullptr, EventOnActionChanged, 3000, TRANS_TIMER},          // State-3 - NextF = 2, NextT = 0
+};
+```
+
+### Sketch
+
+```C
+#include "FiniteState.h"
+
+#define redLightPin     5
+#define yellowLightPin  4
+#define greenLightPin   3
+
+uint8_t lightPins[] = {redLightPin, greenLightPin, yellowLightPin}; // Define an array of light pins.
+const uint8_t numberOfLights = sizeof(lightPins) / sizeof(uint8_t); // Calculate the number of lights.
+
+void EventOnActionChanged(EventArgs e);  // Event State
+
+Transition transitions[] = {
+  {nullptr, 0, 1, nullptr, EventOnActionChanged, 5000, TRANS_TIMER},          // State-1 - NextF = 0, NextT = 1
+  {nullptr, 1, 2, nullptr, EventOnActionChanged, 10000, TRANS_TIMER},         // State-2 - NextF = 1, NextT = 2
+  {nullptr, 2, 0, nullptr, EventOnActionChanged, 3000, TRANS_TIMER},          // State-3 - NextF = 2, NextT = 0
+};
+const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
+
+FiniteState finiteStateMachine(transitions, numberOftransitions);             // Define Finite-State Object
+
+void setup() {
+  for (uint8_t index = 0; index < numberOfLights; index ++) {
+    pinMode(lightPins[index], OUTPUT);    // Set Pin Mode
+    digitalWrite(lightPins[index], LOW);  // Set Light with the LOW state.
+  }
+  finiteStateMachine.begin(0);            // FSM begins with Initial Transition Id 0
+}
+
+void loop() {
+  finiteStateMachine.execute();  // Execute the FSM
+}
+
+void EventOnActionChanged(EventArgs e) {
+  switch (e.action) {
+    case ENTRY:
+      digitalWrite(lightPins[e.id], HIGH);    // Set Light with the HIGH state.
+      break;
+    case EXIT:
+      digitalWrite(lightPins[e.id], LOW);     // Set Light with the LOW state.
+      break;
+  }
+}
+```
+
+# References
+
+- Wikipedia [Finite-State Machine](https://en.wikipedia.org/wiki/Finite-state_machine)
+
+- MathWorks [Model Finite State Machines](https://www.mathworks.com/help/stateflow/gs/finite-state-machines.html)
