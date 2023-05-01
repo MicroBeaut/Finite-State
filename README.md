@@ -273,7 +273,7 @@ When selecting the predicate timer, the condition for the next state will ignore
 </p>
 
 <p align="center">
-	<img src="./images/timer-type/Predicate-Timer-Typical-State-Diagram.svg" width="63%" />
+	<img src="./images/timer-type/Predicate-Timer-Typical-State-Diagram.svg" width="96%" />
   <h3 align="center">Typical Predicate-Timer State Diagram</h3>
 </p>
 
@@ -306,7 +306,7 @@ When selecting the false-state timer, the condition for the next state will igno
 </p>
 
 <p align="center">
-	<img src="./images/timer-type/False-Timer-Typical-State-Diagram.svg" width="63%" />
+	<img src="./images/timer-type/False-Timer-Typical-State-Diagram.svg" width="96%" />
   <h3 align="center">Typical False-Timer State Diagram</h3>
 </p>
 
@@ -339,7 +339,7 @@ When selecting the true-state timer, the condition for the next state will ignor
 </p>
 
 <p align="center">
-	<img src="./images/timer-type/True-Timer-Typical-State-Diagram.svg" width="63%" />
+	<img src="./images/timer-type/True-Timer-Typical-State-Diagram.svg" width="96%" />
   <h3 align="center">Typical True-Timer State Diagram</h3>
 </p>
 
