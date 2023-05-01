@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="./images/Finite-State-Machine.svg" width="63%" />
+	<img src="./images/Finite-State-Machine.svg" width="100%" />
   <h1 align="center">Finite-State Machine</h1>
 </p>
 
