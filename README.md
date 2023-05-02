@@ -877,7 +877,7 @@ void TurnOFF(id_t id) {
 ## Debounce 
 
 <p align="center">
-	<img src="./images/example/Debounce.svg" width="88%" />
+	<img src="./images/example/Debounce.svg" width="100%" />
   <h3 align="center">State Diagram</h3>
 </p>
 
