@@ -812,6 +812,148 @@ void EventOnActionChanged(EventArgs e) {
 }
 ```
 
+## Blink 
+
+<p align="center">
+	<img src="./images/example/Blink.svg" width="88%" />
+  <h3 align="center">State Diagram</h3>
+</p>
+
+<p align="center">
+	<img src="./images/example/Blink.png" width="30%" /> 
+  <h3 align="center">Wiring Diagram</h3>
+</p>
+
+#### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`nullptr`|0|1|`TurnON`|`nullptr`|`500`|`TRANS_TIMER`|
+|1|`nullptr`|1|2|`TurnOFF`|`nullptr`|`1,000`|`TRANS_TIMER`|
+
+#### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {nullptr, 0, 1, TurnON, nullptr, 500, TRANS_TIMER},   // State-0 - NextF = 0, NextT = 1
+  {nullptr, 1, 0, TurnOFF, nullptr, 1000, TRANS_TIMER}  // State-1 - NextF = 1, NextT = 0
+};
+```
+
+#### Sketch
+
+```C
+#include "FiniteState.h"
+
+void TurnON(id_t id);     // Declare Turn LED On Process function
+void TurnOFF(id_t id);    // Declare Turn LED Off Process function
+
+Transition transitions[] = {
+  {nullptr, 0, 1, TurnON, nullptr, 500, TRANS_TIMER},   // State-0 - NextF = 0, NextT = 1
+  {nullptr, 1, 0, TurnOFF, nullptr, 1000, TRANS_TIMER}  // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t NumberOfTransitions = 2;                  // Number Of Transitions
+
+FiniteState blinkFS(transitions, NumberOfTransitions);  // Finite-State Object
+
+void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);     // Set the LED_BUILTIN pin mode
+  blinkFS.begin(0);                 // FSM begins with Initial Transition Id 0
+}
+
+void loop() {
+  blinkFS.execute();                // Execute the FSM
+}
+
+void TurnON(id_t id) {
+  digitalWrite(LED_BUILTIN, HIGH);  // Turn on the LED.
+}
+
+void TurnOFF(id_t id) {
+  digitalWrite(LED_BUILTIN, LOW);   // Turn off the LED.
+}
+```
+
+## Debounce 
+
+<p align="center">
+	<img src="./images/example/Debounce.svg" width="88%" />
+  <h3 align="center">State Diagram</h3>
+</p>
+
+<p align="center">
+	<img src="./images/example/Debounce.png" width="30%" /> 
+  <h3 align="center">Wiring Diagram</h3>
+</p>
+
+#### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`ReadButton`|0|1|`Released`|-|-|-|
+|1|`ReadButton`|2|2|`nullptr`|`nullptr`|`10`|`TRUE_TIMER`|
+|2|`ReadButton`|3|2|`Pressed`|-|-|-|
+|3|`ReadButton`|0|2|`nullptr`|`nullptr`|`10`|`FALSE_TIMER`|
+
+#### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {ReadButton, 0, 1, Released},                         // State-0 - NextF = 0, NextT = 1
+  {ReadButton, 0, 2, nullptr, nullptr, 10, TRUE_TIMER}, // State-1 - NextF = 0, NextT = 2
+  {ReadButton, 3, 2, Pressed},                          // State-2 - NextF = 3, NextT = 2
+  {ReadButton, 0, 2, nullptr, nullptr, 10, FALSE_TIMER} // State-3 - NextF = 0, NextT = 2
+};
+```
+
+#### Sketch
+
+```C
+#include "FiniteState.h"
+
+#define BUTTON  A0  // Define the button input pin.
+#define LED     7   // Define the LED output pin.
+
+#define debounce 10 // Debounce Delay 10 milliseconds
+
+bool ReadButton(id_t id);   // Declare Read Button Predicate function
+void Released(id_t id);     // Declare Released Process function
+void Pressed(id_t id);      // Declare Pressed Process function
+
+Transition transitions[] = {
+  {ReadButton, 0, 1, Released},                               // State-0 - NextF = 0, NextT = 1
+  {ReadButton, 0, 2, nullptr, nullptr, debounce, TRUE_TIMER}, // State-1 - NextF = 0, NextT = 2
+  {ReadButton, 3, 2, Pressed},                                // State-2 - NextF = 3, NextT = 2
+  {ReadButton, 0, 2, nullptr, nullptr, debounce, FALSE_TIMER} // State-3 - NextF = 0, NextT = 2
+};
+const uint8_t NumberOfTransitions = 4;                        // Number Of Transitions
+
+FiniteState debounceFS(transitions, NumberOfTransitions);     // Finite-State Object
+bool state;
+void setup() {
+  pinMode(BUTTON, INPUT_PULLUP);    // Set the Button pin mode
+  pinMode(LED, OUTPUT);             // Set the LED pin mode
+  debounceFS.begin(0);              // FSM begins with Initial Transition Id 0
+}
+
+void loop() {
+  debounceFS.execute();             // Execute the FSM
+  digitalWrite(LED, state);         // Set LED with the state.
+}
+
+bool ReadButton(id_t id) {
+  return !digitalRead(BUTTON);      // Read Button value.
+}
+
+void Released(id_t id) {
+  state = false;                    // Set the state with false value.
+}
+
+void Pressed(id_t id) {
+  state = true;                     // Set the state with true value.
+}
+```
+
 # References
 
 - Wikipedia [Finite-State Machine](https://en.wikipedia.org/wiki/Finite-state_machine)

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "author": "MicroBeaut",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": -9.59,
+      "left": -58.88,
+      "rotate": 90,
+      "attrs": {}
+    }
+  ],
+  "connections": [],
+  "dependencies": {}
+}
