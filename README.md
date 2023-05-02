@@ -367,7 +367,7 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 ## Fan Control With A Thermostat
 
 <p align="center">
-	<img src="./images/example/Fan-Control-With-A-Thermostat.svg" width="63%" />
+	<img src="./images/example/Fan-Control-With-A-Thermostat.svg" width="88%" />
   <h3 align="center">State Diagram</h3>
 </p>
 
@@ -652,7 +652,7 @@ void EventOnActionChanged(EventArgs e) {
 ### Coin Operated Turnstile with Predicate and Process
 
 <p align="center">
-	<img src="./images/example/Coin-Operated-Turnstile.svg" width="50%" />
+	<img src="./images/example/Coin-Operated-Turnstile.svg" width="88%" />
   <h3 align="center">State Diagram</h3>
 </p>
 
@@ -742,7 +742,7 @@ void UnlockedProcess(State state) {
 ### Coin Operated Turnstile with Predicate and Event
 
 <p align="center">
-	<img src="./images/example/Coin-Operated-Turnstile-With-Event.svg" width="50%" />
+	<img src="./images/example/Coin-Operated-Turnstile-With-Event.svg" width="88%" />
   <h3 align="center">State Diagram</h3>
 </p>
 
