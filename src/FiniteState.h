@@ -45,7 +45,7 @@ typedef struct {
 } EventArgs;
 
 typedef bool (*Predicate)(id_t);          //  Predicate Function Pointer
-typedef void (*Process)(id_t);           //  Process Function Pointer
+typedef void (*Process)(id_t);            //  Process Function Pointer
 typedef void (*EventHandler)(EventArgs);  //  Event Handler Function Pointer
 
 typedef struct {
