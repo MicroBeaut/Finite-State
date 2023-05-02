@@ -468,9 +468,9 @@ const long ThermostatRead() {
 
 ## Traffic Light
 
-- [Traffic Light with Customized Timer (Timer Type: `NOT_USED`)](#traffic-light-with-customized-timer-timer-type-not_used)
+- [Traffic Light with Customized Timer (Timer Type: `NOT_USED`)](#traffic-light-with-customized-timer-not_used)
 
-- [Traffic Light with Transition Timer (Timer Type: `TRANS_TIMER`)](#traffic-light-with-transition-timer-timer-type-trans_timer)
+- [Traffic Light with Transition Timer (Timer Type: `TRANS_TIMER`)](#traffic-light-with-transition-timer-trans_timer)
 
 ### Traffic Light with Customized Timer (`NOT_USED`)
 
