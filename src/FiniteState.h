@@ -44,13 +44,8 @@ typedef struct {
   Action action;    // Action State
 } EventArgs;
 
-typedef struct {
-  id_t id;          // State id
-  bool firstScan;   // First Scan when State Activated
-} State;
-
 typedef bool (*Predicate)(id_t);          //  Predicate Function Pointer
-typedef void (*Process)(State);           //  Process Function Pointer
+typedef void (*Process)(id_t);           //  Process Function Pointer
 typedef void (*EventHandler)(EventArgs);  //  Event Handler Function Pointer
 
 typedef struct {
@@ -68,12 +63,10 @@ class FiniteState {
 #define MS2US(ms) (ms * 1000UL)
     Transition *_transitions;             // Tranistion Pointer
     uint8_t _numberOfTransitions;         // Number of Transitions
-    State _state;                         // State
     EventArgs _eventArgs;                 // Event Argument
     bool _initial;                        // Initial State
     time_t _startTime;                    // Start Time
     bool _timeout;                        // Timeout State
-
 
     void InternalTimerCondition();
     void InternalProcess();

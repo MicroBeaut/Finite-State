@@ -8,8 +8,8 @@
 uint8_t statusPins[] = {stopStatusPin, startStatusPin};
 const uint8_t numberOfStatus = sizeof(statusPins) / sizeof(uint8_t);
 
-void StartFanProcess(State state);
-void StopFanProcess(State state);
+void StartFanProcess(id_t id);
+void StopFanProcess(id_t id);
 bool FanStartPredicate(id_t state);
 bool FanStopPredicate(id_t state);
 
@@ -44,16 +44,16 @@ bool FanStartPredicate(id_t state) {
   return temperature >= 40;       // Determine Fan Start Action
 }
 
-void StartFanProcess(State state) {
-  FanControl(state.id);           // Fan control output
+void StartFanProcess(id_t id) {
+  FanControl(id);                 // Fan control output
 }
 
 bool FanStopPredicate(id_t state) {
   return temperature <= 30;       // Determine Fan Stop Action
 }
 
-void StopFanProcess(State state) {
-  FanControl(state.id);           // Fan control output
+void StopFanProcess(id_t id) {
+  FanControl(id);                 // Fan control output
 }
 
 void FanControl(id_t id) {

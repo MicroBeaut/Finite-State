@@ -9,7 +9,7 @@
 
 #include "FiniteState.h"
 
-FiniteState::FiniteState(Transition *transitions, const uint8_t numberOfTransitions): size(_numberOfTransitions), id(_state.id) {
+FiniteState::FiniteState(Transition *transitions, const uint8_t numberOfTransitions): size(_numberOfTransitions), id(_eventArgs.id) {
   _numberOfTransitions = this->InternalLimit(numberOfTransitions, STATE_TRANSITION_MIN, STATE_TRANSITION_MAX);
   _transitions = transitions;
   _initial = false;
@@ -33,11 +33,10 @@ void FiniteState::execute() {
   Action action = _eventArgs.action;
   this->InternalTimerCondition();
   this->InternalProcess();
-  if (_state.firstScan) _state.firstScan = false;
 }
 
 void FiniteState::InternalTimerCondition() {
-  TimerType timerType = _transitions[_state.id].timerType;
+  TimerType timerType = _transitions[_eventArgs.id].timerType;
   switch (timerType) {
     case NOT_USED:
       this->InternalNotUsedTimerCondition();
@@ -58,8 +57,8 @@ void FiniteState::InternalTimerCondition() {
 }
 
 void FiniteState::InternalProcess() {
-  if (_transitions[_state.id].process) {
-    _transitions[_state.id].process(_state);
+  if (_transitions[_eventArgs.id].process) {
+    _transitions[_eventArgs.id].process(_eventArgs.id);
   }
 }
 
@@ -113,10 +112,9 @@ void FiniteState::InternalTrueStateTimerCondition() {
   }
 }
 
-
 const TriState FiniteState::InternalPredicate() {
-  if (_transitions[_state.id].predicate) {
-    bool state = _transitions[_state.id].predicate(_state.id);
+  if (_transitions[_eventArgs.id].predicate) {
+    bool state = _transitions[_eventArgs.id].predicate(_eventArgs.id);
     return state ? True : False;
   }
   return Unspecified;
@@ -125,17 +123,16 @@ const TriState FiniteState::InternalPredicate() {
 void FiniteState::InternalNextState(TriState state) {
   switch (state) {
     case False:
-      this->InternalNextStateAction(_transitions[_state.id].nextF);
+      this->InternalNextStateAction(_transitions[_eventArgs.id].nextF);
       break;
     case True:
-      this->InternalNextStateAction(_transitions[_state.id].nextT);
+      this->InternalNextStateAction(_transitions[_eventArgs.id].nextT);
       break;
   }
 }
 
-
 void FiniteState::InternalNextStateAction(const id_t id) {
-  if (_state.id == id) return;
+  if (_eventArgs.id == id) return;
   this->InternalExitAction();
   this->InternalEntryAction(id);
   this->InternalDuringAction();
@@ -144,13 +141,12 @@ void FiniteState::InternalNextStateAction(const id_t id) {
 void FiniteState::InternalEntryAction(const id_t id) {
   _startTime = micros();
   _timeout = false;
-  _state.id = id;
+  _eventArgs.id = id;
   this->InternalEventHandler(ENTRY);
 }
 
 void FiniteState::InternalDuringAction() {
   this->InternalEventHandler(DURING);
-  _state.firstScan = true;
 }
 
 void FiniteState::InternalExitAction() {
@@ -159,15 +155,14 @@ void FiniteState::InternalExitAction() {
 
 void FiniteState::InternalEventHandler(const Action e) {
   if (_eventArgs.action == e) return;
-  _eventArgs.id = _state.id;
   _eventArgs.action = e;
-  if (_transitions[_state.id].eventHandler) {
-    _transitions[_state.id].eventHandler(_eventArgs);
+  if (_transitions[_eventArgs.id].eventHandler) {
+    _transitions[_eventArgs.id].eventHandler(_eventArgs);
   }
 }
 
 const TriState FiniteState::InternalTimer() {
-  if (_transitions[_state.id].delayTime < 1) return Unspecified;
+  if (_transitions[_eventArgs.id].delayTime < 1) return Unspecified;
   bool timeout = this->InternalTimeout();
   return timeout ? True : False;
 }
@@ -175,11 +170,10 @@ const TriState FiniteState::InternalTimer() {
 const bool FiniteState::InternalTimeout() {
   if (_timeout) return true;
   time_t elapsedTime = micros() - _startTime;
-  if (elapsedTime < MS2US(_transitions[_state.id].delayTime)) return false;
+  if (elapsedTime < MS2US(_transitions[_eventArgs.id].delayTime)) return false;
   _timeout = true;
   return true;
 }
-
 
 const uint8_t FiniteState::InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max) {
   if (value < min) return min;

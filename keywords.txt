@@ -11,7 +11,6 @@ TimerType       KEYWORD1
 TriState        KEYWORD1
 EventArgs       KEYWORD1
 Transition      KEYWORD1
-State           KEYWORD1
 id_t            KEYWORD1
 time_t          KEYWORD1
 

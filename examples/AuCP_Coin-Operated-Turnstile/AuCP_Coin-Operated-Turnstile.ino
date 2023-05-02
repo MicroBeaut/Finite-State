@@ -22,8 +22,8 @@
 bool CoinPredicate(id_t id);              // Declare Coin Predicate function
 bool PushPredicate(id_t id);              // Declare Push Predicate function
 
-void LockedProcess(State state);          // Declare Locked Process function
-void UnlockedProcess(State state);        // Declare Unlocked Process function
+void LockedProcess(id_t id);              // Declare Locked Process function
+void UnlockedProcess(id_t id);            // Declare Unlocked Process function
 
 Transition transitions[] = {
   {CoinPredicate, 0, 1, LockedProcess},   // State-0 - NextF = 0, NextT = 1
@@ -58,12 +58,12 @@ bool PushPredicate(id_t id) {
   return push.isPressed();                // Predicate pushing the arm.
 }
 
-void LockedProcess(State state) {
+void LockedProcess(id_t id) {
   digitalWrite(LOCKED, HIGH);             // Turn on the locked position status.
   digitalWrite(UNLOCKED, LOW);            // Turn off the unlocked position status.
 }
 
-void UnlockedProcess(State state) {
+void UnlockedProcess(id_t id) {
   digitalWrite(LOCKED, LOW);              // Turn off the locked position status.
   digitalWrite(UNLOCKED, HIGH);           // Turn on the unlocked position status.
 }

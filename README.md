@@ -83,43 +83,30 @@ A Next-State has two destinations:
 The Process Function is a function to implement Input/Output control, read/write data, etc.
 
 ```C
-typedef void (*Process)(State);       //  Process Function Pointer
+typedef void (*Process)(id-t);                //  Process Function Pointer
 ```
 
-State:
-
-```C
-typedef struct {
-  id_t id;          // State id
-  bool firstScan;   // First Scan when State Activated
-} State;
-```
-
-The following function accepts `state` from a caller; type is parameters of type `State`:
+The following function accepts `id` from a caller; type is parameters of type `id_t`:
 
 Syntax:
 
 ```C
-void ProcessCallbackFunction(State state);       //  Process Callback Function
+void ProcessCallbackFunction(id_t id);       //  Process Callback Function
 ```
 
 Example:
 
 ```C
-void MotorProcess(State state) {
+void MotorProcess(id_t id) {
   StatusState status;
 
-  if (state.firstScan) {
-    Serial.println("Motor Status Function")
-  }
-
-  if (motor[state.id].timerON) {
-    if (motor[state.id].running) {
+  if (motor[id].timerON) {
+    if (motor[id].running) {
       status = RUNNING;
     } else {
       status = FAULT;
     }
-    digitalWrite(motor[state.in].faultPin, status == FAULT);
+    digitalWrite(motor[id].faultPin, status == FAULT);
   }
 }
 ```
@@ -171,13 +158,13 @@ Example:
 void EvnetOnActionChanged(EventArgs e) {
   switch (e.action) {
     case ENTRY:
-      digitalWrite(motor[state.in].output, true);
+      digitalWrite(motor[e.id].output, true);
       break;
     case DURING:
       // TODO: SOMETHING
       break;
     case EXIT:
-      digitalWrite(motor[state.in].output, false);
+      digitalWrite(motor[e.id].output, false);
       break;
   }
 }
@@ -405,8 +392,8 @@ Transition transitions[] = {
 uint8_t statusPins[] = {stopStatusPin, startStatusPin};
 const uint8_t numberOfStatus = sizeof(statusPins) / sizeof(uint8_t);
 
-void StartFanProcess(State state);
-void StopFanProcess(State state);
+void StartFanProcess(id_t id);
+void StopFanProcess(id_t id);
 bool FanStartPredicate(id_t state);
 bool FanStopPredicate(id_t state);
 
@@ -441,16 +428,16 @@ bool FanStartPredicate(id_t state) {
   return temperature >= 40;       // Determine Fan Start Action
 }
 
-void StartFanProcess(State state) {
-  FanControl(state.id);           // Fan control output
+void StartFanProcess(id_t id) {
+  FanControl(id);                 // Fan control output
 }
 
 bool FanStopPredicate(id_t state) {
   return temperature <= 30;       // Determine Fan Stop Action
 }
 
-void StopFanProcess(State state) {
-  FanControl(state.id);           // Fan control output
+void StopFanProcess(id_t id) {
+  FanControl(id);                 // Fan control output
 }
 
 void FanControl(id_t id) {
@@ -525,8 +512,8 @@ Timer delayTimes[] = {
   {3000},   // YELLOW Delay Time 3 seconds
 };
 
-bool DelayTimePredicate(id_t id); // Predicate (Input)
-void EventOnActionChanged(EventArgs e);    // Event State
+bool DelayTimePredicate(id_t id);         // Predicate (Input)
+void EventOnActionChanged(EventArgs e);   // Event State
 
 Transition transitions[] = {
   {DelayTimePredicate, 0, 1, nullptr, EventOnActionChanged}, // State-1 - NextF = 0, NextT = 1
@@ -692,8 +679,8 @@ Transition transitions[] = {
 bool CoinPredicate(id_t id);              // Declare Coin Predicate function
 bool PushPredicate(id_t id);              // Declare Push Predicate function
 
-void LockedProcess(State state);          // Declare Locked Process function
-void UnlockedProcess(State state);        // Declare Unlocked Process function
+void LockedProcess(id_t id);              // Declare Locked Process function
+void UnlockedProcess(id_t id);            // Declare Unlocked Process function
 
 Transition transitions[] = {
   {CoinPredicate, 0, 1, LockedProcess},   // State-0 - NextF = 0, NextT = 1
@@ -728,12 +715,12 @@ bool PushPredicate(id_t id) {
   return push.isPressed();                // Predicate pushing the arm.
 }
 
-void LockedProcess(State state) {
+void LockedProcess(id_t id) {
   digitalWrite(LOCKED, HIGH);             // Turn on the locked position status.
   digitalWrite(UNLOCKED, LOW);            // Turn off the unlocked position status.
 }
 
-void UnlockedProcess(State state) {
+void UnlockedProcess(id_t id) {
   digitalWrite(LOCKED, LOW);              // Turn off the locked position status.
   digitalWrite(UNLOCKED, HIGH);           // Turn on the unlocked position status.
 }
