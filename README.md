@@ -891,7 +891,7 @@ void TurnOFF(id_t id) {
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
 |0|`ReadButton`|0|1|`Released`|-|-|-|
-|1|`ReadButton`|2|2|`nullptr`|`nullptr`|`10`|`TRUE_TIMER`|
+|1|`ReadButton`|0|2|`nullptr`|`nullptr`|`10`|`TRUE_TIMER`|
 |2|`ReadButton`|3|2|`Pressed`|-|-|-|
 |3|`ReadButton`|0|2|`nullptr`|`nullptr`|`10`|`FALSE_TIMER`|
 
