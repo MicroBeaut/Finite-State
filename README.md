@@ -930,6 +930,7 @@ const uint8_t NumberOfTransitions = 4;                        // Number Of Trans
 
 FiniteState debounceFS(transitions, NumberOfTransitions);     // Finite-State Object
 bool state;
+
 void setup() {
   pinMode(BUTTON, INPUT_PULLUP);    // Set the Button pin mode
   pinMode(LED, OUTPUT);             // Set the LED pin mode
