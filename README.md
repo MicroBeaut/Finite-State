@@ -376,15 +376,14 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
   <h3 align="center">Wiring Diagram</h3>
 </p>
 
-
-### State-Transition Table
+#### State-Transition Table
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
 |0|`FanStartPredicate`|0|1|`StartFanProcess`|-|-|-|
 |1|`FanStopPredicate`|1|0|`StopFanProcess`|-|-|-|
 
-### State-Transition Table -> Transition Declaration
+#### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
@@ -393,7 +392,7 @@ Transition transitions[] = {
 };
 ```
 
-### Sketch
+#### Sketch
 
 ```C
 #include "FiniteState.h"
@@ -469,20 +468,23 @@ const long ThermostatRead() {
 
 ## Traffic Light
 
+- [Traffic Light with Customized Timer (Timer Type: `NOT_USED`)](#traffic-light-with-customized-timer-timer-type-not_used)
+
+- [Traffic Light with Transition Timer (Timer Type: `TRANS_TIMER`)](#traffic-light-with-transition-timer-timer-type-trans_timer)
+
+### Traffic Light with Customized Timer (`NOT_USED`)
+
 <p align="center">
 	<img src="./images/example/Traffic-Light.svg" width="50%" />
   <h3 align="center">State Diagram</h3>
 </p>
-
 
 <p align="center">
 	<img src="./images/example/Traffic-Light-Diagram.png" width="30%" /> 
   <h3 align="center">Wiring Diagram</h3>
 </p>
 
-## Transitions with Customized Timer (Timer Type: `NOT_USED`)
-
-### State-Transition Table
+#### State-Transition Table
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
@@ -490,7 +492,7 @@ const long ThermostatRead() {
 |1|`DelayTimePredicate`|1|2|`nullptr`|`EventOnActionChanged`|-|-|
 |2|`DelayTimePredicate`|2|0|`nullptr`|`EventOnActionChanged`|-|-|
 
-### State-Transition Table -> Transition Declaration
+#### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
@@ -500,7 +502,7 @@ Transition transitions[] = {
 };
 ```
 
-### Sketch
+#### Sketch
 
 ```C
 #include "FiniteState.h"
@@ -564,9 +566,19 @@ void EventOnActionChanged(EventArgs e) {
 }
 ```
 
-## Transition with Transition Timer (Timer Type: `TRANS_TIMER`)
+### Traffic Light with Transition Timer (`TRANS_TIMER`)
 
-### State-Transition Table
+<p align="center">
+	<img src="./images/example/Traffic-Light-With-Transition-Timer.svg" width="50%" />
+  <h3 align="center">State Diagram</h3>
+</p>
+
+<p align="center">
+	<img src="./images/example/Traffic-Light-Diagram.png" width="30%" /> 
+  <h3 align="center">Wiring Diagram</h3>
+</p>
+
+#### State-Transition Table
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
@@ -574,7 +586,7 @@ void EventOnActionChanged(EventArgs e) {
 |1|`nullptr`|1|2|`nullptr`|`EventOnActionChanged`|`10,000`|`TRANS_TIMER`|
 |2|`nullptr`|2|0|`nullptr`|`EventOnActionChanged`|`3,000`|`TRANS_TIMER`|
 
-### State-Transition Table -> Transition Declaration
+#### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
@@ -584,7 +596,7 @@ Transition transitions[] = {
 };
 ```
 
-### Sketch
+#### Sketch
 
 ```C
 #include "FiniteState.h"
@@ -626,6 +638,188 @@ void EventOnActionChanged(EventArgs e) {
       break;
     case EXIT:
       digitalWrite(lightPins[e.id], LOW);     // Set Light with the LOW state.
+      break;
+  }
+}
+```
+
+## Coin Operated Turnstile
+
+- [Coin Operated Turnstile with Predicate and Process](#coin-operated-turnstile-with-predicate-and-process)
+
+- [Coin Operated Turnstile with Predicate and Event](#coin-operated-turnstile-with-predicate-and-event)
+
+### Coin Operated Turnstile with Predicate and Process
+
+<p align="center">
+	<img src="./images/example/Coin-Operated-Turnstile.svg" width="50%" />
+  <h3 align="center">State Diagram</h3>
+</p>
+
+<p align="center">
+	<img src="./images/example/Coin-Operated-Turnstile.png" width="30%" /> 
+  <h3 align="center">Wiring Diagram</h3>
+</p>
+
+#### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`CoinPredicate`|0|1|`LockedProcess`|-|-|-|
+|1|`PushPredicate`|1|0|`UnlockedProcess`|-|-|-|
+
+#### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {CoinPredicate, 0, 1, LockedProcess},   // State-0 - NextF = 0, NextT = 1
+  {PushPredicate, 1, 0, UnlockedProcess}  // State-1 - NextF = 1, NextT = 0
+};
+```
+
+#### Sketch
+
+```C
+#include "FiniteState.h"
+#include "RepeatButton.h"
+
+#define COIN      A0  // Define the Coin input pin.
+#define PUSH      A1  // Define the Push input pin.
+
+#define LOCKED    7   // Define the Locked state output pin.
+#define UNLOCKED  6   // Define the Unlocked state output pin. 
+
+bool CoinPredicate(id_t id);              // Declare Coin Predicate function
+bool PushPredicate(id_t id);              // Declare Push Predicate function
+
+void LockedProcess(State state);          // Declare Locked Process function
+void UnlockedProcess(State state);        // Declare Unlocked Process function
+
+Transition transitions[] = {
+  {CoinPredicate, 0, 1, LockedProcess},   // State-0 - NextF = 0, NextT = 1
+  {PushPredicate, 1, 0, UnlockedProcess}  // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t NumberOfTransitions = 2;    // Number Of Transitions
+
+FiniteState coinOperatedTurnstile(transitions, NumberOfTransitions);  // Finite-State Object
+RepeatButton coin;                                                    // Declare the Coin RepeatButton object
+RepeatButton push;                                                    // Declare the Push RepeatButton object
+
+void setup() {
+  coin.buttonMode(COIN, INPUT_PULLUP);    // Set the Coin input pin mode
+  push.buttonMode(PUSH, INPUT_PULLUP);    // Set the Push input pin mode
+  pinMode(LOCKED, OUTPUT);                // Set the Locked state pin mode
+  pinMode(UNLOCKED, OUTPUT);              // Set the Unlocked state pin mode
+
+  coinOperatedTurnstile.begin(0);         // FSM begins with Initial Transition Id 0
+}
+
+void loop() {
+  coin.repeatButton();                    // Executing the Coin repeat button function
+  push.repeatButton();                    // Executing the Push repeat button function
+  coinOperatedTurnstile.execute();        // Execute the FSM
+}
+
+bool CoinPredicate(id_t id) {
+  return coin.isPressed();                // Predicate putting a coin.
+}
+
+bool PushPredicate(id_t id) {
+  return push.isPressed();                // Predicate pushing the arm.
+}
+
+void LockedProcess(State state) {
+  digitalWrite(LOCKED, HIGH);             // Turn on the locked position status.
+  digitalWrite(UNLOCKED, LOW);            // Turn off the unlocked position status.
+}
+
+void UnlockedProcess(State state) {
+  digitalWrite(LOCKED, LOW);              // Turn off the locked position status.
+  digitalWrite(UNLOCKED, HIGH);           // Turn on the unlocked position status.
+}
+```
+
+### Coin Operated Turnstile with Predicate and Event
+
+<p align="center">
+	<img src="./images/example/Coin-Operated-Turnstile-With-Event.svg" width="50%" />
+  <h3 align="center">State Diagram</h3>
+</p>
+
+<p align="center">
+	<img src="./images/example/Coin-Operated-Turnstile.png" width="30%" /> 
+  <h3 align="center">Wiring Diagram</h3>
+</p>
+
+#### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`inputPredicate`|0|1|`nullptr`|`EventOnActionChanged`|-|-|
+|1|`inputPredicate`|1|0|`nullptr`|`EventOnActionChanged`|-|-|
+
+#### State-Transition Table -> Transition Declaration
+
+```C
+ Transition transitions[] = {
+  {inputPredicate, 0, 1, nullptr, EventOnActionChanged},  // State-0 - NextF = 0, NextT = 1
+  {inputPredicate, 1, 0, nullptr, EventOnActionChanged}   // State-1 - NextF = 1, NextT = 0
+};
+```
+
+#### Sketch
+
+```C
+#include "FiniteState.h"
+#include "RepeatButton.h"
+
+#define COIN      A0  // Define the Coin input pin.
+#define PUSH      A1  // Define the Push input pin.
+
+#define LOCKED    7   // Define the Locked state output pin.
+#define UNLOCKED  6   // Define the Unlocked state output pin. 
+
+bool inputPredicate(id_t id);             // Declare Coin Predicate function
+void EventOnActionChanged(EventArgs e);   // Event On Action Changed
+
+Transition transitions[] = {
+  {inputPredicate, 0, 1, nullptr, EventOnActionChanged},  // State-0 - NextF = 0, NextT = 1
+  {inputPredicate, 1, 0, nullptr, EventOnActionChanged}   // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t NumberOfTransitions = 2;                    // Number Of Transitions
+
+uint8_t inputPins[NumberOfTransitions] = {COIN, PUSH};                // Declare the Coin RepeatButton object
+uint8_t outputPins[NumberOfTransitions] = {LOCKED, UNLOCKED};         // Declare the Coin RepeatButton object
+
+FiniteState coinOperatedTurnstile(transitions, NumberOfTransitions);  // Finite-State Object
+RepeatButton turnstileInputs[NumberOfTransitions];                    // Declare the Turnstile Inputs RepeatButton object
+
+void setup() {
+  for (uint8_t index = 0; index < NumberOfTransitions; index++) {
+    turnstileInputs[index].buttonMode(inputPins[index], INPUT_PULLUP);  // Set the Turnstile repeat button pin mode
+    pinMode(outputPins[index], OUTPUT);                                 // Set the Output state pin mode
+  }
+  coinOperatedTurnstile.begin(0);                                       // FSM begins with Initial Transition Id 0
+}
+
+void loop() {
+  for (uint8_t index = 0; index < NumberOfTransitions; index++) {
+    turnstileInputs[index].repeatButton();    // Executing the Turnstile repeat button function
+  }
+  coinOperatedTurnstile.execute();            // Execute the FSM
+}
+
+bool inputPredicate(id_t id) {
+  return turnstileInputs[id].isPressed();     // Predicate putting a coin.
+}
+
+void EventOnActionChanged(EventArgs e) {
+  switch (e.action) {
+    case ENTRY:
+      digitalWrite(outputPins[e.id], HIGH);   // Turn on the turnstile position status.
+      break;
+    case EXIT:
+      digitalWrite(outputPins[e.id], LOW);    // Turn off the previous turnstile position status.
       break;
   }
 }
