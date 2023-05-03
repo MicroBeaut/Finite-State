@@ -39,7 +39,7 @@ long processValue;                                                    // Declare
 bool AnalogPredicate(id_t id);  // Declare analog predicate Function
 void NormalProcess(id_t id);    // Declare normal process Function
 void PreAlarmProcess(id_t id);  // Declare pre-alarm process Function
-void HighAlarmProcess(id_t id);        // Declare high-alarm process Function
+void HighAlarmProcess(id_t id); // Declare high-alarm process Function
 
 #define alarmDelay 3000         // Define alarm dalay
 
