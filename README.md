@@ -1,10 +1,10 @@
 <p align="center">
 	<img src="./images/Finite-State-Machine.svg" width="100%" />
-  <h1 align="center">Finite-State Machine</h1>
+  <h1 align="center">Finite-State</h1>
 </p>
 
 # Finite-State Machine for Arduino
-Finite-State provides a bounded state machine that combines `state transitions`, which has the following part:
+Finite-State provides a bounded state machine that combines `state transitions`, which has the following parts:
 
 - [Predicate Function](#predicate-function)
 - [Next State](#next-state)
@@ -37,7 +37,7 @@ A Predicate Function will determine whether the specified object meets the crite
 typedef bool (*Predicate)(id_t);        //  Predicate Function Pointer
 ```
 
-The following function accepts `id` from a caller; type is a parameter of type `id_t`. The return type is `boolean`. It will be used to determine a Next-State for the ***current state*** and ***next state***:
+The following function accepts `id` from a caller; type is a parameter of type `id_t`. The return type is `boolean`. It will be used to determine a Next-State for the ***NextF*** and ***nextT***:
 
 Syntax:
 
@@ -144,7 +144,7 @@ enum Action {
 };
 ```
 
-The following function accepts `EventArgs` from a caller; type is the parameters of type `id_t`, and `Action`:
+The following function accepts `id_t`, and `Action` from a caller; type is the parameters of type `EventArgs`:
 
 Syntax:
 
@@ -952,6 +952,132 @@ void Released(id_t id) {
 
 void Pressed(id_t id) {
   state = true;                     // Set the state with true value.
+}
+```
+
+## Analog High-Alarm 
+
+<p align="center">
+	<img src="./images/example/Analog-High-Alarm.svg" width="100%" />
+  <h3 align="center">State Diagram</h3>
+</p>
+
+<p align="center">
+	<img src="./images/example/Analog-High-Alarm.png" width="30%" /> 
+  <h3 align="center">Wiring Diagram</h3>
+</p>
+
+#### State-Transition Table
+
+|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|0|`AnalogPredicate`|0|1|`NormalProcess`|-|-|-|
+|1|`AnalogPredicate`|0|2|`PreAlarmProcess`|`nullptr`|`alarmDelay`|`TRUE_TIMER`|
+|2|`AnalogPredicate`|2|0|`HighAlarmProcess`|-|-|-|
+
+#### State-Transition Table -> Transition Declaration
+
+```C
+Transition transitions[] = {
+  {AnalogPredicate, 0, 1, NormalProcess},                                     // State-0 - NextF = 0, NextT = 1
+  {AnalogPredicate, 0, 2, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
+  {AnalogPredicate, 2, 0, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
+};
+```
+
+#### Sketch
+
+```C
+#include "FiniteState.h"
+
+#define processValuePin A0  // Define the Process value input pin.
+#define normalPin       6   // Define the normal status output pin.
+#define preAlarmPin     5   // Define the pre-alarm status output pin.
+#define highAlarmPin    4   // Define the high-alarm status output pin.
+
+enum Operator {
+  LT,           // Less than operator
+  LE,           // Less than or equal operator
+  GT,           // Greater than operator
+  GE            // Greater than or equal operator
+};
+
+const long setpoint = 85; // Alarm Setpoint
+const long deadband = 5;  // Alarm Deadband
+
+Operator operators [] = {GE, GE, LT};                           // Comparison operators
+long setpoints [] = {setpoint, setpoint, setpoint - deadband};  // Comparison setpoints
+
+const long AnalogRead();                                              // Declare Analog Read Function
+void ProcessAlarmStatus(bool normal, bool preAlarm, bool highAlarm);  // Declare Process Alarm Status Function
+
+long processValue;                                                    // Declare processValue variable
+
+bool AnalogPredicate(id_t id);  // Declare analog predicate Function
+void NormalProcess(id_t id);    // Declare normal process Function
+void PreAlarmProcess(id_t id);  // Declare pre-alarm process Function
+void HighAlarmProcess(id_t id);        // Declare high-alarm process Function
+
+#define alarmDelay 3000         // Define alarm dalay
+
+Transition transitions[] = {
+  {AnalogPredicate, 0, 1, NormalProcess},                                     // State-0 - NextF = 0, NextT = 1
+  {AnalogPredicate, 0, 2, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
+  {AnalogPredicate, 2, 0, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
+
+FiniteState finiteStateMachine(transitions, numberOfTransitions);             // Finite-State Object
+
+void setup() {
+  pinMode(normalPin, OUTPUT);             // Set the normal LED pin mode
+  pinMode(preAlarmPin, OUTPUT);           // Set the pre-alarm LED pin mode
+  pinMode(highAlarmPin, OUTPUT);          // Set the hith-alarm LED= pin mode
+  finiteStateMachine.begin(0);            // FSM begins with Initial Transition Id 0
+}
+
+void loop() {
+  finiteStateMachine.execute();           // Execute the FSM
+  processValue = AnalogRead();            // Read processValue
+}
+
+void NormalProcess(id_t id) {
+  ProcessAlarmStatus(true, false, false); // Update process alarm status
+}
+
+void PreAlarmProcess(id_t id) {
+  ProcessAlarmStatus(false, true, false); // Update process alarm status
+}
+
+void HighAlarmProcess(id_t id) {
+  ProcessAlarmStatus(false, true, true);  // Update process alarm status
+}
+
+bool AnalogPredicate(id_t id) {
+  bool value;
+  switch (operators[id]) {
+    case GE:
+      value = processValue >= setpoints[id];  // Compare process value with setpoint
+      break;
+    case LT:
+      value = processValue < setpoints[id];   // Compare process value with setpoint
+      break;
+    default:
+      value = false;
+      break;
+  }
+  return value;
+}
+
+void ProcessAlarmStatus(bool normal, bool preAlarm, bool highAlarm) {
+  digitalWrite(normalPin, normal);        // Update normal status
+  digitalWrite(preAlarmPin, preAlarm);    // Update pre-alarm status
+  digitalWrite(highAlarmPin, highAlarm);  // Update high-alarm status
+}
+
+const long AnalogRead() {
+  long value = analogRead(processValuePin); // Read Process Value
+  return map(value, 0, 1023, 0, 100);       // Scaling processValue
 }
 ```
 

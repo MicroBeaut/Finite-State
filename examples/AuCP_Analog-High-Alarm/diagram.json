@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "author": "MicroBeaut",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": -9.59,
+      "left": -58.88,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 5,
+      "left": 200,
+      "attrs": { "color": "green", "label": "Normal" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": 5,
+      "left": 245,
+      "attrs": { "color": "yellow", "label": "Pre Alarm" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": 5,
+      "left": 290,
+      "attrs": { "color": "red", "label": "High Alarm" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 100,
+      "left": 240,
+      "rotate": 90,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 100,
+      "left": 195,
+      "rotate": 90,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": 100,
+      "left": 285,
+      "rotate": 90,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-slide-potentiometer",
+      "id": "pot1",
+      "top": 29.34,
+      "left": -228,
+      "rotate": 270,
+      "attrs": { "travelLength": "50" }
+    }
+  ],
+  "connections": [
+    [ "uno:5", "r1:2", "green", [ "h0" ] ],
+    [ "uno:6", "r2:2", "green", [ "h0" ] ],
+    [ "r2:1", "led1:A", "green", [ "h0" ] ],
+    [ "r1:1", "led2:A", "green", [ "h0" ] ],
+    [ "uno:GND.1", "led1:C", "black", [ "h0" ] ],
+    [ "uno:GND.3", "uno:GND.2", "black", [ "h0" ] ],
+    [ "uno:GND.2", "pot1:GND", "black", [ "h-33.86", "v-198.04", "h-58.26" ] ],
+    [ "uno:5V", "pot1:VCC", "red", [ "h-22.17", "v-200.85", "h-101.02", "v324.49", "h35.07" ] ],
+    [ "uno:A0", "pot1:SIG", "green", [ "h-22.17", "v75.64", "h-109.04" ] ],
+    [ "uno:GND.1", "led2:C", "black", [ "h0" ] ],
+    [ "uno:GND.1", "led3:C", "black", [ "h0" ] ],
+    [ "uno:4", "r3:2", "green", [ "h0" ] ],
+    [ "led3:A", "r3:1", "green", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}

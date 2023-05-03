@@ -45,13 +45,13 @@ void FiniteState::InternalTimerCondition() {
       this->InternalTransitionTimerCondition();
       break;
     case PREDIC_TIMER:
-      this->InternalInputTimerCondition();
+      this->InternalPredicateTimerCondition();
       break;
     case FALSE_TIMER:
       this->InternalFalseStateTimerCondition();
       break;
     case TRUE_TIMER:
-      this->InternalInputTimerCondition();
+      this->InternalTrueStateTimerCondition();
       break;
   }
 }
@@ -76,7 +76,7 @@ void FiniteState::InternalTransitionTimerCondition() {
   }
 }
 
-void FiniteState::InternalInputTimerCondition() {
+void FiniteState::InternalPredicateTimerCondition() {
   TriState timerState = this->InternalTimer();
   switch (timerState) {
     case True:

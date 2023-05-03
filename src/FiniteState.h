@@ -73,7 +73,7 @@ class FiniteState {
 
     void InternalNotUsedTimerCondition();
     void InternalTransitionTimerCondition();
-    void InternalInputTimerCondition();
+    void InternalPredicateTimerCondition();
     void InternalFalseStateTimerCondition();
     void InternalTrueStateTimerCondition();
 
