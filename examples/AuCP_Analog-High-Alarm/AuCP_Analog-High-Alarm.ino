@@ -54,7 +54,7 @@ enum AnalogState : id_t {
   HIGH_ALARM
 };
 
-#define alarmDelay 3000         // Define alarm dalay
+#define alarmDelay 3000                                                                     // Define alarm dalay
 
 Transition transitions[] = {
   {AnalogPredicate, NORMAL, PRE_ALARM, NormalProcess},                                      // State-0 - NextF = 0, NextT = 1
