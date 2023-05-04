@@ -1137,7 +1137,7 @@ void PressedProcess(id_t id) {
 |State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
 |`NORMAL`|`0`|`AnalogPredicate`|`0`|`1`|`NormalProcess`|`-`|`-`|`-`|
-|`PRE_ALARM`|`1`|`AnalogPredicate`|`0`|`2`|`PreAlarmProcess`|`nullptr`|`3,000`|`TRANS_TIMER`|
+|`PRE_ALARM`|`1`|`AnalogPredicate`|`0`|`2`|`PreAlarmProcess`|`nullptr`|`3,000`|`TRUE_TIMER`|
 |`HIGH_ALARM`|`2`|`AnalogPredicate`|`2`|`0`|`HighAlarmProcess`|`-`|`-`|`-`|
 
 #### State-Transition Table -> Transition Declaration
