@@ -937,15 +937,15 @@ void EventOnActionChanged(EventArgs e) {
 
 |State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`LED_OFF`|`0`|`nullptr`|`0`|`1`|`TrunOnProcess`|`nullptr`|`500`|`TRANS_TIMER`|
-|`LED_ON`|`1`|`nullptr`|`1`|`0`|`TurnOffProcess`|`nullptr`|`1,000`|`TRANS_TIMER`|
+|`LED_OFF`|`0`|`nullptr`|`0`|`1`|`TurnOffProcess`|`nullptr`|`500`|`TRANS_TIMER`|
+|`LED_ON`|`1`|`nullptr`|`1`|`0`|`TrunOnProcess`|`nullptr`|`1,000`|`TRANS_TIMER`|
 
 #### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
-  {nullptr, 0, 1, TrunOnProcess, nullptr, 500, TRANS_TIMER},                  // State-0 - NextF = 0, NextT = 1
-  {nullptr, 1, 0, TurnOffProcess, nullptr, 1000, TRANS_TIMER}                 // State-1 - NextF = 1, NextT = 0
+  {nullptr, 0, 1, TurnOffProcess, nullptr, 500, TRANS_TIMER},                 // State-0 - NextF = 0, NextT = 1
+  {nullptr, 1, 0, TrunOnProcess, nullptr, 1000, TRANS_TIMER}                  // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
@@ -959,8 +959,8 @@ enum LedState : id_t {
 };
 
 Transition transitions[] = {
-  {nullptr, LED_OFF, LED_ON, TrunOnProcess, nullptr, 500, TRANS_TIMER},       // State-0 - NextF = 0, NextT = 1
-  {nullptr, LED_ON, LED_OFF, TurnOffProcess, nullptr, 1000, TRANS_TIMER}      // State-1 - NextF = 1, NextT = 0
+  {nullptr, LED_OFF, LED_ON, TurnOffProcess, nullptr, 500, TRANS_TIMER},      // State-0 - NextF = 0, NextT = 1
+  {nullptr, LED_ON, LED_OFF, TrunOnProcess, nullptr, 1000, TRANS_TIMER}       // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
@@ -981,8 +981,8 @@ enum LedState : id_t {
 };
 
 Transition transitions[] = {
-  {nullptr, LED_OFF, LED_ON, TrunOnProcess, nullptr, 500, TRANS_TIMER},       // State-0 - NextF = 0, NextT = 1
-  {nullptr, LED_ON, LED_OFF, TurnOffProcess, nullptr, 1000, TRANS_TIMER}      // State-1 - NextF = 1, NextT = 0
+  {nullptr, LED_OFF, LED_ON, TurnOffProcess, nullptr, 500, TRANS_TIMER},      // State-0 - NextF = 0, NextT = 1
+  {nullptr, LED_ON, LED_OFF, TrunOnProcess, nullptr, 1000, TRANS_TIMER}       // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 

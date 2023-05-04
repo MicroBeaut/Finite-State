@@ -14,8 +14,8 @@
   |             |       |                 | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
   | State       |  Id   | Predicate       |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
   |_____________|_______|_________________|_____________|_____________|_________________|_______________________|_________________|_________________|
-  | LED_OFF     |  0	  |  -	            |      0      |      1      | TrunOnProcess   | nullptr               |             500 | TRANS_TIMER     |
-  | LED_ON      |  1	  |  -	            |      1      |      0      | TurnOffProcess  | nullptr	              |           1,000 | TRANS_TIMER     |
+  | LED_OFF     |  0	  |  -	            |      0      |      1      | TurnOffProcess  | nullptr               |             500 | TRANS_TIMER     |
+  | LED_ON      |  1	  |  -	            |      1      |      0      | TrunOnProcess   | nullptr	              |           1,000 | TRANS_TIMER     |
   |_____________|_______|_________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 
@@ -28,8 +28,8 @@ enum LedState : id_t {
 };
 
 Transition transitions[] = {
-  {nullptr, LED_OFF, LED_ON, TrunOnProcess, nullptr, 500, TRANS_TIMER},       // State-0 - NextF = 0, NextT = 1
-  {nullptr, LED_ON, LED_OFF, TurnOffProcess, nullptr, 1000, TRANS_TIMER}      // State-1 - NextF = 1, NextT = 0
+  {nullptr, LED_OFF, LED_ON, TurnOffProcess, nullptr, 500, TRANS_TIMER},      // State-0 - NextF = 0, NextT = 1
+  {nullptr, LED_ON, LED_OFF, TrunOnProcess, nullptr, 1000, TRANS_TIMER}       // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
