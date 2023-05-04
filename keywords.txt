@@ -29,6 +29,7 @@ size            KEYWORD2
 #######################################
 # Constants (LITERAL1)
 #######################################
+FINITE_STATE_VERSION  LITERAL1
 STATE_TRANSITION_MIN  LITERAL1
 STATE_TRANSITION_MAX  LITERAL1
 DURING                LITERAL1
