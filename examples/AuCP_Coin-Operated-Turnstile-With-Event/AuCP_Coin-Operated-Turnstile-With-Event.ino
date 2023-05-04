@@ -1,11 +1,11 @@
 #include "FiniteState.h"
 #include "RepeatButton.h"
 
-#define COIN      A0  // Define the Coin input pin.
-#define PUSH      A1  // Define the Push input pin.
+#define coinInputPin      A0  // Define the Coin input pin.
+#define pushInputPin      A1  // Define the Push input pin.
 
-#define LOCKED    7   // Define the Locked state output pin.
-#define UNLOCKED  6   // Define the Unlocked state output pin. 
+#define lockedStatusPin   7   // Define the Locked state output pin.
+#define unlockedStatusPin 6   // Define the Unlocked state output pin. 
 
 /*
   __________________________________________________________________________________________________________________________________
@@ -28,8 +28,8 @@ Transition transitions[] = {
 };
 const uint8_t NumberOfTransitions = 2;                    // Number Of Transitions
 
-uint8_t inputPins[NumberOfTransitions] = {COIN, PUSH};                // Declare the Coin RepeatButton object
-uint8_t outputPins[NumberOfTransitions] = {LOCKED, UNLOCKED};         // Declare the Coin RepeatButton object
+uint8_t inputPins[NumberOfTransitions] = {coinInputPin, pushInputPin};          // Declare the Coin RepeatButton object
+uint8_t outputPins[NumberOfTransitions] = {lockedStatusPin, unlockedStatusPin}; // Declare the Coin RepeatButton object
 
 FiniteState coinOperatedTurnstile(transitions, NumberOfTransitions);  // Finite-State Object
 RepeatButton turnstileInputs[NumberOfTransitions];                    // Declare the Turnstile Inputs RepeatButton object

@@ -1,11 +1,11 @@
 #include "FiniteState.h"
 #include "RepeatButton.h"
 
-#define COIN      A0  // Define the Coin input pin.
-#define PUSH      A1  // Define the Push input pin.
+#define coinInputPin      A0  // Define the Coin input pin.
+#define pushInputPin      A1  // Define the Push input pin.
 
-#define LOCKED    7   // Define the Locked state output pin.
-#define UNLOCKED  6   // Define the Unlocked state output pin. 
+#define lockedStatusPin   7   // Define the Locked state output pin.
+#define unlockedStatusPin 6   // Define the Unlocked state output pin. 
 
 /*
   __________________________________________________________________________________________________________________________
@@ -36,12 +36,12 @@ RepeatButton coin;                                                    // Declare
 RepeatButton push;                                                    // Declare the Push RepeatButton object
 
 void setup() {
-  coin.buttonMode(COIN, INPUT_PULLUP);    // Set the Coin input pin mode
-  push.buttonMode(PUSH, INPUT_PULLUP);    // Set the Push input pin mode
-  pinMode(LOCKED, OUTPUT);                // Set the Locked state pin mode
-  pinMode(UNLOCKED, OUTPUT);              // Set the Unlocked state pin mode
+  coin.buttonMode(coinInputPin, INPUT_PULLUP);  // Set the Coin input pin mode
+  push.buttonMode(pushInputPin, INPUT_PULLUP);  // Set the Push input pin mode
+  pinMode(lockedStatusPin, OUTPUT);             // Set the Locked state pin mode
+  pinMode(unlockedStatusPin, OUTPUT);           // Set the Unlocked state pin mode
 
-  coinOperatedTurnstile.begin(0);         // FSM begins with Initial Transition Id 0
+  coinOperatedTurnstile.begin(0);               // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
@@ -59,11 +59,11 @@ bool PushPredicate(id_t id) {
 }
 
 void LockedProcess(id_t id) {
-  digitalWrite(LOCKED, HIGH);             // Turn on the locked position status.
-  digitalWrite(UNLOCKED, LOW);            // Turn off the unlocked position status.
+  digitalWrite(lockedStatusPin, HIGH);    // Turn on the locked position status.
+  digitalWrite(unlockedStatusPin, LOW);   // Turn off the unlocked position status.
 }
 
 void UnlockedProcess(id_t id) {
-  digitalWrite(LOCKED, LOW);              // Turn off the locked position status.
-  digitalWrite(UNLOCKED, HIGH);           // Turn on the unlocked position status.
+  digitalWrite(lockedStatusPin, LOW);     // Turn off the locked position status.
+  digitalWrite(unlockedStatusPin, HIGH);  // Turn on the unlocked position status.
 }

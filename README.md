@@ -377,6 +377,7 @@ Transition transitions[] = {
   {FanStartPredicate, 0, 1, StartFanProcess}, // State-0 - NextF = 0, NextT = 1
   {FanStopPredicate, 1, 0, StopFanProcess}    // State-1 - NextF = 1, NextT = 0
 };
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);
 ```
 
 #### Sketch
@@ -487,6 +488,7 @@ Transition transitions[] = {
   {DelayTimePredicate, 1, 2, nullptr, EventOnActionChanged}, // State-2 - NextF = 1, NextT = 2
   {DelayTimePredicate, 2, 0, nullptr, EventOnActionChanged}, // State-3 - NextF = 2, NextT = 0
 };
+const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
 
 #### Sketch
@@ -581,6 +583,7 @@ Transition transitions[] = {
   {nullptr, 1, 2, nullptr, EventOnActionChanged, 10000, TRANS_TIMER},         // State-2 - NextF = 1, NextT = 2
   {nullptr, 2, 0, nullptr, EventOnActionChanged, 3000, TRANS_TIMER},          // State-3 - NextF = 2, NextT = 0
 };
+const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
 
 #### Sketch
@@ -662,6 +665,7 @@ Transition transitions[] = {
   {CoinPredicate, 0, 1, LockedProcess},   // State-0 - NextF = 0, NextT = 1
   {PushPredicate, 1, 0, UnlockedProcess}  // State-1 - NextF = 1, NextT = 0
 };
+const uint8_t NumberOfTransitions = 2;    // Number Of Transitions
 ```
 
 #### Sketch
@@ -670,11 +674,11 @@ Transition transitions[] = {
 #include "FiniteState.h"
 #include "RepeatButton.h"
 
-#define COIN      A0  // Define the Coin input pin.
-#define PUSH      A1  // Define the Push input pin.
+#define coinInputPin      A0  // Define the Coin input pin.
+#define pushInputPin      A1  // Define the Push input pin.
 
-#define LOCKED    7   // Define the Locked state output pin.
-#define UNLOCKED  6   // Define the Unlocked state output pin. 
+#define lockedStatusPin   7   // Define the Locked state output pin.
+#define unlockedStatusPin 6   // Define the Unlocked state output pin. 
 
 bool CoinPredicate(id_t id);              // Declare Coin Predicate function
 bool PushPredicate(id_t id);              // Declare Push Predicate function
@@ -693,12 +697,12 @@ RepeatButton coin;                                                    // Declare
 RepeatButton push;                                                    // Declare the Push RepeatButton object
 
 void setup() {
-  coin.buttonMode(COIN, INPUT_PULLUP);    // Set the Coin input pin mode
-  push.buttonMode(PUSH, INPUT_PULLUP);    // Set the Push input pin mode
-  pinMode(LOCKED, OUTPUT);                // Set the Locked state pin mode
-  pinMode(UNLOCKED, OUTPUT);              // Set the Unlocked state pin mode
+  coin.buttonMode(coinInputPin, INPUT_PULLUP);  // Set the Coin input pin mode
+  push.buttonMode(pushInputPin, INPUT_PULLUP);  // Set the Push input pin mode
+  pinMode(lockedStatusPin, OUTPUT);             // Set the Locked state pin mode
+  pinMode(unlockedStatusPin, OUTPUT);           // Set the Unlocked state pin mode
 
-  coinOperatedTurnstile.begin(0);         // FSM begins with Initial Transition Id 0
+  coinOperatedTurnstile.begin(0);               // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
@@ -716,13 +720,13 @@ bool PushPredicate(id_t id) {
 }
 
 void LockedProcess(id_t id) {
-  digitalWrite(LOCKED, HIGH);             // Turn on the locked position status.
-  digitalWrite(UNLOCKED, LOW);            // Turn off the unlocked position status.
+  digitalWrite(lockedStatusPin, HIGH);    // Turn on the locked position status.
+  digitalWrite(unlockedStatusPin, LOW);   // Turn off the unlocked position status.
 }
 
 void UnlockedProcess(id_t id) {
-  digitalWrite(LOCKED, LOW);              // Turn off the locked position status.
-  digitalWrite(UNLOCKED, HIGH);           // Turn on the unlocked position status.
+  digitalWrite(lockedStatusPin, LOW);     // Turn off the locked position status.
+  digitalWrite(unlockedStatusPin, HIGH);  // Turn on the unlocked position status.
 }
 ```
 
@@ -748,10 +752,11 @@ void UnlockedProcess(id_t id) {
 #### State-Transition Table -> Transition Declaration
 
 ```C
- Transition transitions[] = {
+Transition transitions[] = {
   {inputPredicate, 0, 1, nullptr, EventOnActionChanged},  // State-0 - NextF = 0, NextT = 1
   {inputPredicate, 1, 0, nullptr, EventOnActionChanged}   // State-1 - NextF = 1, NextT = 0
 };
+const uint8_t NumberOfTransitions = 2;                    // Number Of Transitions
 ```
 
 #### Sketch
@@ -760,11 +765,11 @@ void UnlockedProcess(id_t id) {
 #include "FiniteState.h"
 #include "RepeatButton.h"
 
-#define COIN      A0  // Define the Coin input pin.
-#define PUSH      A1  // Define the Push input pin.
+#define coinInputPin      A0  // Define the Coin input pin.
+#define pushInputPin      A1  // Define the Push input pin.
 
-#define LOCKED    7   // Define the Locked state output pin.
-#define UNLOCKED  6   // Define the Unlocked state output pin. 
+#define lockedStatusPin   7   // Define the Locked state output pin.
+#define unlockedStatusPin 6   // Define the Unlocked state output pin. 
 
 bool inputPredicate(id_t id);             // Declare Coin Predicate function
 void EventOnActionChanged(EventArgs e);   // Event On Action Changed
@@ -775,8 +780,8 @@ Transition transitions[] = {
 };
 const uint8_t NumberOfTransitions = 2;                    // Number Of Transitions
 
-uint8_t inputPins[NumberOfTransitions] = {COIN, PUSH};                // Declare the Coin RepeatButton object
-uint8_t outputPins[NumberOfTransitions] = {LOCKED, UNLOCKED};         // Declare the Coin RepeatButton object
+uint8_t inputPins[NumberOfTransitions] = {coinInputPin, pushInputPin};          // Declare the Coin RepeatButton object
+uint8_t outputPins[NumberOfTransitions] = {lockedStatusPin, unlockedStatusPin}; // Declare the Coin RepeatButton object
 
 FiniteState coinOperatedTurnstile(transitions, NumberOfTransitions);  // Finite-State Object
 RepeatButton turnstileInputs[NumberOfTransitions];                    // Declare the Turnstile Inputs RepeatButton object
@@ -838,6 +843,7 @@ Transition transitions[] = {
   {nullptr, 0, 1, TurnON, nullptr, 500, TRANS_TIMER},   // State-0 - NextF = 0, NextT = 1
   {nullptr, 1, 0, TurnOFF, nullptr, 1000, TRANS_TIMER}  // State-1 - NextF = 1, NextT = 0
 };
+const uint8_t NumberOfTransitions = 2;                  // Number Of Transitions
 ```
 
 #### Sketch
@@ -890,20 +896,23 @@ void TurnOFF(id_t id) {
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`ReadButton`|0|1|`Released`|-|-|-|
-|1|`ReadButton`|0|2|`nullptr`|`nullptr`|`10`|`TRUE_TIMER`|
-|2|`ReadButton`|3|2|`Pressed`|-|-|-|
-|3|`ReadButton`|0|2|`nullptr`|`nullptr`|`10`|`FALSE_TIMER`|
+|0|`ButtonPredicate`|0|1|`ReleasedProcess`|-|-|-|
+|1|`ButtonPredicate`|0|2|`nullptr`|`nullptr`|`10`|`TRUE_TIMER`|
+|2|`ButtonPredicate`|3|2|`PressedProcess`|-|-|-|
+|3|`ButtonPredicate`|0|2|`nullptr`|`nullptr`|`10`|`FALSE_TIMER`|
 
 #### State-Transition Table -> Transition Declaration
 
 ```C
+#define debounce 10             // Debounce Delay 10 milliseconds
+
 Transition transitions[] = {
-  {ReadButton, 0, 1, Released},                         // State-0 - NextF = 0, NextT = 1
-  {ReadButton, 0, 2, nullptr, nullptr, 10, TRUE_TIMER}, // State-1 - NextF = 0, NextT = 2
-  {ReadButton, 3, 2, Pressed},                          // State-2 - NextF = 3, NextT = 2
-  {ReadButton, 0, 2, nullptr, nullptr, 10, FALSE_TIMER} // State-3 - NextF = 0, NextT = 2
+  {ButtonPredicate, 0, 1, ReleasedProcess},                         // State-0 - NextF = 0, NextT = 1
+  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
+  {ButtonPredicate, 3, 2, PressedProcess},                          // State-2 - NextF = 3, NextT = 2
+  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, FALSE_TIMER}  // State-3 - NextF = 0, NextT = 2
 };
+const uint8_t NumberOfTransitions = 4;                              // Number Of Transitions
 ```
 
 #### Sketch
@@ -911,47 +920,47 @@ Transition transitions[] = {
 ```C
 #include "FiniteState.h"
 
-#define BUTTON  A0  // Define the button input pin.
-#define LED     7   // Define the LED output pin.
+#define buttonPin A0  // Define the Button input pin.
+#define ledPin    7   // Define the LED output pin.
 
-#define debounce 10 // Debounce Delay 10 milliseconds
+bool ButtonPredicate(id_t id);  // Declare Read Button Predicate function
+void ReleasedProcess(id_t id);  // Declare Released Process function
+void PressedProcess(id_t id);   // Declare Pressed Process function
 
-bool ReadButton(id_t id);   // Declare Read Button Predicate function
-void Released(id_t id);     // Declare Released Process function
-void Pressed(id_t id);      // Declare Pressed Process function
+#define debounce 10             // Debounce Delay 10 milliseconds
 
 Transition transitions[] = {
-  {ReadButton, 0, 1, Released},                               // State-0 - NextF = 0, NextT = 1
-  {ReadButton, 0, 2, nullptr, nullptr, debounce, TRUE_TIMER}, // State-1 - NextF = 0, NextT = 2
-  {ReadButton, 3, 2, Pressed},                                // State-2 - NextF = 3, NextT = 2
-  {ReadButton, 0, 2, nullptr, nullptr, debounce, FALSE_TIMER} // State-3 - NextF = 0, NextT = 2
+  {ButtonPredicate, 0, 1, ReleasedProcess},                         // State-0 - NextF = 0, NextT = 1
+  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
+  {ButtonPredicate, 3, 2, PressedProcess},                          // State-2 - NextF = 3, NextT = 2
+  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, FALSE_TIMER}  // State-3 - NextF = 0, NextT = 2
 };
-const uint8_t NumberOfTransitions = 4;                        // Number Of Transitions
+const uint8_t NumberOfTransitions = 4;                              // Number Of Transitions
 
-FiniteState debounceFS(transitions, NumberOfTransitions);     // Finite-State Object
-bool state;
+FiniteState debounceFS(transitions, NumberOfTransitions);           // Finite-State Object
+bool buttonState;
 
 void setup() {
-  pinMode(BUTTON, INPUT_PULLUP);    // Set the Button pin mode
-  pinMode(LED, OUTPUT);             // Set the LED pin mode
-  debounceFS.begin(0);              // FSM begins with Initial Transition Id 0
+  pinMode(buttonPin, INPUT_PULLUP);   // Set the Button input mode
+  pinMode(ledPin, OUTPUT);            // Set the LED output pin mode
+  debounceFS.begin(0);                // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
-  debounceFS.execute();             // Execute the FSM
-  digitalWrite(LED, state);         // Set LED with the state.
+  debounceFS.execute();               // Execute the FSM
+  digitalWrite(ledPin, buttonState);  // Set LED with the button State.
 }
 
-bool ReadButton(id_t id) {
-  return !digitalRead(BUTTON);      // Read Button value.
+bool ButtonPredicate(id_t id) {
+  return !digitalRead(buttonPin);     // Read Button value.
 }
 
-void Released(id_t id) {
-  state = false;                    // Set the state with false value.
+void ReleasedProcess(id_t id) {
+  buttonState = false;                // Set the Button state with false value.
 }
 
-void Pressed(id_t id) {
-  state = true;                     // Set the state with true value.
+void PressedProcess(id_t id) {
+  buttonState = true;                 // Set the Button state with true value.
 }
 ```
 
@@ -978,11 +987,14 @@ void Pressed(id_t id) {
 #### State-Transition Table -> Transition Declaration
 
 ```C
+#define alarmDelay 3000         // Define alarm dalay
+
 Transition transitions[] = {
   {AnalogPredicate, 0, 1, NormalProcess},                                     // State-0 - NextF = 0, NextT = 1
   {AnalogPredicate, 0, 2, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
   {AnalogPredicate, 2, 0, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
 };
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
 ```
 
 #### Sketch
