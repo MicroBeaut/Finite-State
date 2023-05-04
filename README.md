@@ -365,22 +365,39 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 #### State-Transition Table
 
-|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`FanStartPredicate`|0|1|`StartFanProcess`|-|-|-|
-|1|`FanStopPredicate`|1|0|`StopFanProcess`|-|-|-|
+|State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|`START`|`0`|`HighTempPredicate`|`0`|`1`|`FanStopProcess`|`-`|`-`|`-`|
+|`STOP`|`1`|`LowTempPredicate`|`1`|`0`|`FanStartProcess`|`-`|`-`|`-`|
 
 #### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
-  {FanStartPredicate, 0, 1, StartFanProcess}, // State-0 - NextF = 0, NextT = 1
-  {FanStopPredicate, 1, 0, StopFanProcess}    // State-1 - NextF = 1, NextT = 0
+  {HighTempPredicate, 0, 1, FanStopProcess},                                  // State-0 - NextF = 0, NextT = 1
+  {LowTempPredicate, 1, 0, FanStartProcess}                                   // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
 ```
 
-#### Sketch
+Or,
+
+```C
+enum FanState : id_t {
+  START,
+  STOP
+};
+
+Transition transitions[] = {
+  {HighTempPredicate, STOP, START, FanStopProcess},                           // State-0 - NextF = 0, NextT = 1
+  {LowTempPredicate, START, STOP, FanStartProcess}                            // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
+```
+
+#### Sketch 
+
+![Wokwi](./images/Wokwi-Simulate.svg) [Fan Control With A Thermostat](https://wokwi.com/projects/362184372922602497)
 
 ```C
 #include "FiniteState.h"
@@ -389,63 +406,52 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);
 #define startStatusPin  5
 #define stopStatusPin   6
 
+void FanStartProcess(id_t id);
+void FanStopProcess(id_t id);
+bool HighTempPredicate(id_t state);
+bool LowTempPredicate(id_t state);
 
-uint8_t statusPins[] = {stopStatusPin, startStatusPin};
-const uint8_t numberOfStatus = sizeof(statusPins) / sizeof(uint8_t);
-
-void StartFanProcess(id_t id);
-void StopFanProcess(id_t id);
-bool FanStartPredicate(id_t state);
-bool FanStopPredicate(id_t state);
+enum FanState : id_t {
+  STOP,
+  START
+};
 
 Transition transitions[] = {
-  {FanStartPredicate, 0, 1, StartFanProcess}, // State-0 - NextF = 0, NextT = 1
-  {FanStopPredicate, 1, 0, StopFanProcess}    // State-1 - NextF = 1, NextT = 0
+  {HighTempPredicate, START, STOP, FanStopProcess},                           // State-0 - NextF = 0, NextT = 1
+  {LowTempPredicate, STOP, START, FanStartProcess}                            // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
 
-FiniteState finiteStateMachine(transitions, numberOfTransitions); // Finite-State Object
+FiniteState finiteStateMachine(transitions, numberOfTransitions);             // Finite-State Object
 
 const long ThermostatRead();
-void FanControl(id_t id);
-
-long temperature;
 
 void setup() {
-  for (uint8_t index = 0; index < numberOfStatus; index++) {
-    pinMode(statusPins[index], OUTPUT);
-    digitalWrite(statusPins[index], LOW);
-  }
-
-  finiteStateMachine.begin(0);    // FSM begins with Initial Transition Id 0
+  pinMode(startStatusPin, OUTPUT);        // Set the start status pin mode
+  pinMode(stopStatusPin, OUTPUT);         // Set the sotp status pin mode
+  finiteStateMachine.begin(STOP);         // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
-  finiteStateMachine.execute();   // Execute the FSM
-  temperature = ThermostatRead(); // Read temperature
+  finiteStateMachine.execute();           // Execute the FSM
 }
 
-bool FanStartPredicate(id_t state) {
-  return temperature >= 40;       // Determine Fan Start Action
+bool HighTempPredicate(id_t state) {
+  return ThermostatRead() >= 40;          // Determine Fan Start Action
 }
 
-void StartFanProcess(id_t id) {
-  FanControl(id);                 // Fan control output
+void FanStartProcess(id_t id) {
+  digitalWrite(stopStatusPin, false);     // Update fan stop status
+  digitalWrite(startStatusPin, true);     // Update fan start status
 }
 
-bool FanStopPredicate(id_t state) {
-  return temperature <= 30;       // Determine Fan Stop Action
+bool LowTempPredicate(id_t state) {
+  return ThermostatRead() <= 30;          // Determine Fan Stop Action
 }
 
-void StopFanProcess(id_t id) {
-  FanControl(id);                 // Fan control output
-}
-
-void FanControl(id_t id) {
-  for (uint8_t index = 0; index < numberOfStatus; index++) {
-    bool value = index == id;
-    digitalWrite(statusPins[index], value);  // Update Status
-  }
+void FanStopProcess(id_t id) {
+  digitalWrite(startStatusPin, false);    // Update fan start status
+  digitalWrite(stopStatusPin, true);      // Update fan stop status
 }
 
 const long ThermostatRead() {
@@ -474,24 +480,44 @@ const long ThermostatRead() {
 
 #### State-Transition Table
 
-|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`DelayTimePredicate`|0|1|`nullptr`|`EventOnActionChanged`|-|-|
-|1|`DelayTimePredicate`|1|2|`nullptr`|`EventOnActionChanged`|-|-|
-|2|`DelayTimePredicate`|2|0|`nullptr`|`EventOnActionChanged`|-|-|
+|State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|`RED`|`0`|`DelayTimePredicate`|`0`|`1`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
+|`GREEN`|`1`|`DelayTimePredicate`|`1`|`2`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
+|`YELLOW`|`2`|`DelayTimePredicate`|`2`|`0`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
 
 #### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
-  {DelayTimePredicate, 0, 1, nullptr, EventOnActionChanged}, // State-1 - NextF = 0, NextT = 1
-  {DelayTimePredicate, 1, 2, nullptr, EventOnActionChanged}, // State-2 - NextF = 1, NextT = 2
-  {DelayTimePredicate, 2, 0, nullptr, EventOnActionChanged}, // State-3 - NextF = 2, NextT = 0
+  {TimePredicate, 0, 1, nullptr, EventOnActionChanged},                       // State-1 - NextF = 0, NextT = 1
+  {TimePredicate, 1, 2, nullptr, EventOnActionChanged},                       // State-2 - NextF = 1, NextT = 2
+  {TimePredicate, 2, 0, nullptr, EventOnActionChanged},                       // State-3 - NextF = 2, NextT = 0
 };
-const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
+```
+
+Or,
+
+```C
+enum TraficState {
+  RED,
+  GREEN,
+  YELLOW
+};
+
+Transition transitions[] = {
+  {TimePredicate, RED, GREEN, nullptr, EventOnActionChanged},                 // State-1 - NextF = 0, NextT = 1
+  {TimePredicate, GREEN, YELLOW, nullptr, EventOnActionChanged},              // State-2 - NextF = 1, NextT = 2
+  {TimePredicate, YELLOW, RED, nullptr, EventOnActionChanged},                // State-3 - NextF = 2, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
 
 #### Sketch
+
+![Wokwi](./images/Wokwi-Simulate.svg) [Traffic Light with Customized Timer](https://wokwi.com/projects/362092485127898113)
+
 
 ```C
 #include "FiniteState.h"
@@ -514,31 +540,37 @@ Timer delayTimes[] = {
   {3000},   // YELLOW Delay Time 3 seconds
 };
 
-bool DelayTimePredicate(id_t id);         // Predicate (Input)
+bool TimePredicate(id_t id);              // Predicate (Input)
 void EventOnActionChanged(EventArgs e);   // Event State
 
-Transition transitions[] = {
-  {DelayTimePredicate, 0, 1, nullptr, EventOnActionChanged}, // State-1 - NextF = 0, NextT = 1
-  {DelayTimePredicate, 1, 2, nullptr, EventOnActionChanged}, // State-2 - NextF = 1, NextT = 2
-  {DelayTimePredicate, 2, 0, nullptr, EventOnActionChanged}, // State-3 - NextF = 2, NextT = 0
+enum TraficState {
+  RED,
+  GREEN,
+  YELLOW
 };
-const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
-FiniteState finiteStateMachine(transitions, numberOftransitions);             // Define Finite-State Object
+Transition transitions[] = {
+  {TimePredicate, RED, GREEN, nullptr, EventOnActionChanged},                 // State-1 - NextF = 0, NextT = 1
+  {TimePredicate, GREEN, YELLOW, nullptr, EventOnActionChanged},              // State-2 - NextF = 1, NextT = 2
+  {TimePredicate, YELLOW, RED, nullptr, EventOnActionChanged},                // State-3 - NextF = 2, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
+
+FiniteState finiteStateMachine(transitions, numberOfTransitions);             // Define Finite-State Object
 
 void setup() {
   for (uint8_t index = 0; index < numberOfLights; index ++) {
     pinMode(lightPins[index], OUTPUT);    // Set Pin Mode
     digitalWrite(lightPins[index], LOW);  // Set Light with the LOW state.
   }
-  finiteStateMachine.begin(0);            // FSM begins with Initial Transition Id 0
+  finiteStateMachine.begin(RED);          // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
-  finiteStateMachine.execute();  // Execute the FSM
+  finiteStateMachine.execute();           // Execute the FSM
 }
 
-bool DelayTimePredicate(id_t id) {
+bool TimePredicate(id_t id) {
   return (millis() - delayTimes[id].startTime >= delayTimes[id].delayTime); // Determine Time Delay
 }
 
@@ -569,24 +601,43 @@ void EventOnActionChanged(EventArgs e) {
 
 #### State-Transition Table
 
-|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`nullptr`|0|1|`nullptr`|`EventOnActionChanged`|`5,000`|`TRANS_TIMER`|
-|1|`nullptr`|1|2|`nullptr`|`EventOnActionChanged`|`10,000`|`TRANS_TIMER`|
-|2|`nullptr`|2|0|`nullptr`|`EventOnActionChanged`|`3,000`|`TRANS_TIMER`|
+|State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|`RED`|`0`|`nullptr`|`0`|`1`|`nullptr`|`EventOnActionChanged`|`5,000`|`TRANS_TIMER`|
+|`GREEN`|`1`|`nullptr`|`1`|`2`|`nullptr`|`EventOnActionChanged`|`10,000`|`TRANS_TIMER`|
+|`YELLOW`|`2`|`nullptr`|`2`|`0`|`nullptr`|`EventOnActionChanged`|`3,000`|`TRANS_TIMER`|
 
 #### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
-  {nullptr, 0, 1, nullptr, EventOnActionChanged, 5000, TRANS_TIMER},          // State-1 - NextF = 0, NextT = 1
-  {nullptr, 1, 2, nullptr, EventOnActionChanged, 10000, TRANS_TIMER},         // State-2 - NextF = 1, NextT = 2
-  {nullptr, 2, 0, nullptr, EventOnActionChanged, 3000, TRANS_TIMER},          // State-3 - NextF = 2, NextT = 0
+  {nullptr, 0, 1, nullptr, EventOnActionChanged, 5000, TRANS_TIMER},                  // State-1 - NextF = 0, NextT = 1
+  {nullptr, 1, 2, nullptr, EventOnActionChanged, 10000, TRANS_TIMER},                 // State-2 - NextF = 1, NextT = 2
+  {nullptr, 2, 0, nullptr, EventOnActionChanged, 3000, TRANS_TIMER},                  // State-3 - NextF = 2, NextT = 0
 };
-const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);         // Calculate the number of transitions.
+```
+
+Or,
+
+```C
+enum TraficState : id_t {
+  RED,
+  GREEN,
+  YELLOW
+};
+
+Transition transitions[] = {
+  {nullptr, RED, GREEN, nullptr, EventOnActionChanged, 5000, TRANS_TIMER},      // State-1 - NextF = 0, NextT = 1
+  {nullptr, GREEN, YELLOW, nullptr, EventOnActionChanged, 10000, TRANS_TIMER},  // State-2 - NextF = 1, NextT = 2
+  {nullptr, YELLOW, RED, nullptr, EventOnActionChanged, 3000, TRANS_TIMER},     // State-3 - NextF = 2, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 ```
 
 #### Sketch
+
+![Wokwi](./images/Wokwi-Simulate.svg) [Traffic Light with Transition Timer](https://wokwi.com/projects/363517579350398977)
 
 ```C
 #include "FiniteState.h"
@@ -598,36 +649,43 @@ const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); //
 uint8_t lightPins[] = {redLightPin, greenLightPin, yellowLightPin}; // Define an array of light pins.
 const uint8_t numberOfLights = sizeof(lightPins) / sizeof(uint8_t); // Calculate the number of lights.
 
-void EventOnActionChanged(EventArgs e);  // Event State
+bool TimePredicate(id_t id);              // Predicate (Input)
+void EventOnActionChanged(EventArgs e);   // Event State
+
+enum TraficState : id_t {
+  RED,
+  GREEN,
+  YELLOW
+};
 
 Transition transitions[] = {
-  {nullptr, 0, 1, nullptr, EventOnActionChanged, 5000, TRANS_TIMER},          // State-1 - NextF = 0, NextT = 1
-  {nullptr, 1, 2, nullptr, EventOnActionChanged, 10000, TRANS_TIMER},         // State-2 - NextF = 1, NextT = 2
-  {nullptr, 2, 0, nullptr, EventOnActionChanged, 3000, TRANS_TIMER},          // State-3 - NextF = 2, NextT = 0
+  {nullptr, RED, GREEN, nullptr, EventOnActionChanged, 5000, TRANS_TIMER},      // State-1 - NextF = 0, NextT = 1
+  {nullptr, GREEN, YELLOW, nullptr, EventOnActionChanged, 10000, TRANS_TIMER},  // State-2 - NextF = 1, NextT = 2
+  {nullptr, YELLOW, RED, nullptr, EventOnActionChanged, 3000, TRANS_TIMER},     // State-3 - NextF = 2, NextT = 0
 };
-const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
-FiniteState finiteStateMachine(transitions, numberOftransitions);             // Define Finite-State Object
+FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Define Finite-State Object
 
 void setup() {
   for (uint8_t index = 0; index < numberOfLights; index ++) {
-    pinMode(lightPins[index], OUTPUT);    // Set Pin Mode
-    digitalWrite(lightPins[index], LOW);  // Set Light with the LOW state.
+    pinMode(lightPins[index], OUTPUT);      // Set Pin Mode
+    digitalWrite(lightPins[index], LOW);    // Set Light with the LOW state.
   }
-  finiteStateMachine.begin(0);            // FSM begins with Initial Transition Id 0
+  finiteStateMachine.begin(RED);            // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
-  finiteStateMachine.execute();  // Execute the FSM
+  finiteStateMachine.execute();             // Execute the FSM
 }
 
 void EventOnActionChanged(EventArgs e) {
   switch (e.action) {
     case ENTRY:
-      digitalWrite(lightPins[e.id], HIGH);    // Set Light with the HIGH state.
+      digitalWrite(lightPins[e.id], HIGH);  // Set Light with the HIGH state.
       break;
     case EXIT:
-      digitalWrite(lightPins[e.id], LOW);     // Set Light with the LOW state.
+      digitalWrite(lightPins[e.id], LOW);   // Set Light with the LOW state.
       break;
   }
 }
@@ -653,48 +711,71 @@ void EventOnActionChanged(EventArgs e) {
 
 #### State-Transition Table
 
-|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`CoinPredicate`|0|1|`LockedProcess`|-|-|-|
-|1|`PushPredicate`|1|0|`UnlockedProcess`|-|-|-|
+|State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|`LOCKED`|`0`|`CoinPredicate`|`0`|`1`|`LockedProcess`|`-`|`-`|`-`|
+|`UNLOCKED`|`1`|`PushPredicate`|`1`|`0`|`UnlockedProcess`|`-`|`-`|`-`|
 
 #### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
-  {CoinPredicate, 0, 1, LockedProcess},   // State-0 - NextF = 0, NextT = 1
-  {PushPredicate, 1, 0, UnlockedProcess}  // State-1 - NextF = 1, NextT = 0
+  {CoinPredicate, 0, 1, LockedProcess},                                       // State-0 - NextF = 0, NextT = 1
+  {PushPredicate, 1, 0, UnlockedProcess}                                      // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t NumberOfTransitions = 2;    // Number Of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
+```
+
+Or,
+
+```C
+enum TurnstileState : id_t {
+  LOCKED,
+  UNLOCKED
+};
+
+Transition transitions[] = {
+  {CoinPredicate, LOCKED, UNLOCKED, LockedProcess},                           // State-0 - NextF = 0, NextT = 1
+  {PushPredicate, UNLOCKED, LOCKED, UnlockedProcess}                          // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
 
 #### Sketch
+
+![Wokwi](./images/Wokwi-Simulate.svg) [Coin Operated Turnstile](https://wokwi.com/projects/363765428832793601)
 
 ```C
 #include "FiniteState.h"
 #include "RepeatButton.h"
 
-#define coinInputPin      A0  // Define the Coin input pin.
-#define pushInputPin      A1  // Define the Push input pin.
+#define coinInputPin      A0    // Define the Coin input pin.
+#define pushInputPin      A1    // Define the Push input pin.
 
-#define lockedStatusPin   7   // Define the Locked state output pin.
-#define unlockedStatusPin 6   // Define the Unlocked state output pin. 
+#define lockedStatusPin   7     // Define the Locked state output pin.
+#define unlockedStatusPin 6     // Define the Unlocked state output pin. 
 
-bool CoinPredicate(id_t id);              // Declare Coin Predicate function
-bool PushPredicate(id_t id);              // Declare Push Predicate function
+bool CoinPredicate(id_t id);    // Declare Coin Predicate function
+bool PushPredicate(id_t id);    // Declare Push Predicate function
 
-void LockedProcess(id_t id);              // Declare Locked Process function
-void UnlockedProcess(id_t id);            // Declare Unlocked Process function
+void LockedProcess(id_t id);    // Declare Locked Process function
+void UnlockedProcess(id_t id);  // Declare Unlocked Process function
+
+enum TurnstileState : id_t {
+  LOCKED,
+  UNLOCKED
+};
 
 Transition transitions[] = {
-  {CoinPredicate, 0, 1, LockedProcess},   // State-0 - NextF = 0, NextT = 1
-  {PushPredicate, 1, 0, UnlockedProcess}  // State-1 - NextF = 1, NextT = 0
+  {CoinPredicate, LOCKED, UNLOCKED, LockedProcess},                           // State-0 - NextF = 0, NextT = 1
+  {PushPredicate, UNLOCKED, LOCKED, UnlockedProcess}                          // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t NumberOfTransitions = 2;    // Number Of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
-FiniteState coinOperatedTurnstile(transitions, NumberOfTransitions);  // Finite-State Object
-RepeatButton coin;                                                    // Declare the Coin RepeatButton object
-RepeatButton push;                                                    // Declare the Push RepeatButton object
+FiniteState coinOperatedTurnstile(transitions, numberOfTransitions);          // Finite-State Object
+
+RepeatButton coin;                                                            // Declare the Coin RepeatButton object
+RepeatButton push;                                                            // Declare the Push RepeatButton object
 
 void setup() {
   coin.buttonMode(coinInputPin, INPUT_PULLUP);  // Set the Coin input pin mode
@@ -702,7 +783,7 @@ void setup() {
   pinMode(lockedStatusPin, OUTPUT);             // Set the Locked state pin mode
   pinMode(unlockedStatusPin, OUTPUT);           // Set the Unlocked state pin mode
 
-  coinOperatedTurnstile.begin(0);               // FSM begins with Initial Transition Id 0
+  coinOperatedTurnstile.begin(LOCKED);          // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
@@ -744,22 +825,40 @@ void UnlockedProcess(id_t id) {
 
 #### State-Transition Table
 
-|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`inputPredicate`|0|1|`nullptr`|`EventOnActionChanged`|-|-|
-|1|`inputPredicate`|1|0|`nullptr`|`EventOnActionChanged`|-|-|
+|State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|`LOCKED`|`0`|`inputPredicate`|`0`|`1`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
+|`UNLOCKED`|`1`|`inputPredicate`|`1`|`0`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
 
 #### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
-  {inputPredicate, 0, 1, nullptr, EventOnActionChanged},  // State-0 - NextF = 0, NextT = 1
-  {inputPredicate, 1, 0, nullptr, EventOnActionChanged}   // State-1 - NextF = 1, NextT = 0
+  {inputPredicate, 0, 1, nullptr, EventOnActionChanged},                        // State-0 - NextF = 0, NextT = 1
+  {inputPredicate, 1, 0, nullptr, EventOnActionChanged}                         // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t NumberOfTransitions = 2;                    // Number Of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 ```
 
+Or,
+
+```C
+enum TurnstileState : id_t {
+  LOCKED,
+  UNLOCKED
+};
+
+Transition transitions[] = {
+  {inputPredicate, LOCKED, UNLOCKED, nullptr, EventOnActionChanged},            // State-0 - NextF = 0, NextT = 1
+  {inputPredicate, UNLOCKED, LOCKED, nullptr, EventOnActionChanged}             // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
+```
+
+
 #### Sketch
+
+![Wokwi](./images/Wokwi-Simulate.svg) [Coin Operated Turnstile with Predicate and Event](https://wokwi.com/projects/363592764580637697)
 
 ```C
 #include "FiniteState.h"
@@ -769,33 +868,38 @@ const uint8_t NumberOfTransitions = 2;                    // Number Of Transitio
 #define pushInputPin      A1  // Define the Push input pin.
 
 #define lockedStatusPin   7   // Define the Locked state output pin.
-#define unlockedStatusPin 6   // Define the Unlocked state output pin. 
+#define unlockedStatusPin 6   // Define the Unlocked state output pin.
 
 bool inputPredicate(id_t id);             // Declare Coin Predicate function
 void EventOnActionChanged(EventArgs e);   // Event On Action Changed
 
-Transition transitions[] = {
-  {inputPredicate, 0, 1, nullptr, EventOnActionChanged},  // State-0 - NextF = 0, NextT = 1
-  {inputPredicate, 1, 0, nullptr, EventOnActionChanged}   // State-1 - NextF = 1, NextT = 0
+enum TurnstileState : id_t {
+  LOCKED,
+  UNLOCKED
 };
-const uint8_t NumberOfTransitions = 2;                    // Number Of Transitions
 
-uint8_t inputPins[NumberOfTransitions] = {coinInputPin, pushInputPin};          // Declare the Coin RepeatButton object
-uint8_t outputPins[NumberOfTransitions] = {lockedStatusPin, unlockedStatusPin}; // Declare the Coin RepeatButton object
+Transition transitions[] = {
+  {inputPredicate, LOCKED, UNLOCKED, nullptr, EventOnActionChanged},            // State-0 - NextF = 0, NextT = 1
+  {inputPredicate, UNLOCKED, LOCKED, nullptr, EventOnActionChanged}             // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
-FiniteState coinOperatedTurnstile(transitions, NumberOfTransitions);  // Finite-State Object
-RepeatButton turnstileInputs[NumberOfTransitions];                    // Declare the Turnstile Inputs RepeatButton object
+FiniteState coinOperatedTurnstile(transitions, numberOfTransitions);            // Finite-State Object
+
+uint8_t inputPins[numberOfTransitions] = {coinInputPin, pushInputPin};          // Declare the Coin RepeatButton object
+uint8_t outputPins[numberOfTransitions] = {lockedStatusPin, unlockedStatusPin}; // Declare the Coin RepeatButton object
+RepeatButton turnstileInputs[numberOfTransitions];                              // Declare the Turnstile Inputs RepeatButton object
 
 void setup() {
-  for (uint8_t index = 0; index < NumberOfTransitions; index++) {
+  for (uint8_t index = 0; index < numberOfTransitions; index++) {
     turnstileInputs[index].buttonMode(inputPins[index], INPUT_PULLUP);  // Set the Turnstile repeat button pin mode
     pinMode(outputPins[index], OUTPUT);                                 // Set the Output state pin mode
   }
-  coinOperatedTurnstile.begin(0);                                       // FSM begins with Initial Transition Id 0
+  coinOperatedTurnstile.begin(LOCKED);                                  // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
-  for (uint8_t index = 0; index < NumberOfTransitions; index++) {
+  for (uint8_t index = 0; index < numberOfTransitions; index++) {
     turnstileInputs[index].repeatButton();    // Executing the Turnstile repeat button function
   }
   coinOperatedTurnstile.execute();            // Execute the FSM
@@ -831,51 +935,73 @@ void EventOnActionChanged(EventArgs e) {
 
 #### State-Transition Table
 
-|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`nullptr`|0|1|`TurnON`|`nullptr`|`500`|`TRANS_TIMER`|
-|1|`nullptr`|1|2|`TurnOFF`|`nullptr`|`1,000`|`TRANS_TIMER`|
+|State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|`LED_OFF`|`0`|`nullptr`|`0`|`1`|`TrunOnProcess`|`nullptr`|`500`|`TRANS_TIMER`|
+|`LED_ON`|`1`|`nullptr`|`1`|`0`|`TurnOffProcess`|`nullptr`|`1,000`|`TRANS_TIMER`|
 
 #### State-Transition Table -> Transition Declaration
 
 ```C
 Transition transitions[] = {
-  {nullptr, 0, 1, TurnON, nullptr, 500, TRANS_TIMER},   // State-0 - NextF = 0, NextT = 1
-  {nullptr, 1, 0, TurnOFF, nullptr, 1000, TRANS_TIMER}  // State-1 - NextF = 1, NextT = 0
+  {nullptr, 0, 1, TrunOnProcess, nullptr, 500, TRANS_TIMER},                  // State-0 - NextF = 0, NextT = 1
+  {nullptr, 1, 0, TurnOffProcess, nullptr, 1000, TRANS_TIMER}                 // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t NumberOfTransitions = 2;                  // Number Of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
+```
+
+Or,
+
+```C
+enum LedState : id_t {
+  LED_OFF,
+  LED_ON
+};
+
+Transition transitions[] = {
+  {nullptr, LED_OFF, LED_ON, TrunOnProcess, nullptr, 500, TRANS_TIMER},       // State-0 - NextF = 0, NextT = 1
+  {nullptr, LED_ON, LED_OFF, TurnOffProcess, nullptr, 1000, TRANS_TIMER}      // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
 
 #### Sketch
 
+![Wokwi](./images/Wokwi-Simulate.svg) [Blink](https://wokwi.com/projects/363629762329468929)
+
 ```C
 #include "FiniteState.h"
 
-void TurnON(id_t id);     // Declare Turn LED On Process function
-void TurnOFF(id_t id);    // Declare Turn LED Off Process function
+void TrunOnProcess(id_t id);     // Declare Turn LED On Process function
+void TurnOffProcess(id_t id);    // Declare Turn LED Off Process function
+
+enum LedState : id_t {
+  LED_OFF,
+  LED_ON
+};
 
 Transition transitions[] = {
-  {nullptr, 0, 1, TurnON, nullptr, 500, TRANS_TIMER},   // State-0 - NextF = 0, NextT = 1
-  {nullptr, 1, 0, TurnOFF, nullptr, 1000, TRANS_TIMER}  // State-1 - NextF = 1, NextT = 0
+  {nullptr, LED_OFF, LED_ON, TrunOnProcess, nullptr, 500, TRANS_TIMER},       // State-0 - NextF = 0, NextT = 1
+  {nullptr, LED_ON, LED_OFF, TurnOffProcess, nullptr, 1000, TRANS_TIMER}      // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t NumberOfTransitions = 2;                  // Number Of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
-FiniteState blinkFS(transitions, NumberOfTransitions);  // Finite-State Object
+FiniteState blinkFS(transitions, numberOfTransitions);                        // Finite-State Object
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);     // Set the LED_BUILTIN pin mode
-  blinkFS.begin(0);                 // FSM begins with Initial Transition Id 0
+  blinkFS.begin(LED_OFF);           // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
   blinkFS.execute();                // Execute the FSM
 }
 
-void TurnON(id_t id) {
+void TrunOnProcess(id_t id) {
   digitalWrite(LED_BUILTIN, HIGH);  // Turn on the LED.
 }
 
-void TurnOFF(id_t id) {
+void TurnOffProcess(id_t id) {
   digitalWrite(LED_BUILTIN, LOW);   // Turn off the LED.
 }
 ```
@@ -894,28 +1020,51 @@ void TurnOFF(id_t id) {
 
 #### State-Transition Table
 
-|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`ButtonPredicate`|0|1|`ReleasedProcess`|-|-|-|
-|1|`ButtonPredicate`|0|2|`nullptr`|`nullptr`|`10`|`TRUE_TIMER`|
-|2|`ButtonPredicate`|3|2|`PressedProcess`|-|-|-|
-|3|`ButtonPredicate`|0|2|`nullptr`|`nullptr`|`10`|`FALSE_TIMER`|
+|State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|`RELEASED`|`0`|`ButtonPredicate`|`0`|`1`|`ReleasedProcess`|`-`|`-`|`-`|
+|`DEBOUNCE_T`|`1`|`ButtonPredicate`|`0`|`2`|`nullptr`|`nullptr`|`10`|`TRUE_TIMER`|
+|`PRESSED`|`2`|`ButtonPredicate`|`3`|`2`|`PressedProcess`|`-`|`-`|`-`|
+|`DEBOUNCE_F`|`3`|`ButtonPredicate`|`0`|`2`|`nullptr`|`nullptr`|`10`|`FALSE_TIMER`|
 
 #### State-Transition Table -> Transition Declaration
 
 ```C
-#define debounce 10             // Debounce Delay 10 milliseconds
+#define debounce 10                                                             // Debounce Delay 10 milliseconds
 
 Transition transitions[] = {
-  {ButtonPredicate, 0, 1, ReleasedProcess},                         // State-0 - NextF = 0, NextT = 1
-  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
-  {ButtonPredicate, 3, 2, PressedProcess},                          // State-2 - NextF = 3, NextT = 2
-  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, FALSE_TIMER}  // State-3 - NextF = 0, NextT = 2
+  {ButtonPredicate, 0, 1, ReleasedProcess},                                     // State-0 - NextF = 0, NextT = 1
+  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, TRUE_TIMER},              // State-1 - NextF = 0, NextT = 2
+  {ButtonPredicate, 3, 2, PressedProcess},                                      // State-2 - NextF = 3, NextT = 2
+  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, FALSE_TIMER}              // State-3 - NextF = 0, NextT = 2
 };
-const uint8_t NumberOfTransitions = 4;                              // Number Of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
+```
+
+Or,
+
+```C
+enum DebounceState : id_t {
+  RELEASED,
+  DEBOUNCE_T,
+  PRESSED,
+  DEBOUNCE_F
+};
+
+#define debounce 10                                                             // Debounce Delay 10 milliseconds
+
+Transition transitions[] = {
+  {ButtonPredicate, RELEASED, DEBOUNCE_T, ReleasedProcess},                     // State-0 - NextF = 0, NextT = 1
+  {ButtonPredicate, RELEASED, PRESSED, nullptr, nullptr, debounce, TRUE_TIMER}, // State-1 - NextF = 0, NextT = 2
+  {ButtonPredicate, DEBOUNCE_F, PRESSED, PressedProcess},                       // State-2 - NextF = 3, NextT = 2
+  {ButtonPredicate, RELEASED, PRESSED, nullptr, nullptr, debounce, FALSE_TIMER} // State-3 - NextF = 0, NextT = 2
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 ```
 
 #### Sketch
+
+![Wokwi](./images/Wokwi-Simulate.svg) [Debounce](https://wokwi.com/projects/363631226643958785)
 
 ```C
 #include "FiniteState.h"
@@ -927,23 +1076,30 @@ bool ButtonPredicate(id_t id);  // Declare Read Button Predicate function
 void ReleasedProcess(id_t id);  // Declare Released Process function
 void PressedProcess(id_t id);   // Declare Pressed Process function
 
+enum DebounceState : id_t {
+  RELEASED,
+  DEBOUNCE_T,
+  PRESSED,
+  DEBOUNCE_F
+};
+
 #define debounce 10             // Debounce Delay 10 milliseconds
 
 Transition transitions[] = {
-  {ButtonPredicate, 0, 1, ReleasedProcess},                         // State-0 - NextF = 0, NextT = 1
-  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
-  {ButtonPredicate, 3, 2, PressedProcess},                          // State-2 - NextF = 3, NextT = 2
-  {ButtonPredicate, 0, 2, nullptr, nullptr, debounce, FALSE_TIMER}  // State-3 - NextF = 0, NextT = 2
+  {ButtonPredicate, RELEASED, DEBOUNCE_T, ReleasedProcess},                     // State-0 - NextF = 0, NextT = 1
+  {ButtonPredicate, RELEASED, PRESSED, nullptr, nullptr, debounce, TRUE_TIMER}, // State-1 - NextF = 0, NextT = 2
+  {ButtonPredicate, DEBOUNCE_F, PRESSED, PressedProcess},                       // State-2 - NextF = 3, NextT = 2
+  {ButtonPredicate, RELEASED, PRESSED, nullptr, nullptr, debounce, FALSE_TIMER} // State-3 - NextF = 0, NextT = 2
 };
-const uint8_t NumberOfTransitions = 4;                              // Number Of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
-FiniteState debounceFS(transitions, NumberOfTransitions);           // Finite-State Object
+FiniteState debounceFS(transitions, numberOfTransitions);                       // Finite-State Object
 bool buttonState;
 
 void setup() {
   pinMode(buttonPin, INPUT_PULLUP);   // Set the Button input mode
   pinMode(ledPin, OUTPUT);            // Set the LED output pin mode
-  debounceFS.begin(0);                // FSM begins with Initial Transition Id 0
+  debounceFS.begin(RELEASED);         // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
@@ -964,7 +1120,7 @@ void PressedProcess(id_t id) {
 }
 ```
 
-## Analog High-Alarm 
+## Analog High-Alarm
 
 <p align="center">
 	<img src="./images/example/Analog-High-Alarm.svg" width="100%" />
@@ -978,11 +1134,11 @@ void PressedProcess(id_t id) {
 
 #### State-Transition Table
 
-|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
-|:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`AnalogPredicate`|0|1|`NormalProcess`|-|-|-|
-|1|`AnalogPredicate`|0|2|`PreAlarmProcess`|`nullptr`|`alarmDelay`|`TRUE_TIMER`|
-|2|`AnalogPredicate`|2|0|`HighAlarmProcess`|-|-|-|
+|State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
+|:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
+|`NORMAL`|`0`|`AnalogPredicate`|`0`|`1`|`NormalProcess`|`-`|`-`|`-`|
+|`PRE_ALARM`|`1`|`AnalogPredicate`|`0`|`2`|`PreAlarmProcess`|`nullptr`|`3,000`|`TRANS_TIMER`|
+|`HIGH_ALARM`|`2`|`AnalogPredicate`|`2`|`0`|`HighAlarmProcess`|`-`|`-`|`-`|
 
 #### State-Transition Table -> Transition Declaration
 
@@ -997,7 +1153,30 @@ Transition transitions[] = {
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
 ```
 
+Or,
+
+```C
+enum AnalogState : id_t {
+  NORMAL,
+  PRE_ALARM,
+  HIGH_ALARM
+};
+
+#define alarmDelay 3000         // Define alarm dalay
+
+Transition transitions[] = {
+  {AnalogPredicate, NORMAL, PRE_ALARM, NormalProcess},                                      // State-0 - NextF = 0, NextT = 1
+  {AnalogPredicate, NORMAL, HIGH_ALARM, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
+  {AnalogPredicate, HIGH_ALARM, NORMAL, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);               // Number of Transitions
+
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                           // Finite-State Object
+```
+
 #### Sketch
+
+![Wokwi](./images/Wokwi-Simulate.svg) [Analog High-Alarm](https://wokwi.com/projects/363718211450567681)
 
 ```C
 #include "FiniteState.h"
@@ -1030,22 +1209,28 @@ void NormalProcess(id_t id);    // Declare normal process Function
 void PreAlarmProcess(id_t id);  // Declare pre-alarm process Function
 void HighAlarmProcess(id_t id); // Declare high-alarm process Function
 
+enum AnalogState : id_t {
+  NORMAL,
+  PRE_ALARM,
+  HIGH_ALARM
+};
+
 #define alarmDelay 3000         // Define alarm dalay
 
 Transition transitions[] = {
-  {AnalogPredicate, 0, 1, NormalProcess},                                     // State-0 - NextF = 0, NextT = 1
-  {AnalogPredicate, 0, 2, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
-  {AnalogPredicate, 2, 0, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
+  {AnalogPredicate, NORMAL, PRE_ALARM, NormalProcess},                                      // State-0 - NextF = 0, NextT = 1
+  {AnalogPredicate, NORMAL, HIGH_ALARM, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
+  {AnalogPredicate, HIGH_ALARM, NORMAL, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);               // Number of Transitions
 
-FiniteState finiteStateMachine(transitions, numberOfTransitions);             // Finite-State Object
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                           // Finite-State Object
 
 void setup() {
   pinMode(normalPin, OUTPUT);             // Set the normal LED pin mode
   pinMode(preAlarmPin, OUTPUT);           // Set the pre-alarm LED pin mode
   pinMode(highAlarmPin, OUTPUT);          // Set the hith-alarm LED= pin mode
-  finiteStateMachine.begin(0);            // FSM begins with Initial Transition Id 0
+  finiteStateMachine.begin(NORMAL);       // FSM begins with Initial Transition Id 0
 }
 
 void loop() {

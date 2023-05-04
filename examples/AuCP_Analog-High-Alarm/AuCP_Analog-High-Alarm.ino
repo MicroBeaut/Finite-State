@@ -1,3 +1,10 @@
+/*
+  Sketch:   AuCP_Analog-High-Alarm.ino
+  Created:  3-May-2023
+  Author:   MicroBeaut (μB)
+  GitHub:   https://github.com/MicroBeaut/Finite-State
+*/
+
 #include "FiniteState.h"
 
 #define processValuePin A0  // Define the Process value input pin.
@@ -24,16 +31,16 @@ void ProcessAlarmStatus(bool normal, bool preAlarm, bool highAlarm);  // Declare
 long processValue;                                                    // Declare processValue variable
 
 /*
-  __________________________________________________________________________________________________________________________________________
-  |  State-Transition Table                                                                                                                 |
-  |_________________________________________________________________________________________________________________________________________|
-  |             |       |                 | Next-State  | Next-State  |                 |               |   Delay-Time    | Timer-Type      |
-  | Name        |  Id   | Predicate       |   Fase      |   True      | Process         | Event         | (milliseconds)  |                 |
-  |_____________|_______|_________________|_____________|_____________|_________________|_______________|_________________|_________________|
-  | Normal      |  0	  |  AnalogPredicate|      0      |      1      | Normal          | -	            |              -  |  -              |
-  | Pre-Alarm   |  1	  |  AnalogPredicate|      0      |      2      | PreAlarm        | nullptr       |          3,000  |  TRUE_TIMER     |
-  | High-Alarm  |  2	  |  AnalogPredicate|      2      |      0      | HighAlarm       | -	            |              -  |  -              |
-  |_____________|_______|_________________|_____________|_____________|_________________|_______________|_________________|_________________|
+  ____________________________________________________________________________________________________________________________________________________
+  |  State-Transition Table                                                                                                                           |
+  |___________________________________________________________________________________________________________________________________________________|
+  |             |       |                   | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
+  | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+  | NORMAL      |  0	  | AnalogPredicate   |      0      |      1      | nullptr         | EventOnActionChanged  |               - | -               |
+  | PRE_ALARM   |  1	  | AnalogPredicate   |      0      |      2      | nullptr         | EventOnActionChanged  |               - | -               |
+  | HIGH_ALARM  |  2	  | AnalogPredicate   |      2      |      0      | nullptr         | EventOnActionChanged  |               - | -               |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 
 bool AnalogPredicate(id_t id);  // Declare analog predicate Function
@@ -41,22 +48,28 @@ void NormalProcess(id_t id);    // Declare normal process Function
 void PreAlarmProcess(id_t id);  // Declare pre-alarm process Function
 void HighAlarmProcess(id_t id); // Declare high-alarm process Function
 
+enum AnalogState : id_t {
+  NORMAL,
+  PRE_ALARM,
+  HIGH_ALARM
+};
+
 #define alarmDelay 3000         // Define alarm dalay
 
 Transition transitions[] = {
-  {AnalogPredicate, 0, 1, NormalProcess},                                     // State-0 - NextF = 0, NextT = 1
-  {AnalogPredicate, 0, 2, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
-  {AnalogPredicate, 2, 0, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
+  {AnalogPredicate, NORMAL, PRE_ALARM, NormalProcess},                                      // State-0 - NextF = 0, NextT = 1
+  {AnalogPredicate, NORMAL, HIGH_ALARM, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
+  {AnalogPredicate, HIGH_ALARM, NORMAL, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);               // Number of Transitions
 
-FiniteState finiteStateMachine(transitions, numberOfTransitions);             // Finite-State Object
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                           // Finite-State Object
 
 void setup() {
   pinMode(normalPin, OUTPUT);             // Set the normal LED pin mode
   pinMode(preAlarmPin, OUTPUT);           // Set the pre-alarm LED pin mode
   pinMode(highAlarmPin, OUTPUT);          // Set the hith-alarm LED= pin mode
-  finiteStateMachine.begin(0);            // FSM begins with Initial Transition Id 0
+  finiteStateMachine.begin(NORMAL);       // FSM begins with Initial Transition Id 0
 }
 
 void loop() {

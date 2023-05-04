@@ -1,66 +1,74 @@
+/*
+  Sketch:   AuCP_Fan-Control-With-A-Thermostat.ino
+  Created:  17-Apr-2023
+  Author:   MicroBeaut (μB)
+  GitHub:   https://github.com/MicroBeaut/Finite-State
+*/
+
 #include "FiniteState.h"
 
 #define thermostatPin   A0
 #define startStatusPin  5
 #define stopStatusPin   6
 
+/*
+  ____________________________________________________________________________________________________________________________________________________
+  |  State-Transition Table                                                                                                                           |
+  |___________________________________________________________________________________________________________________________________________________|
+  |             |       |                   | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
+  | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+  | STOP        |  0	  | HighTempPredicate |      0      |      1      | FanStopProcess  | -                     |               - | -               |
+  | START       |  1	  | LowTempPredicate  |      1      |      0      | FanStartProcess | -	                    |               - | -               |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+*/
 
-uint8_t statusPins[] = {stopStatusPin, startStatusPin};
-const uint8_t numberOfStatus = sizeof(statusPins) / sizeof(uint8_t);
+void FanStartProcess(id_t id);
+void FanStopProcess(id_t id);
+bool HighTempPredicate(id_t state);
+bool LowTempPredicate(id_t state);
 
-void StartFanProcess(id_t id);
-void StopFanProcess(id_t id);
-bool FanStartPredicate(id_t state);
-bool FanStopPredicate(id_t state);
+enum FanState : id_t {
+  STOP,
+  START
+};
 
 Transition transitions[] = {
-  {FanStartPredicate, 0, 1, StartFanProcess}, // State-0 - NextF = 0, NextT = 1
-  {FanStopPredicate, 1, 0, StopFanProcess}    // State-1 - NextF = 1, NextT = 0
+  {HighTempPredicate, STOP, START, FanStopProcess},                           // State-0 - NextF = 0, NextT = 1
+  {LowTempPredicate, START, STOP, FanStartProcess}                            // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
 
-FiniteState finiteStateMachine(transitions, numberOfTransitions); // Finite-State Object
+FiniteState finiteStateMachine(transitions, numberOfTransitions);             // Finite-State Object
 
 const long ThermostatRead();
-void FanControl(id_t id);
-
-long temperature;
 
 void setup() {
-  for (uint8_t index = 0; index < numberOfStatus; index++) {
-    pinMode(statusPins[index], OUTPUT);
-    digitalWrite(statusPins[index], LOW);
-  }
-
-  finiteStateMachine.begin(0);    // FSM begins with Initial Transition Id 0
+  pinMode(startStatusPin, OUTPUT);        // Set the start status pin mode
+  pinMode(stopStatusPin, OUTPUT);         // Set the sotp status pin mode
+  finiteStateMachine.begin(STOP);         // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
-  finiteStateMachine.execute();   // Execute the FSM
-  temperature = ThermostatRead(); // Read temperature
+  finiteStateMachine.execute();           // Execute the FSM
 }
 
-bool FanStartPredicate(id_t state) {
-  return temperature >= 40;       // Determine Fan Start Action
+bool HighTempPredicate(id_t state) {
+  return ThermostatRead() >= 40;          // Determine Fan Start Action
 }
 
-void StartFanProcess(id_t id) {
-  FanControl(id);                 // Fan control output
+void FanStartProcess(id_t id) {
+  digitalWrite(stopStatusPin, false);     // Update fan stop status
+  digitalWrite(startStatusPin, true);     // Update fan start status
 }
 
-bool FanStopPredicate(id_t state) {
-  return temperature <= 30;       // Determine Fan Stop Action
+bool LowTempPredicate(id_t state) {
+  return ThermostatRead() <= 30;          // Determine Fan Stop Action
 }
 
-void StopFanProcess(id_t id) {
-  FanControl(id);                 // Fan control output
-}
-
-void FanControl(id_t id) {
-  for (uint8_t index = 0; index < numberOfStatus; index++) {
-    bool value = index == id;
-    digitalWrite(statusPins[index], value);  // Update Status
-  }
+void FanStopProcess(id_t id) {
+  digitalWrite(startStatusPin, false);    // Update fan start status
+  digitalWrite(stopStatusPin, true);      // Update fan stop status
 }
 
 const long ThermostatRead() {

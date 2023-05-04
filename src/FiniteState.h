@@ -12,6 +12,7 @@
 
 #include "Arduino.h"
 
+#define FINITE_STATE_VERSION "1.4.2"
 #define STATE_TRANSITION_MIN 1
 #define STATE_TRANSITION_MAX 63
 

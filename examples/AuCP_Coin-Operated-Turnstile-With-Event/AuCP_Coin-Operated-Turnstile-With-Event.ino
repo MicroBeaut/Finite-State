@@ -1,3 +1,10 @@
+/*
+  AuCP_Coin-Operated-Turnstile-With-Event.ino
+  Created:  4-May-2023
+  Author:   MicroBeaut
+  GitHub:   https://github.com/MicroBeaut/Finite-State
+*/
+
 #include "FiniteState.h"
 #include "RepeatButton.h"
 
@@ -5,45 +12,50 @@
 #define pushInputPin      A1  // Define the Push input pin.
 
 #define lockedStatusPin   7   // Define the Locked state output pin.
-#define unlockedStatusPin 6   // Define the Unlocked state output pin. 
+#define unlockedStatusPin 6   // Define the Unlocked state output pin.
 
 /*
-  __________________________________________________________________________________________________________________________________
-  |  State-Transition Table                                                                                                         |
-  |_________________________________________________________________________________________________________________________________|
-  |  Id | Predicate       | Next-State  | Next-State  | Process         | Event                 |   Delay-Time    | Timer-Type      |
-  |     |                 |   Fase      |   True      |                 |                       | (milliseconds)  |                 |
-  |_____|_________________|_____________|_____________|_________________|_______________________|_________________|_________________|
-  |  0	|  inputPredicate	|      0      |      1      | -	              | EventOnActionChanged	|               - |  -              |
-  |  1	|  inputPredicate	|      1      |      0      | -	              | EventOnActionChanged	|               - |  -              |
-  |_____|_________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+  ____________________________________________________________________________________________________________________________________________________
+  |  State-Transition Table                                                                                                                           |
+  |___________________________________________________________________________________________________________________________________________________|
+  |             |       |                   | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
+  | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+  | LOCKED      |  0	  | CoinPredicate     |      0      |      1      | -               | EventOnActionChanged  |               - | -               |
+  | UNLOCKED    |  1	  | CoinPredicate     |      1      |      0      | -               | EventOnActionChanged  |               - | -               |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 
 bool inputPredicate(id_t id);             // Declare Coin Predicate function
 void EventOnActionChanged(EventArgs e);   // Event On Action Changed
 
-Transition transitions[] = {
-  {inputPredicate, 0, 1, nullptr, EventOnActionChanged},  // State-0 - NextF = 0, NextT = 1
-  {inputPredicate, 1, 0, nullptr, EventOnActionChanged}   // State-1 - NextF = 1, NextT = 0
+enum TurnstileState : id_t {
+  LOCKED,
+  UNLOCKED
 };
-const uint8_t NumberOfTransitions = 2;                    // Number Of Transitions
 
-uint8_t inputPins[NumberOfTransitions] = {coinInputPin, pushInputPin};          // Declare the Coin RepeatButton object
-uint8_t outputPins[NumberOfTransitions] = {lockedStatusPin, unlockedStatusPin}; // Declare the Coin RepeatButton object
+Transition transitions[] = {
+  {inputPredicate, LOCKED, UNLOCKED, nullptr, EventOnActionChanged},            // State-0 - NextF = 0, NextT = 1
+  {inputPredicate, UNLOCKED, LOCKED, nullptr, EventOnActionChanged}             // State-1 - NextF = 1, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
-FiniteState coinOperatedTurnstile(transitions, NumberOfTransitions);  // Finite-State Object
-RepeatButton turnstileInputs[NumberOfTransitions];                    // Declare the Turnstile Inputs RepeatButton object
+FiniteState coinOperatedTurnstile(transitions, numberOfTransitions);            // Finite-State Object
+
+uint8_t inputPins[numberOfTransitions] = {coinInputPin, pushInputPin};          // Declare the Coin RepeatButton object
+uint8_t outputPins[numberOfTransitions] = {lockedStatusPin, unlockedStatusPin}; // Declare the Coin RepeatButton object
+RepeatButton turnstileInputs[numberOfTransitions];                              // Declare the Turnstile Inputs RepeatButton object
 
 void setup() {
-  for (uint8_t index = 0; index < NumberOfTransitions; index++) {
+  for (uint8_t index = 0; index < numberOfTransitions; index++) {
     turnstileInputs[index].buttonMode(inputPins[index], INPUT_PULLUP);  // Set the Turnstile repeat button pin mode
     pinMode(outputPins[index], OUTPUT);                                 // Set the Output state pin mode
   }
-  coinOperatedTurnstile.begin(0);                                       // FSM begins with Initial Transition Id 0
+  coinOperatedTurnstile.begin(LOCKED);                                  // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
-  for (uint8_t index = 0; index < NumberOfTransitions; index++) {
+  for (uint8_t index = 0; index < numberOfTransitions; index++) {
     turnstileInputs[index].repeatButton();    // Executing the Turnstile repeat button function
   }
   coinOperatedTurnstile.execute();            // Execute the FSM

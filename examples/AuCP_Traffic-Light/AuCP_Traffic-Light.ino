@@ -1,3 +1,10 @@
+/*
+  Sketch:   AuCP_Traffic-Light.ino
+  Created:  17-Apr-2023
+  Author:   MicroBeaut (μB)
+  GitHub:   https://github.com/MicroBeaut/Finite-State
+*/
+
 #include "FiniteState.h"
 
 #define redLightPin     5
@@ -18,31 +25,50 @@ Timer delayTimes[] = {
   {3000},   // YELLOW Delay Time 3 seconds
 };
 
-bool DelayTimePredicate(id_t id);         // Predicate (Input)
+/*
+  ____________________________________________________________________________________________________________________________________________________
+  |  State-Transition Table                                                                                                                           |
+  |___________________________________________________________________________________________________________________________________________________|
+  |             |       |                   | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
+  | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+  | RED         |  0	  | TimePredicate     |      0      |      1      | nullptr         | EventOnActionChanged  |               - | -               |
+  | GREEN       |  1	  | TimePredicate     |      1      |      2      | nullptr         | EventOnActionChanged  |               - | -               |
+  | YELLOW      |  2	  | TimePredicate     |      2      |      0      | nullptr         | EventOnActionChanged  |               - | -               |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+*/
+
+bool TimePredicate(id_t id);              // Predicate (Input)
 void EventOnActionChanged(EventArgs e);   // Event State
 
-Transition transitions[] = {
-  {DelayTimePredicate, 0, 1, nullptr, EventOnActionChanged},  // State-1 - NextF = 0, NextT = 1
-  {DelayTimePredicate, 1, 2, nullptr, EventOnActionChanged},  // State-2 - NextF = 1, NextT = 2
-  {DelayTimePredicate, 2, 0, nullptr, EventOnActionChanged},  // State-3 - NextF = 2, NextT = 0
+enum TraficState {
+  RED,
+  GREEN,
+  YELLOW
 };
-const uint8_t numberOftransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
-FiniteState finiteStateMachine(transitions, numberOftransitions);             // Define Finite-State Object
+Transition transitions[] = {
+  {TimePredicate, RED, GREEN, nullptr, EventOnActionChanged},                 // State-1 - NextF = 0, NextT = 1
+  {TimePredicate, GREEN, YELLOW, nullptr, EventOnActionChanged},              // State-2 - NextF = 1, NextT = 2
+  {TimePredicate, YELLOW, RED, nullptr, EventOnActionChanged},                // State-3 - NextF = 2, NextT = 0
+};
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
+
+FiniteState finiteStateMachine(transitions, numberOfTransitions);             // Define Finite-State Object
 
 void setup() {
   for (uint8_t index = 0; index < numberOfLights; index ++) {
     pinMode(lightPins[index], OUTPUT);    // Set Pin Mode
     digitalWrite(lightPins[index], LOW);  // Set Light with the LOW state.
   }
-  finiteStateMachine.begin(0);            // FSM begins with Initial Transition Id 0
+  finiteStateMachine.begin(RED);          // FSM begins with Initial Transition Id 0
 }
 
 void loop() {
-  finiteStateMachine.execute();  // Execute the FSM
+  finiteStateMachine.execute();           // Execute the FSM
 }
 
-bool DelayTimePredicate(id_t id) {
+bool TimePredicate(id_t id) {
   return (millis() - delayTimes[id].startTime >= delayTimes[id].delayTime); // Determine Time Delay
 }
 

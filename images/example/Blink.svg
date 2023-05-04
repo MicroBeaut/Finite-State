@@ -167,17 +167,17 @@
 			<text x="25.51" y="139.65" class="st7" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>Timeout</text>		</g>
 		<g id="shape82-57" v:mID="82" v:groupContext="shape" transform="translate(257.535,-43.5197)">
 			<title>Sheet.82</title>
-			<desc>Timer</desc>
+			<desc>TIMER</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197"/>
 			<v:textRect cx="28.3465" cy="129.559" width="56.7" height="28.3465"/>
 			<rect x="0" y="115.386" width="56.6929" height="28.3465" class="st6"/>
-			<text x="16.54" y="132.56" class="st7" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>Timer</text>		</g>
+			<text x="15.22" y="132.56" class="st7" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>TIMER</text>		</g>
 		<g id="shape84-60" v:mID="84" v:groupContext="shape" transform="translate(87.4567,-71.8661)">
 			<title>Sheet.84</title>
-			<desc>Timer</desc>
+			<desc>TIMER</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197"/>
 			<v:textRect cx="28.3465" cy="129.559" width="56.7" height="28.3465"/>
 			<rect x="0" y="115.386" width="56.6929" height="28.3465" class="st6"/>
-			<text x="16.54" y="132.56" class="st7" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>Timer</text>		</g>
+			<text x="15.22" y="132.56" class="st7" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>TIMER</text>		</g>
 	</g>
 </svg>

@@ -1,39 +1,52 @@
+/*
+  AuCP_Coin-Operated-Turnstile.ino
+  Created:  4-May-2023
+  Author:   MicroBeaut
+  GitHub:   https://github.com/MicroBeaut/Finite-State
+*/
+
 #include "FiniteState.h"
 #include "RepeatButton.h"
 
-#define coinInputPin      A0  // Define the Coin input pin.
-#define pushInputPin      A1  // Define the Push input pin.
+#define coinInputPin      A0    // Define the Coin input pin.
+#define pushInputPin      A1    // Define the Push input pin.
 
-#define lockedStatusPin   7   // Define the Locked state output pin.
-#define unlockedStatusPin 6   // Define the Unlocked state output pin. 
+#define lockedStatusPin   7     // Define the Locked state output pin.
+#define unlockedStatusPin 6     // Define the Unlocked state output pin. 
 
 /*
-  __________________________________________________________________________________________________________________________
-  |  State-Transition Table                                                                                                 |
-  |_________________________________________________________________________________________________________________________|
-  |  Id | Predicate       | Next-State  | Next-State  | Process         | Event         |   Delay-Time    | Timer-Type      |
-  |     |                 |   Fase      |   True      |                 |               | (milliseconds)  |                 |
-  |_____|_________________|_____________|_____________|_________________|_______________|_________________|_________________|
-  |  0	|  CoinPredicate	|      0      |      1      | LockedProcess	  | -	            |               - |  -              |
-  |  1	|  PushPredicate	|      1      |      0      |	UnlockedProcess | -	            |               - |  -              |
-  |_____|_________________|_____________|_____________|_________________|_______________|_________________|_________________|
+  ____________________________________________________________________________________________________________________________________________________
+  |  State-Transition Table                                                                                                                           |
+  |___________________________________________________________________________________________________________________________________________________|
+  |             |       |                   | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
+  | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+  | LOCKED      |  0	  | CoinPredicate     |      0      |      1      | LockedProcess   | -                     |               - | -               |
+  | UNLOCKED    |  1	  | CoinPredicate     |      1      |      0      | UnlockedProcess | -                     |               - | -               |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 
-bool CoinPredicate(id_t id);              // Declare Coin Predicate function
-bool PushPredicate(id_t id);              // Declare Push Predicate function
+bool CoinPredicate(id_t id);    // Declare Coin Predicate function
+bool PushPredicate(id_t id);    // Declare Push Predicate function
 
-void LockedProcess(id_t id);              // Declare Locked Process function
-void UnlockedProcess(id_t id);            // Declare Unlocked Process function
+void LockedProcess(id_t id);    // Declare Locked Process function
+void UnlockedProcess(id_t id);  // Declare Unlocked Process function
+
+enum TurnstileState : id_t {
+  LOCKED,
+  UNLOCKED
+};
 
 Transition transitions[] = {
-  {CoinPredicate, 0, 1, LockedProcess},   // State-0 - NextF = 0, NextT = 1
-  {PushPredicate, 1, 0, UnlockedProcess}  // State-1 - NextF = 1, NextT = 0
+  {CoinPredicate, LOCKED, UNLOCKED, LockedProcess},                           // State-0 - NextF = 0, NextT = 1
+  {PushPredicate, UNLOCKED, LOCKED, UnlockedProcess}                          // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t NumberOfTransitions = 2;    // Number Of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
-FiniteState coinOperatedTurnstile(transitions, NumberOfTransitions);  // Finite-State Object
-RepeatButton coin;                                                    // Declare the Coin RepeatButton object
-RepeatButton push;                                                    // Declare the Push RepeatButton object
+FiniteState coinOperatedTurnstile(transitions, numberOfTransitions);          // Finite-State Object
+
+RepeatButton coin;                                                            // Declare the Coin RepeatButton object
+RepeatButton push;                                                            // Declare the Push RepeatButton object
 
 void setup() {
   coin.buttonMode(coinInputPin, INPUT_PULLUP);  // Set the Coin input pin mode
@@ -41,7 +54,7 @@ void setup() {
   pinMode(lockedStatusPin, OUTPUT);             // Set the Locked state pin mode
   pinMode(unlockedStatusPin, OUTPUT);           // Set the Unlocked state pin mode
 
-  coinOperatedTurnstile.begin(0);               // FSM begins with Initial Transition Id 0
+  coinOperatedTurnstile.begin(LOCKED);          // FSM begins with Initial Transition Id 0
 }
 
 void loop() {

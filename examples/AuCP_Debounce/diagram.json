@@ -16,7 +16,7 @@
       "id": "btn1",
       "top": 132.81,
       "left": -110,
-      "attrs": { "color": "DARKRED", "label": "BUTTON", "bounce": "0" }
+      "attrs": { "color": "DARKRED", "label": "BUTTON", "bounce": "1" }
     },
     {
       "type": "wokwi-led",
