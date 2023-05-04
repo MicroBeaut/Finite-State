@@ -173,6 +173,11 @@ void EvnetOnActionChanged(EventArgs e) {
 ## Timer
 
 A Timer is an option. Finite-State will predict the condition for the next state with a timer when the timer type selects and the delay time value is greater than zero.
+- [Not Used Timer (`NOT_USED`)](#not-used-timer-not_used)
+- [Transition Timer (`TRANS_TIMER`)](#transition-timer-trans_timer)
+- [Predicate Timer (`PREDIC_TIMER`)](#predicate-timer-predic_timer)
+- [False-State Timer (`FALSE_TIMER`)](#false-state-timer-false_timer)
+- [True-State Timer (`FALSE_TIMER`)](#true-state-timer-true_timer)
 
 ```c
 enum TimerType {
