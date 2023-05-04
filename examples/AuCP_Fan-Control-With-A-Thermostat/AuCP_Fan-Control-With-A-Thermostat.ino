@@ -57,13 +57,13 @@ bool HighTempPredicate(id_t state) {
   return ThermostatRead() >= 40;          // Determine Fan Start Action
 }
 
+bool LowTempPredicate(id_t state) {
+  return ThermostatRead() <= 30;          // Determine Fan Stop Action
+}
+
 void FanStartProcess(id_t id) {
   digitalWrite(stopStatusPin, false);     // Update fan stop status
   digitalWrite(startStatusPin, true);     // Update fan start status
-}
-
-bool LowTempPredicate(id_t state) {
-  return ThermostatRead() <= 30;          // Determine Fan Stop Action
 }
 
 void FanStopProcess(id_t id) {
