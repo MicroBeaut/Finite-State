@@ -743,7 +743,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); //
 
 #### Sketch
 
-![Wokwi](./images/Wokwi-Simulate.svg) [Coin Operated Turnstile](https://wokwi.com/projects/363765428832793601)
+![Wokwi](./images/Wokwi-Simulate.svg) [Coin Operated Turnstile with Predicate and Process](https://wokwi.com/projects/363765428832793601)
 
 ```C
 #include "FiniteState.h"
