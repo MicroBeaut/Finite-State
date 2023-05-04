@@ -9,7 +9,7 @@
 #include "RepeatButton.h"
 
 #define coinInputPin      A0    // Define the Coin input pin.
-#define pushInputPin      A1    // Define the Push input pin.
+#define armInputPin       A1    // Define the Arm input pin.
 
 #define lockedStatusPin   7     // Define the Locked state output pin.
 #define unlockedStatusPin 6     // Define the Unlocked state output pin. 
@@ -22,12 +22,12 @@
   | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
   | LOCKED      |  0	  | CoinPredicate     |      0      |      1      | LockedProcess   | -                     |               - | -               |
-  | UNLOCKED    |  1	  | PushPredicate     |      1      |      0      | UnlockedProcess | -                     |               - | -               |
+  | UNLOCKED    |  1	  | ArmPredicate      |      1      |      0      | UnlockedProcess | -                     |               - | -               |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 
 bool CoinPredicate(id_t id);    // Declare Coin Predicate function
-bool PushPredicate(id_t id);    // Declare Push Predicate function
+bool ArmPredicate(id_t id);     // Declare Arm Predicate function
 
 void LockedProcess(id_t id);    // Declare Locked Process function
 void UnlockedProcess(id_t id);  // Declare Unlocked Process function
@@ -39,18 +39,18 @@ enum TurnstileState : id_t {
 
 Transition transitions[] = {
   {CoinPredicate, LOCKED, UNLOCKED, LockedProcess},                           // State-0 - NextF = 0, NextT = 1
-  {PushPredicate, UNLOCKED, LOCKED, UnlockedProcess}                          // State-1 - NextF = 1, NextT = 0
+  {ArmPredicate, UNLOCKED, LOCKED, UnlockedProcess}                           // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
 FiniteState coinOperatedTurnstile(transitions, numberOfTransitions);          // Finite-State Object
 
 RepeatButton coin;                                                            // Declare the Coin RepeatButton object
-RepeatButton push;                                                            // Declare the Push RepeatButton object
+RepeatButton arm;                                                             // Declare the Arm RepeatButton object
 
 void setup() {
   coin.buttonMode(coinInputPin, INPUT_PULLUP);  // Set the Coin input pin mode
-  push.buttonMode(pushInputPin, INPUT_PULLUP);  // Set the Push input pin mode
+  arm.buttonMode(armInputPin, INPUT_PULLUP);    // Set the Arm input pin mode
   pinMode(lockedStatusPin, OUTPUT);             // Set the Locked state pin mode
   pinMode(unlockedStatusPin, OUTPUT);           // Set the Unlocked state pin mode
 
@@ -59,7 +59,7 @@ void setup() {
 
 void loop() {
   coin.repeatButton();                    // Executing the Coin repeat button function
-  push.repeatButton();                    // Executing the Push repeat button function
+  arm.repeatButton();                     // Executing the Arm repeat button function
   coinOperatedTurnstile.execute();        // Execute the FSM
 }
 
@@ -67,8 +67,8 @@ bool CoinPredicate(id_t id) {
   return coin.isPressed();                // Predicate putting a coin.
 }
 
-bool PushPredicate(id_t id) {
-  return push.isPressed();                // Predicate pushing the arm.
+bool ArmPredicate(id_t id) {
+  return arm.isPressed();                // Predicate pushing the arm.
 }
 
 void LockedProcess(id_t id) {

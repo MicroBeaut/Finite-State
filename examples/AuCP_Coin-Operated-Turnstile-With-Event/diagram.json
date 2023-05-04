@@ -16,14 +16,14 @@
       "id": "btn1",
       "top": 133.48,
       "left": -110,
-      "attrs": { "color": "DARKRED", "label": "Coin", "bounce": "0" }
+      "attrs": { "color": "DARKRED", "label": "Coin", "bounce": "1" }
     },
     {
       "type": "wokwi-pushbutton",
       "id": "btn2",
       "top": 195.48,
       "left": -110,
-      "attrs": { "color": "DARKBLUE", "label": "Push", "bounce": "0" }
+      "attrs": { "color": "DARKBLUE", "label": "Arm", "bounce": "1" }
     },
     {
       "type": "wokwi-led",

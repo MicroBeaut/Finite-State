@@ -9,7 +9,7 @@
 #include "RepeatButton.h"
 
 #define coinInputPin      A0  // Define the Coin input pin.
-#define pushInputPin      A1  // Define the Push input pin.
+#define armInputPin       A1  // Define the Push input pin.
 
 #define lockedStatusPin   7   // Define the Locked state output pin.
 #define unlockedStatusPin 6   // Define the Unlocked state output pin.
@@ -22,7 +22,7 @@
   | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
   | LOCKED      |  0	  | CoinPredicate     |      0      |      1      | -               | EventOnActionChanged  |               - | -               |
-  | UNLOCKED    |  1	  | CoinPredicate     |      1      |      0      | -               | EventOnActionChanged  |               - | -               |
+  | UNLOCKED    |  1	  | ArmPredicate      |      1      |      0      | -               | EventOnActionChanged  |               - | -               |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 
@@ -42,8 +42,8 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   
 
 FiniteState coinOperatedTurnstile(transitions, numberOfTransitions);            // Finite-State Object
 
-uint8_t inputPins[numberOfTransitions] = {coinInputPin, pushInputPin};          // Declare the Coin RepeatButton object
-uint8_t outputPins[numberOfTransitions] = {lockedStatusPin, unlockedStatusPin}; // Declare the Coin RepeatButton object
+uint8_t inputPins[numberOfTransitions] = {coinInputPin, armInputPin};           // Declare the input pin array
+uint8_t outputPins[numberOfTransitions] = {lockedStatusPin, unlockedStatusPin}; // Declare the output pin array
 RepeatButton turnstileInputs[numberOfTransitions];                              // Declare the Turnstile Inputs RepeatButton object
 
 void setup() {
@@ -56,13 +56,13 @@ void setup() {
 
 void loop() {
   for (uint8_t index = 0; index < numberOfTransitions; index++) {
-    turnstileInputs[index].repeatButton();    // Executing the Turnstile repeat button function
+    turnstileInputs[index].repeatButton();    // Executing the Turnstile repeat button function.
   }
-  coinOperatedTurnstile.execute();            // Execute the FSM
+  coinOperatedTurnstile.execute();            // Execute the FSM.
 }
 
 bool inputPredicate(id_t id) {
-  return turnstileInputs[id].isPressed();     // Predicate putting a coin.
+  return turnstileInputs[id].isPressed();     // Predicate putting a coin and pushing the arm.
 }
 
 void EventOnActionChanged(EventArgs e) {
