@@ -402,7 +402,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); //
 
 #### Sketch 
 
-![Wokwi](./images/Wokwi-Simulate-Black.svg) [Fan Control With A Thermostat](https://wokwi.com/projects/362184372922602497)
+![Wokwi](./images/wokwi-sim/Wokwi-Simulate-Black.svg) [Fan Control With A Thermostat](https://wokwi.com/projects/362184372922602497)
 
 ```C
 #include "FiniteState.h"
@@ -521,7 +521,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); //
 
 #### Sketch
 
-![Wokwi](./images/Wokwi-Simulate-Black.svg) [Traffic Light with Customized Timer](https://wokwi.com/projects/362092485127898113)
+![Wokwi](./images/wokwi-sim/Wokwi-Simulate-Black.svg) [Traffic Light with Customized Timer](https://wokwi.com/projects/362092485127898113)
 
 
 ```C
@@ -642,7 +642,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   
 
 #### Sketch
 
-![Wokwi](./images/Wokwi-Simulate-Black.svg) [Traffic Light with Transition Timer](https://wokwi.com/projects/363517579350398977)
+![Wokwi](./images/wokwi-sim/Wokwi-Simulate-Black.svg) [Traffic Light with Transition Timer](https://wokwi.com/projects/363517579350398977)
 
 ```C
 #include "FiniteState.h"
@@ -747,7 +747,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); //
 
 #### Sketch
 
-![Wokwi](./images/Wokwi-Simulate-Black.svg) [Coin Operated Turnstile with Predicate and Process](https://wokwi.com/projects/363765428832793601)
+![Wokwi](./images/wokwi-sim/Wokwi-Simulate-Black.svg) [Coin Operated Turnstile with Predicate and Process](https://wokwi.com/projects/363765428832793601)
 
 ```C
 #include "FiniteState.h"
@@ -862,7 +862,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   
 
 #### Sketch
 
-![Wokwi](./images/Wokwi-Simulate-Black.svg) [Coin Operated Turnstile with Predicate and Event](https://wokwi.com/projects/363592764580637697)
+![Wokwi](./images/wokwi-sim/Wokwi-Simulate-Black.svg) [Coin Operated Turnstile with Predicate and Event](https://wokwi.com/projects/363592764580637697)
 
 ```C
 #include "FiniteState.h"
@@ -971,7 +971,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); //
 
 #### Sketch
 
-![Wokwi](./images/Wokwi-Simulate-Black.svg) [Blink](https://wokwi.com/projects/363629762329468929)
+![Wokwi](./images/wokwi-sim/Wokwi-Simulate-Black.svg) [Blink](https://wokwi.com/projects/363629762329468929)
 
 ```C
 #include "FiniteState.h"
@@ -1068,7 +1068,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   
 
 #### Sketch
 
-![Wokwi](./images/Wokwi-Simulate-Black.svg) [Debounce](https://wokwi.com/projects/363631226643958785)
+![Wokwi](./images/wokwi-sim/Wokwi-Simulate-Black.svg) [Debounce](https://wokwi.com/projects/363631226643958785)
 
 ```C
 #include "FiniteState.h"
@@ -1180,7 +1180,7 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 #### Sketch
 
-![Wokwi](./images/Wokwi-Simulate-Black.svg) [Analog High-Alarm](https://wokwi.com/projects/363718211450567681)
+![Wokwi](./images/wokwi-sim/Wokwi-Simulate-Black.svg) [Analog High-Alarm](https://wokwi.com/projects/363718211450567681)
 
 ```C
 #include "FiniteState.h"
