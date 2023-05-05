@@ -2,7 +2,7 @@
   Sketch:   AuCP_Analog-High-Alarm.ino
   Created:  3-May-2023
   Author:   MicroBeaut (μB)
-  GitHub:   https://github.com/MicroBeaut/Finite-State
+  GitHub:   https://github.com/MicroBeaut/Finite-State#analog-high-alarm
 */
 
 #include "FiniteState.h"

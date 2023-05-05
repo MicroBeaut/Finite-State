@@ -2,7 +2,7 @@
   AuCP_Debounce.ino
   Created:  5-May-2023
   Author:   MicroBeaut
-  GitHub:   https://github.com/MicroBeaut/Finite-State
+  GitHub:   https://github.com/MicroBeaut/Finite-State#debounce
 */
 
 #include "FiniteState.h"

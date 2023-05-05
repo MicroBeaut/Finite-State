@@ -2,7 +2,7 @@
   AuCP_Coin-Operated-Turnstile-With-Event.ino
   Created:  4-May-2023
   Author:   MicroBeaut
-  GitHub:   https://github.com/MicroBeaut/Finite-State
+  GitHub:   https://github.com/MicroBeaut/Finite-State#coin-operated-turnstile-with-predicate-and-event
 */
 
 #include "FiniteState.h"

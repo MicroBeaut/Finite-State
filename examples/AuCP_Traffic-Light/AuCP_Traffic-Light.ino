@@ -2,7 +2,7 @@
   Sketch:   AuCP_Traffic-Light.ino
   Created:  17-Apr-2023
   Author:   MicroBeaut (μB)
-  GitHub:   https://github.com/MicroBeaut/Finite-State
+  GitHub:   https://github.com/MicroBeaut/Finite-State#traffic-light-with-customized-timer-not_used
 */
 
 #include "FiniteState.h"

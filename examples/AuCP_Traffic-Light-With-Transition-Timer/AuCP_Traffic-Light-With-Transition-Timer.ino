@@ -2,7 +2,7 @@
   Sketch:   AuCP_Traffic-Light-With-Transition-Timer.ino
   Created:  1-May-2023
   Author:   MicroBeaut (μB)
-  GitHub:   https://github.com/MicroBeaut/Finite-State
+  GitHub:   https://github.com/MicroBeaut/Finite-State#traffic-light-with-transition-timer-trans_timer
 */
 
 #include "FiniteState.h"

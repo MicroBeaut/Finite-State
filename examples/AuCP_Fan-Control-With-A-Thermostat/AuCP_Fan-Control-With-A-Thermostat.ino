@@ -2,7 +2,7 @@
   Sketch:   AuCP_Fan-Control-With-A-Thermostat.ino
   Created:  17-Apr-2023
   Author:   MicroBeaut (μB)
-  GitHub:   https://github.com/MicroBeaut/Finite-State
+  GitHub:   https://github.com/MicroBeaut/Finite-State#fan-control-with-a-thermostat
 */
 
 #include "FiniteState.h"
