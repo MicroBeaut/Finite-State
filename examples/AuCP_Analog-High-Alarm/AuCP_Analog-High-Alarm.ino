@@ -37,9 +37,9 @@ long processValue;                                                    // Declare
   |             |       |                   | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
   | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
-  | NORMAL      |  0	  | AnalogPredicate   |      0      |      1      | nullptr         | EventOnActionChanged  |               - | -               |
-  | PRE_ALARM   |  1	  | AnalogPredicate   |      0      |      2      | nullptr         | EventOnActionChanged  |               - | -               |
-  | HIGH_ALARM  |  2	  | AnalogPredicate   |      2      |      0      | nullptr         | EventOnActionChanged  |               - | -               |
+  | NORMAL      |  0	  | AnalogPredicate   |      0      |      1      | NormalProcess   | -                     |               - | -               |
+  | PRE_ALARM   |  1	  | AnalogPredicate   |      0      |      2      | PreAlarmProcess | -                     |           3,000 | TRUE_TIMER      |
+  | HIGH_ALARM  |  2	  | AnalogPredicate   |      2      |      0      | HighAlarmProcess| -                     |               - | -               |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 

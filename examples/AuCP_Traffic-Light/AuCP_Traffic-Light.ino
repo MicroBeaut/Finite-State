@@ -32,9 +32,9 @@ Timer delayTimes[] = {
   |             |       |                   | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
   | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
-  | RED         |  0	  | TimePredicate     |      0      |      1      | nullptr         | EventOnActionChanged  |               - | -               |
-  | GREEN       |  1	  | TimePredicate     |      1      |      2      | nullptr         | EventOnActionChanged  |               - | -               |
-  | YELLOW      |  2	  | TimePredicate     |      2      |      0      | nullptr         | EventOnActionChanged  |               - | -               |
+  | RED         |  0	  | TimePredicate     |      0      |      1      | -               | EventOnActionChanged  |               - | -               |
+  | GREEN       |  1	  | TimePredicate     |      1      |      2      | -               | EventOnActionChanged  |               - | -               |
+  | YELLOW      |  2	  | TimePredicate     |      2      |      0      | -               | EventOnActionChanged  |               - | -               |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 

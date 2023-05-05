@@ -8,15 +8,15 @@
 #include "FiniteState.h"
 
 /*
-  __________________________________________________________________________________________________________________________________________________
-  |  State-Transition Table                                                                                                                         |
-  |_________________________________________________________________________________________________________________________________________________|
-  |             |       |                 | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
-  | State       |  Id   | Predicate       |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
-  |_____________|_______|_________________|_____________|_____________|_________________|_______________________|_________________|_________________|
-  | LED_OFF     |  0	  |  -	            |      0      |      1      | TurnOffProcess  | nullptr               |             500 | TRANS_TIMER     |
-  | LED_ON      |  1	  |  -	            |      1      |      0      | TrunOnProcess   | nullptr	              |           1,000 | TRANS_TIMER     |
-  |_____________|_______|_________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+  ____________________________________________________________________________________________________________________________________________________
+  |  State-Transition Table                                                                                                                           |
+  |___________________________________________________________________________________________________________________________________________________|
+  |             |       |                   | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
+  | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
+  | LED_OFF     |  0	  | -                 |      0      |      1      | TurnOffProcess  | -                     |             500 | TRANS_TIMER     |
+  | LED_ON      |  1	  | -                 |      1      |      0      | TrunOnProcess   | -                     |           1,000 | TRANS_TIMER     |
+  |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 
 void TrunOnProcess(id_t id);     // Declare Turn LED On Process function
@@ -36,6 +36,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); //
 FiniteState blinkFS(transitions, numberOfTransitions);                        // Finite-State Object
 
 void setup() {
+  
   pinMode(LED_BUILTIN, OUTPUT);     // Set the LED_BUILTIN pin mode
   blinkFS.begin(LED_OFF);           // FSM begins with Initial Transition Id 0
 }

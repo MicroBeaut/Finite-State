@@ -21,13 +21,12 @@ const uint8_t numberOfLights = sizeof(lightPins) / sizeof(uint8_t); // Calculate
   |             |       |                   | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
   | State       |  Id   | Predicate         |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
-  | RED         |  0	  | TimePredicate     |      0      |      1      | nullptr         | EventOnActionChanged  |           5,000 | TRANS_TIMER     |
-  | GREEN       |  1	  | TimePredicate     |      1      |      2      | nullptr         | EventOnActionChanged  |          10,000 | TRANS_TIMER     |
-  | YELLOW      |  2	  | TimePredicate     |      2      |      0      | nullptr         | EventOnActionChanged  |           3,000 | TRANS_TIMER     |
+  | RED         |  0	  | -                 |      0      |      1      | -               | EventOnActionChanged  |           5,000 | TRANS_TIMER     |
+  | GREEN       |  1	  | -                 |      1      |      2      | -               | EventOnActionChanged  |          10,000 | TRANS_TIMER     |
+  | YELLOW      |  2	  | -                 |      2      |      0      | -               | EventOnActionChanged  |           3,000 | TRANS_TIMER     |
   |_____________|_______|___________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 
-bool TimePredicate(id_t id);              // Predicate (Input)
 void EventOnActionChanged(EventArgs e);   // Event State
 
 enum TraficState : id_t {

@@ -240,8 +240,8 @@ When selecting the transition timer, the condition for the next state will ignor
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|0|`nullptr`|0|1|`ProcessCallbackFunction`|`EventCallbackFunction`|`3,000`|`TRANS_TIMER`|
-|1|`nullptr`|1|0|`ProcessCallbackFunction`|`EventCallbackFunction`|`5,000`|`TRANS_TIMER`|
+|0|`-`|0|1|`ProcessCallbackFunction`|`EventCallbackFunction`|`3,000`|`TRANS_TIMER`|
+|1|`-`|1|0|`ProcessCallbackFunction`|`EventCallbackFunction`|`5,000`|`TRANS_TIMER`|
 
 ### State-Transition Table -> Transition Declaration
 
@@ -487,9 +487,9 @@ const long ThermostatRead() {
 
 |State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`RED`|`0`|`DelayTimePredicate`|`0`|`1`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
-|`GREEN`|`1`|`DelayTimePredicate`|`1`|`2`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
-|`YELLOW`|`2`|`DelayTimePredicate`|`2`|`0`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
+|`RED`|`0`|`TimePredicate`|`0`|`1`|`-`|`EventOnActionChanged`|`-`|`-`|
+|`GREEN`|`1`|`TimePredicate`|`1`|`2`|`-`|`EventOnActionChanged`|`-`|`-`|
+|`YELLOW`|`2`|`TimePredicate`|`2`|`0`|`-`|`EventOnActionChanged`|`-`|`-`|
 
 #### State-Transition Table -> Transition Declaration
 
@@ -608,9 +608,9 @@ void EventOnActionChanged(EventArgs e) {
 
 |State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`RED`|`0`|`nullptr`|`0`|`1`|`nullptr`|`EventOnActionChanged`|`5,000`|`TRANS_TIMER`|
-|`GREEN`|`1`|`nullptr`|`1`|`2`|`nullptr`|`EventOnActionChanged`|`10,000`|`TRANS_TIMER`|
-|`YELLOW`|`2`|`nullptr`|`2`|`0`|`nullptr`|`EventOnActionChanged`|`3,000`|`TRANS_TIMER`|
+|`RED`|`0`|`-`|`0`|`1`|`-`|`EventOnActionChanged`|`5,000`|`TRANS_TIMER`|
+|`GREEN`|`1`|`-`|`1`|`2`|`-`|`EventOnActionChanged`|`10,000`|`TRANS_TIMER`|
+|`YELLOW`|`2`|`-`|`2`|`0`|`-`|`EventOnActionChanged`|`3,000`|`TRANS_TIMER`|
 
 #### State-Transition Table -> Transition Declaration
 
@@ -654,7 +654,6 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   
 uint8_t lightPins[] = {redLightPin, greenLightPin, yellowLightPin}; // Define an array of light pins.
 const uint8_t numberOfLights = sizeof(lightPins) / sizeof(uint8_t); // Calculate the number of lights.
 
-bool TimePredicate(id_t id);              // Predicate (Input)
 void EventOnActionChanged(EventArgs e);   // Event State
 
 enum TraficState : id_t {
@@ -832,8 +831,8 @@ void UnlockedProcess(id_t id) {
 
 |State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`LOCKED`|`0`|`CoinPredicate`|`0`|`1`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
-|`UNLOCKED`|`1`|`ArmPredicate`|`1`|`0`|`nullptr`|`EventOnActionChanged`|`-`|`-`|
+|`LOCKED`|`0`|`CoinPredicate`|`0`|`1`|`-`|`EventOnActionChanged`|`-`|`-`|
+|`UNLOCKED`|`1`|`ArmPredicate`|`1`|`0`|`-`|`EventOnActionChanged`|`-`|`-`|
 
 #### State-Transition Table -> Transition Declaration
 
@@ -942,8 +941,8 @@ void EventOnActionChanged(EventArgs e) {
 
 |State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`LED_OFF`|`0`|`nullptr`|`0`|`1`|`TurnOffProcess`|`nullptr`|`500`|`TRANS_TIMER`|
-|`LED_ON`|`1`|`nullptr`|`1`|`0`|`TrunOnProcess`|`nullptr`|`1,000`|`TRANS_TIMER`|
+|`LED_OFF`|`0`|`-`|`0`|`1`|`TurnOffProcess`|`-`|`500`|`TRANS_TIMER`|
+|`LED_ON`|`1`|`-`|`1`|`0`|`TrunOnProcess`|`-`|`1,000`|`TRANS_TIMER`|
 
 #### State-Transition Table -> Transition Declaration
 
@@ -1028,9 +1027,9 @@ void TurnOffProcess(id_t id) {
 |State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
 |`RELEASED`|`0`|`ButtonPredicate`|`0`|`1`|`ReleasedProcess`|`-`|`-`|`-`|
-|`DEBOUNCE_T`|`1`|`ButtonPredicate`|`0`|`2`|`nullptr`|`nullptr`|`10`|`TRUE_TIMER`|
+|`DEBOUNCE_T`|`1`|`ButtonPredicate`|`0`|`2`|`-`|`-`|`10`|`TRUE_TIMER`|
 |`PRESSED`|`2`|`ButtonPredicate`|`3`|`2`|`PressedProcess`|`-`|`-`|`-`|
-|`DEBOUNCE_F`|`3`|`ButtonPredicate`|`0`|`2`|`nullptr`|`nullptr`|`10`|`FALSE_TIMER`|
+|`DEBOUNCE_F`|`3`|`ButtonPredicate`|`0`|`2`|`-`|`-`|`10`|`FALSE_TIMER`|
 
 #### State-Transition Table -> Transition Declaration
 
@@ -1142,7 +1141,7 @@ void PressedProcess(id_t id) {
 |State|Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----:|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
 |`NORMAL`|`0`|`AnalogPredicate`|`0`|`1`|`NormalProcess`|`-`|`-`|`-`|
-|`PRE_ALARM`|`1`|`AnalogPredicate`|`0`|`2`|`PreAlarmProcess`|`nullptr`|`3,000`|`TRUE_TIMER`|
+|`PRE_ALARM`|`1`|`AnalogPredicate`|`0`|`2`|`PreAlarmProcess`|`-`|`3,000`|`TRUE_TIMER`|
 |`HIGH_ALARM`|`2`|`AnalogPredicate`|`2`|`0`|`HighAlarmProcess`|`-`|`-`|`-`|
 
 #### State-Transition Table -> Transition Declaration
