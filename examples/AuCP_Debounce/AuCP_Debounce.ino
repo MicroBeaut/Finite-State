@@ -17,10 +17,10 @@
   |             |       |                 | Next-State  | Next-State  |                 |                       |   Delay-Time    |                 |
   | State       |  Id   | Predicate       |   Fase      |   True      | Process         | Event                 | (milliseconds)  | Timer-Type      |
   |_____________|_______|_________________|_____________|_____________|_________________|_______________________|_________________|_________________|
-  | RELEASED    |  0	  | ButtonPredicate |      0      |      1      | ReleasedProcess | -                   	|               - | TRUE_TIMER      |
-  | DEBOUNCE_T  |  1	  | ButtonPredicate |      0      |      2      | -               | -                   	|              10 | -               |
-  | PRESSED     |  2	  | ButtonPredicate |      3      |      2      | PressedProcess  | -                   	|               - | FALSE_TIMER     |
-  | DEBOUNCE_F  |  3	  | ButtonPredicate |      0      |      2      | -               | -                   	|              10 | -               |
+  | RELEASED    |  0	  | ButtonPredicate |      0      |      1      | ReleasedProcess | -                   	|               - | -               |
+  | DEBOUNCE_T  |  1	  | ButtonPredicate |      0      |      2      | -               | -                   	|              10 | TRUE_TIMER      |
+  | PRESSED     |  2	  | ButtonPredicate |      3      |      2      | PressedProcess  | -                   	|               - | -               |
+  | DEBOUNCE_F  |  3	  | ButtonPredicate |      0      |      2      | -               | -                   	|              10 | FALSE_TIMER     |
   |_____________|_______|_________________|_____________|_____________|_________________|_______________________|_________________|_________________|
 */
 
