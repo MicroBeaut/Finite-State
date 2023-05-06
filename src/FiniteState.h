@@ -20,12 +20,11 @@
 
 #define id_t uint8_t
 #define time_t unsigned long
-#define BADID(id,maxId) (id<maxId?false:true)
 
 enum Action {
-  DURING,
-  EXIT,
-  ENTRY
+  NONE,
+  ENTRY,
+  EXIT
 };
 
 enum TimerType {
@@ -65,9 +64,8 @@ class FiniteState {
   private:
 #define MS2US(ms) (ms * 1000UL)
     Transition *_transitions;             // Tranistion Pointer
-    uint8_t _numberOfTransitions;         // Number of Transitions
+    uint8_t _size;                        // Number of Transitions
     EventArgs _eventArgs;                 // Event Argument
-    bool _initial;                        // Initial State
     time_t _startTime;                    // Start Time
     bool _timeout;                        // Timeout State
 
@@ -86,7 +84,6 @@ class FiniteState {
     void InternalNextStateAction(const id_t id);
 
     void InternalEntryAction(const id_t id);
-    void InternalDuringAction();
     void InternalExitAction();
 
     void InternalEventHandler(const Action e);
@@ -94,8 +91,8 @@ class FiniteState {
     const TriState InternalTimer();
     const bool InternalTimeout();
 
+    const bool InternalBadId(id_t id);
     const uint8_t InternalLimit(const uint8_t value, const uint8_t min, const uint8_t max);
-
   public:
     id_t &id;
     uint8_t &size;

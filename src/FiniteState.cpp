@@ -9,28 +9,24 @@
 
 #include "FiniteState.h"
 
-FiniteState::FiniteState(Transition *transitions, const uint8_t numberOfTransitions): size(_numberOfTransitions), id(_eventArgs.id) {
-  _numberOfTransitions = this->InternalLimit(numberOfTransitions, STATE_TRANSITION_MIN, STATE_TRANSITION_MAX);
+FiniteState::FiniteState(Transition *transitions, const uint8_t numberOfTransitions): size(_size), id(_eventArgs.id) {
+  _size = this->InternalLimit(numberOfTransitions, STATE_TRANSITION_MIN, STATE_TRANSITION_MAX);
   _transitions = transitions;
-  _initial = false;
-  _eventArgs.action = DURING;
+  _eventArgs.id = 0;
+  _eventArgs.action = NONE;
 }
 
 void FiniteState::begin(const id_t id) {
-  if (BADID(id, _numberOfTransitions)) return;
-  _initial = true;
+  if (this->InternalBadId(id)) return;
   this->InternalEntryAction(id);
-  this->InternalDuringAction();
 }
 
 void FiniteState::transition(const id_t id) {
-  if (BADID(id, _numberOfTransitions)) return;
+  if (this->InternalBadId(id)) return;
   this->InternalNextStateAction(id);
 }
 
 void FiniteState::execute() {
-  if (!_initial) return;
-  Action action = _eventArgs.action;
   this->InternalTimerCondition();
   this->InternalProcess();
 }
@@ -135,7 +131,6 @@ void FiniteState::InternalNextStateAction(const id_t id) {
   if (_eventArgs.id == id) return;
   this->InternalExitAction();
   this->InternalEntryAction(id);
-  this->InternalDuringAction();
 }
 
 void FiniteState::InternalEntryAction(const id_t id) {
@@ -143,10 +138,6 @@ void FiniteState::InternalEntryAction(const id_t id) {
   _timeout = false;
   _eventArgs.id = id;
   this->InternalEventHandler(ENTRY);
-}
-
-void FiniteState::InternalDuringAction() {
-  this->InternalEventHandler(DURING);
 }
 
 void FiniteState::InternalExitAction() {
@@ -159,6 +150,7 @@ void FiniteState::InternalEventHandler(const Action e) {
   if (_transitions[_eventArgs.id].eventHandler) {
     _transitions[_eventArgs.id].eventHandler(_eventArgs);
   }
+  _eventArgs.action = NONE;
 }
 
 const TriState FiniteState::InternalTimer() {
@@ -172,6 +164,11 @@ const bool FiniteState::InternalTimeout() {
   time_t elapsedTime = micros() - _startTime;
   if (elapsedTime < MS2US(_transitions[_eventArgs.id].delayTime)) return false;
   _timeout = true;
+  return true;
+}
+
+const bool FiniteState::InternalBadId(id_t id) {
+  if (id < _size) return false;
   return true;
 }
 
