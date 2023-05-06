@@ -293,7 +293,7 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 When selecting the transition timer, the condition for the next state will ignore the Predicate function's return value. It is the only `NextT` condition possible during the timer timeout.
 
 <p align="center">
-	<img src="./images/timer-type/transition-timer/transition-Timer-State-Diagram.svg" width="63%" />
+	<img src="./images/timer-type/transition-timer/transition-timer-state-diagram.svg" width="63%" />
   <h3 align="center">Transition-Timer State Diagram</h3>
 </p>
 
@@ -810,9 +810,9 @@ const long ThermostatRead() {
 
 ## Traffic Light
 
-- [Traffic Light with Customized Timer (Timer Type: `NOT_USED`)](#traffic-light-with-customized-timer-not_used)
+- [Traffic Light with Customized Timer (`NOT_USED`)](#traffic-light-with-customized-timer-not_used)
 
-- [Traffic Light with Transition Timer (Timer Type: `TRANS_TIMER`)](#traffic-light-with-transition-timer-trans_timer)
+- [Traffic Light with Transition Timer (`TRANS_TIMER`)](#traffic-light-with-transition-timer-trans_timer)
 
 ### Traffic Light with Customized Timer (`NOT_USED`)
 
