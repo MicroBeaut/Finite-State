@@ -437,7 +437,7 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 <p align="center">
 	<img src="./images/timer-type/predicate-timer/option2-predicate-timer-with-process.svg" width="63%" />
-  <h3 align="center">Typical Predicate Timer with Process and Event State Diagram</h3>
+  <h3 align="center">Typical Predicate Timer with Process State Diagram</h3>
 </p>
 
 ##### State-Transition Table
@@ -510,7 +510,7 @@ State transitions can be defined as three options,
 
 <p align="center">
 	<img src="./images/timer-type/false-timer/option1-false-timer-with-process-and-event.svg" width="63%" />
-  <h3 align="center">Typical False Timer with Process State Diagram</h3>
+  <h3 align="center">Typical False Timer with Process and Event State Diagram</h3>
 </p>
 
 ##### State-Transition Table
