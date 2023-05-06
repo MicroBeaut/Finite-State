@@ -211,19 +211,19 @@ State transitions can be defined as three options,
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`OutputProcess`|`EventOnActionChanged`|`-`|`-`|
-|`1`|`InputPredicate`|`1`|`0`|`OutputProcess`|`EventOnActionChanged`|`-`|`-`|
+|`0`|`PredicateFunction`|`0`|`1`|`ProcessFunction`|`EventOnActionChanged`|`-`|`-`|
+|`1`|`PredicateFunction`|`1`|`0`|`ProcessFunction`|`EventOnActionChanged`|`-`|`-`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
-void OutputProcess(id_t id);
+bool PredicateFunction(id_t id);
+void ProcessFunction(id_t id);
 void EventOnActionChanged(EventArgs e);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, OutputProcess, EventOnActionChanged},                  // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, OutputProcess, EventOnActionChanged}                   // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, ProcessFunction, EventOnActionChanged},             // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, ProcessFunction, EventOnActionChanged}              // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -241,18 +241,18 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`OutputProcess`|`-`|`-`|`-`|
-|`1`|`InputPredicate`|`1`|`0`|`OutputProcess`|`-`|`-`|`-`|
+|`0`|`PredicateFunction`|`0`|`1`|`ProcessFunction`|`-`|`-`|`-`|
+|`1`|`PredicateFunction`|`1`|`0`|`ProcessFunction`|`-`|`-`|`-`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
-void OutputProcess(id_t id);
+bool PredicateFunction(id_t id);
+void ProcessFunction(id_t id);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, OutputProcess},                                        // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, OutputProcess}                                         // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, ProcessFunction},                                   // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, ProcessFunction}                                    // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -270,18 +270,18 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`-`|`EventOnActionChanged`|`-`|`-`|
-|`1`|`InputPredicate`|`1`|`0`|`-`|`EventOnActionChanged`|`-`|`-`|
+|`0`|`PredicateFunction`|`0`|`1`|`-`|`EventOnActionChanged`|`-`|`-`|
+|`1`|`PredicateFunction`|`1`|`0`|`-`|`EventOnActionChanged`|`-`|`-`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
+bool PredicateFunction(id_t id);
 void EventOnActionChanged(EventArgs e);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, nullptr, EventOnActionChanged},                        // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, nullptr, EventOnActionChanged}                         // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, nullptr, EventOnActionChanged},                     // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, nullptr, EventOnActionChanged}                      // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -314,18 +314,18 @@ State transitions can be defined as three options,
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`-`|`0`|`1`|`OutputProcess`|`EventOnActionChanged`|`1,000`|`TRANS_TIMER`|
-|`1`|`-`|`1`|`0`|`OutputProcess`|`EventOnActionChanged`|`1,000`|`TRANS_TIMER`|
+|`0`|`-`|`0`|`1`|`ProcessFunction`|`EventOnActionChanged`|`1,000`|`TRANS_TIMER`|
+|`1`|`-`|`1`|`0`|`ProcessFunction`|`EventOnActionChanged`|`1,000`|`TRANS_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-void OutputProcess(id_t id);
+void ProcessFunction(id_t id);
 void EventOnActionChanged(EventArgs e);
 
 Transition transitions[] = {
-  {nullptr, 0, 1, OutputProcess, EventOnActionChanged, 1000, TRANS_TIMER},      // State-0 - NextF = 0, NextT = 1
-  {nullptr, 1, 0, OutputProcess, EventOnActionChanged, 1000, TRANS_TIMER}       // State-1 - NextF = 1, NextT = 0
+  {nullptr, 0, 1, ProcessFunction, EventOnActionChanged, 1000, TRANS_TIMER},    // State-0 - NextF = 0, NextT = 1
+  {nullptr, 1, 0, ProcessFunction, EventOnActionChanged, 1000, TRANS_TIMER}     // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -343,17 +343,17 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`-`|`0`|`1`|`OutputProcess`|`-`|`1,000`|`TRANS_TIMER`|
-|`1`|`-`|`1`|`0`|`OutputProcess`|`-`|`1,000`|`TRANS_TIMER`|
+|`0`|`-`|`0`|`1`|`ProcessFunction`|`-`|`1,000`|`TRANS_TIMER`|
+|`1`|`-`|`1`|`0`|`ProcessFunction`|`-`|`1,000`|`TRANS_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-void OutputProcess(id_t id);
+void ProcessFunction(id_t id);
 
 Transition transitions[] = {
-  {nullptr, 0, 1, OutputProcess, nullptr, 1000, TRANS_TIMER},                   // State-0 - NextF = 0, NextT = 1
-  {nullptr, 1, 0, OutputProcess, nullptr, 1000, TRANS_TIMER}                    // State-1 - NextF = 1, NextT = 0
+  {nullptr, 0, 1, ProcessFunction, nullptr, 1000, TRANS_TIMER},                 // State-0 - NextF = 0, NextT = 1
+  {nullptr, 1, 0, ProcessFunction, nullptr, 1000, TRANS_TIMER}                  // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -414,23 +414,23 @@ State transitions can be defined as three options,
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`OutputProcess`|`EventOnActionChanged`|`1,000`|`PREDIC_TIMER`|
-|`1`|`InputPredicate`|`1`|`0`|`OutputProcess`|`EventOnActionChanged`|`1,000`|`PREDIC_TIMER`|
+|`0`|`PredicateFunction`|`0`|`1`|`ProcessFunction`|`EventOnActionChanged`|`1,000`|`PREDIC_TIMER`|
+|`1`|`PredicateFunction`|`1`|`0`|`ProcessFunction`|`EventOnActionChanged`|`1,000`|`PREDIC_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
-void OutputProcess(id_t id);
+bool PredicateFunction(id_t id);
+void ProcessFunction(id_t id);
 void EventOnActionChanged(EventArgs e);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, OutputProcess, EventOnActionChanged, 1000, PREDIC_TIMER},    // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, OutputProcess, EventOnActionChanged, 1000, PREDIC_TIMER}     // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, ProcessFunction, EventOnActionChanged, 1000, PREDIC_TIMER}, // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, ProcessFunction, EventOnActionChanged, 1000, PREDIC_TIMER}  // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);         // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);           // Number of Transitions
 
-FiniteState finiteStateMachine(transitions, numberOfTransitions);                     // Finite-State Object
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                       // Finite-State Object
 ```
 
 #### Predicate Timer with Process
@@ -444,18 +444,18 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`OutputProcess`|`-`|`1,000`|`PREDIC_TIMER`|
-|`1`|`InputPredicate`|`1`|`0`|`OutputProcess`|`-`|`1,000`|`PREDIC_TIMER`|
+|`0`|`PredicateFunction`|`0`|`1`|`ProcessFunction`|`-`|`1,000`|`PREDIC_TIMER`|
+|`1`|`PredicateFunction`|`1`|`0`|`ProcessFunction`|`-`|`1,000`|`PREDIC_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
-void OutputProcess(id_t id);
+bool PredicateFunction(id_t id);
+void ProcessFunction(id_t id);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, OutputProcess, nullptr, 1000, PREDIC_TIMER},           // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, OutputProcess, nullptr, 1000, PREDIC_TIMER}            // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, ProcessFunction, nullptr, 1000, PREDIC_TIMER},      // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, ProcessFunction, nullptr, 1000, PREDIC_TIMER}       // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -473,18 +473,18 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`-`|`EventOnActionChanged`|`1,000`|`PREDIC_TIMER`|
-|`1`|`InputPredicate`|`1`|`0`|`-`|`EventOnActionChanged`|`1,000`|`PREDIC_TIMER`|
+|`0`|`PredicateFunction`|`0`|`1`|`-`|`EventOnActionChanged`|`1,000`|`PREDIC_TIMER`|
+|`1`|`PredicateFunction`|`1`|`0`|`-`|`EventOnActionChanged`|`1,000`|`PREDIC_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
+bool PredicateFunction(id_t id);
 void EventOnActionChanged(EventArgs e);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, nullptr, EventOnActionChanged, 1000, PREDIC_TIMER},    // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, nullptr, EventOnActionChanged, 1000, PREDIC_TIMER}     // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, nullptr, EventOnActionChanged, 1000, PREDIC_TIMER}, // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, nullptr, EventOnActionChanged, 1000, PREDIC_TIMER}  // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -517,23 +517,23 @@ State transitions can be defined as three options,
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`OutputProcess`|`EventOnActionChanged`|`1,000`|`FALSE_TIMER`|
-|`1`|`InputPredicate`|`1`|`0`|`OutputProcess`|`EventOnActionChanged`|`1,000`|`FALSE_TIMER`|
+|`0`|`PredicateFunction`|`0`|`1`|`ProcessFunction`|`EventOnActionChanged`|`1,000`|`FALSE_TIMER`|
+|`1`|`PredicateFunction`|`1`|`0`|`ProcessFunction`|`EventOnActionChanged`|`1,000`|`FALSE_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
-void OutputProcess(id_t id);
+bool PredicateFunction(id_t id);
+void ProcessFunction(id_t id);
 void EventOnActionChanged(EventArgs e);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, OutputProcess, EventOnActionChanged, 1000, FALSE_TIMER},     // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, OutputProcess, EventOnActionChanged, 1000, FALSE_TIMER}      // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, ProcessFunction, EventOnActionChanged, 1000, FALSE_TIMER},  // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, ProcessFunction, EventOnActionChanged, 1000, FALSE_TIMER}   // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);         // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);           // Number of Transitions
 
-FiniteState finiteStateMachine(transitions, numberOfTransitions);                     // Finite-State Object
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                       // Finite-State Object
 ```
 
 #### False Timer with Process
@@ -547,18 +547,18 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`OutputProcess`|`-`|`1,000`|`FALSE_TIMER`|
-|`1`|`InputPredicate`|`1`|`0`|`OutputProcess`|`-`|`1,000`|`FALSE_TIMER`|
+|`0`|`PredicateFunction`|`0`|`1`|`ProcessFunction`|`-`|`1,000`|`FALSE_TIMER`|
+|`1`|`PredicateFunction`|`1`|`0`|`ProcessFunction`|`-`|`1,000`|`FALSE_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
-void OutputProcess(id_t id);
+bool PredicateFunction(id_t id);
+void ProcessFunction(id_t id);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, OutputProcess, nullptr, 1000, FALSE_TIMER},            // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, OutputProcess, nullptr, 1000, FALSE_TIMER}             // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, ProcessFunction, nullptr, 1000, FALSE_TIMER},       // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, ProcessFunction, nullptr, 1000, FALSE_TIMER}        // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -576,18 +576,18 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`-`|`EventOnActionChanged`|`1,000`|`FALSE_TIMER`|
-|`1`|`InputPredicate`|`1`|`0`|`-`|`EventOnActionChanged`|`1,000`|`FALSE_TIMER`|
+|`0`|`PredicateFunction`|`0`|`1`|`-`|`EventOnActionChanged`|`1,000`|`FALSE_TIMER`|
+|`1`|`PredicateFunction`|`1`|`0`|`-`|`EventOnActionChanged`|`1,000`|`FALSE_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
+bool PredicateFunction(id_t id);
 void EventOnActionChanged(EventArgs e);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, nullptr, EventOnActionChanged, 1000, FALSE_TIMER},     // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, nullptr, EventOnActionChanged, 1000, FALSE_TIMER}      // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, nullptr, EventOnActionChanged, 1000, FALSE_TIMER},  // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, nullptr, EventOnActionChanged, 1000, FALSE_TIMER}   // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -620,23 +620,23 @@ State transitions can be defined as three options,
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`OutputProcess`|`EventOnActionChanged`|`1,000`|`TRUE_TIMER`|
-|`1`|`InputPredicate`|`1`|`0`|`OutputProcess`|`EventOnActionChanged`|`1,000`|`TRUE_TIMER`|
+|`0`|`PredicateFunction`|`0`|`1`|`ProcessFunction`|`EventOnActionChanged`|`1,000`|`TRUE_TIMER`|
+|`1`|`PredicateFunction`|`1`|`0`|`ProcessFunction`|`EventOnActionChanged`|`1,000`|`TRUE_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
-void OutputProcess(id_t id);
+bool PredicateFunction(id_t id);
+void ProcessFunction(id_t id);
 void EventOnActionChanged(EventArgs e);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, OutputProcess, EventOnActionChanged, 1000, TRUE_TIMER},    // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, OutputProcess, EventOnActionChanged, 1000, TRUE_TIMER}     // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, ProcessFunction, EventOnActionChanged, 1000, TRUE_TIMER}, // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, ProcessFunction, EventOnActionChanged, 1000, TRUE_TIMER}  // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);       // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);         // Number of Transitions
 
-FiniteState finiteStateMachine(transitions, numberOfTransitions);                   // Finite-State Object
+FiniteState finiteStateMachine(transitions, numberOfTransitions);                     // Finite-State Object
 ```
 
 #### True Timer with Process
@@ -650,18 +650,18 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`OutputProcess`|`-`|`1,000`|`TRUE_TIMER`|
-|`1`|`InputPredicate`|`1`|`0`|`OutputProcess`|`-`|`1,000`|`TRUE_TIMER`|
+|`0`|`PredicateFunction`|`0`|`1`|`ProcessFunction`|`-`|`1,000`|`TRUE_TIMER`|
+|`1`|`PredicateFunction`|`1`|`0`|`ProcessFunction`|`-`|`1,000`|`TRUE_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
-void OutputProcess(id_t id);
+bool PredicateFunction(id_t id);
+void ProcessFunction(id_t id);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, OutputProcess, nullptr, 1000, TRUE_TIMER},             // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, OutputProcess, nullptr, 1000, TRUE_TIMER}              // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, ProcessFunction, nullptr, 1000, TRUE_TIMER},        // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, ProcessFunction, nullptr, 1000, TRUE_TIMER}         // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
@@ -679,18 +679,18 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 |Id|Predicate|Next State - F|Next State - T|Process|Event|Delay Time (mS)| Timer Type|
 |:-----|:-----|:-----:|:-----:|:-----|:-----|-----:|:-----|
-|`0`|`InputPredicate`|`0`|`1`|`-`|`EventOnActionChanged`|`1,000`|`TRUE_TIMER`|
-|`1`|`InputPredicate`|`1`|`0`|`-`|`EventOnActionChanged`|`1,000`|`TRUE_TIMER`|
+|`0`|`PredicateFunction`|`0`|`1`|`-`|`EventOnActionChanged`|`1,000`|`TRUE_TIMER`|
+|`1`|`PredicateFunction`|`1`|`0`|`-`|`EventOnActionChanged`|`1,000`|`TRUE_TIMER`|
 
 #### State-Transition Declaration
 
 ```C
-bool InputPredicate(id_t id);
+bool PredicateFunction(id_t id);
 void EventOnActionChanged(EventArgs e);
 
 Transition transitions[] = {
-  {InputPredicate, 0, 1, nullptr, EventOnActionChanged, 1000, TRUE_TIMER},      // State-0 - NextF = 0, NextT = 1
-  {InputPredicate, 1, 0, nullptr, EventOnActionChanged, 1000, TRUE_TIMER}       // State-1 - NextF = 1, NextT = 0
+  {PredicateFunction, 0, 1, nullptr, EventOnActionChanged, 1000, TRUE_TIMER},   // State-0 - NextF = 0, NextT = 1
+  {PredicateFunction, 1, 0, nullptr, EventOnActionChanged, 1000, TRUE_TIMER}    // State-1 - NextF = 1, NextT = 0
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
 
