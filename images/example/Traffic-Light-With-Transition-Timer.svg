@@ -18,8 +18,8 @@
 		.st8 {fill:#00cc00;fill-opacity:1;stroke:#00cc00;stroke-opacity:1;stroke-width:0.35714285714286}
 		.st9 {fill:none;stroke:none;stroke-width:1}
 		.st10 {fill:#7f7f7f;font-family:Calibri;font-size:0.666664em}
-		.st11 {fill:#4672c4;font-family:Calibri;font-size:0.666664em}
-		.st12 {baseline-shift:-32.4939%;font-size:0.649878em}
+		.st11 {fill:#4672c4;font-family:Calibri;font-size:0.75em}
+		.st12 {baseline-shift:-32.4951%;font-size:0.649902em}
 		.st13 {fill:#4672c4;font-family:Calibri;font-size:1.00001em}
 		.st14 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
 	]]>
@@ -191,13 +191,13 @@
 			<text x="6.67" y="236.29" class="st10" v:langID="1033"><v:paragraph v:indentLeft="5.67" v:indentRight="5.67"/><v:tabList/>EXIT</text>		</g>
 		<g id="shape188-66" v:mID="188" v:groupContext="shape" transform="translate(24.5076,-176.198)">
 			<title>Sheet.188</title>
-			<desc>LOOP5S</desc>
+			<desc>T &#60; 5S</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197"/>
-			<v:textRect cx="15.5905" cy="233.891" width="31.19" height="14.1732"/>
-			<rect x="0" y="226.804" width="31.1811" height="14.1732" class="st9"/>
-			<text x="4.03" y="236.29" class="st11" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>LOOP<tspan
-						dy="-0.284em" class="st12" v:baseFontSize="8">5S</tspan></text>		</g>
-		<g id="shape198-70" v:mID="198" v:groupContext="shape" transform="translate(69.8619,-48.639)">
+			<v:textRect cx="19.1338" cy="233.891" width="38.27" height="14.1732"/>
+			<rect x="0" y="226.804" width="38.2677" height="14.1732" class="st9"/>
+			<text x="3.83" y="236.59" class="st11" v:langID="1033"><v:paragraph v:indentLeft="2.83" v:indentRight="2.83"/><v:tabList/>T &#60; <tspan
+						class="st4" v:langID="2057">5</tspan><tspan dy="-0.284em" class="st12" v:baseFontSize="9">S</tspan></text>		</g>
+		<g id="shape198-71" v:mID="198" v:groupContext="shape" transform="translate(69.8619,-48.639)">
 			<title>Sheet.198</title>
 			<desc>TTR-T</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197" v:verticalAlign="0"/>
@@ -207,7 +207,7 @@
 						v:horizAlign="2"/><v:tabList/>T<tspan dy="-0.284em" class="st3" v:baseFontSize="12">T</tspan><tspan
 						class="st3" v:langID="1033" v:baseFontSize="12">R</tspan><tspan class="st3" v:langID="1033"
 						v:baseFontSize="12">-</tspan><tspan class="st3" v:langID="1033" v:baseFontSize="12">T</tspan></text>		</g>
-		<g id="shape199-77" v:mID="199" v:groupContext="shape" transform="translate(55.6886,-211.631)">
+		<g id="shape199-78" v:mID="199" v:groupContext="shape" transform="translate(55.6886,-211.631)">
 			<title>Sheet.199</title>
 			<desc>TTR-T</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197" v:verticalAlign="2"/>
@@ -217,7 +217,7 @@
 						v:horizAlign="2"/><v:tabList/>T<tspan dy="-0.284em" class="st3" v:baseFontSize="12">T</tspan><tspan
 						class="st3" v:langID="1033" v:baseFontSize="12">R</tspan><tspan class="st3" v:langID="1033"
 						v:baseFontSize="12">-</tspan><tspan class="st3" v:langID="1033" v:baseFontSize="12">T</tspan></text>		</g>
-		<g id="shape200-84" v:mID="200" v:groupContext="shape" transform="translate(239.941,-133.678)">
+		<g id="shape200-85" v:mID="200" v:groupContext="shape" transform="translate(239.941,-133.678)">
 			<title>Sheet.200</title>
 			<desc>TTR-T</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197"/>
@@ -227,44 +227,46 @@
 						dy="-0.284em" class="st3" v:baseFontSize="12">T</tspan><tspan class="st3" v:langID="1033"
 						v:baseFontSize="12">R</tspan><tspan class="st3" v:langID="1033" v:baseFontSize="12">-</tspan><tspan
 						class="st3" v:langID="1033" v:baseFontSize="12">T</tspan></text>		</g>
-		<g id="shape201-91" v:mID="201" v:groupContext="shape" transform="translate(261.2,-176.198)">
+		<g id="shape201-92" v:mID="201" v:groupContext="shape" transform="translate(254.114,-176.198)">
 			<title>Sheet.201</title>
-			<desc>LOOP10S</desc>
+			<desc>T &#60; 10S</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197"/>
-			<v:textRect cx="15.5905" cy="233.891" width="31.19" height="14.1732"/>
-			<rect x="0" y="226.804" width="31.1811" height="14.1732" class="st9"/>
-			<text x="2.72" y="236.29" class="st11" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>LOOP<tspan
-						dy="-0.284em" class="st12" v:baseFontSize="8">10S</tspan></text>		</g>
-		<g id="shape202-95" v:mID="202" v:groupContext="shape" transform="translate(142.145,-13.2059)">
+			<v:textRect cx="19.1338" cy="233.891" width="38.27" height="14.1732"/>
+			<rect x="0" y="226.804" width="38.2677" height="14.1732" class="st9"/>
+			<text x="9.68" y="236.59" class="st11" v:langID="1033"><v:paragraph v:indentLeft="2.83" v:indentRight="2.83"
+						v:horizAlign="2"/><v:tabList/>T &#60; <tspan class="st4" v:langID="2057">10</tspan><tspan dy="-0.284em"
+						class="st12" v:baseFontSize="9">S</tspan></text>		</g>
+		<g id="shape202-97" v:mID="202" v:groupContext="shape" transform="translate(139.039,-6.11928)">
 			<title>Sheet.202</title>
-			<desc>LOOP3S</desc>
+			<desc>T &#60; 3S</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197"/>
-			<v:textRect cx="15.5905" cy="230.348" width="31.19" height="21.2598"/>
-			<rect x="0" y="219.718" width="31.1811" height="21.2598" class="st9"/>
-			<text x="4.03" y="232.75" class="st11" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>LOOP<tspan
-						dy="-0.284em" class="st12" v:baseFontSize="8">3S</tspan></text>		</g>
-		<g id="shape203-99" v:mID="203" v:groupContext="shape" transform="translate(232.854,-91.1587)">
+			<v:textRect cx="19.1339" cy="230.348" width="38.27" height="21.2598"/>
+			<rect x="0" y="219.718" width="38.2677" height="21.2598" class="st9"/>
+			<text x="9.04" y="233.05" class="st11" v:langID="1033"><v:paragraph v:indentLeft="2.83" v:indentRight="2.83"
+						v:horizAlign="1"/><v:tabList/>T &#60; <tspan class="st4" v:langID="2057">3</tspan><tspan dy="-0.284em"
+						class="st12" v:baseFontSize="9">S</tspan></text>		</g>
+		<g id="shape203-102" v:mID="203" v:groupContext="shape" transform="translate(232.854,-91.1587)">
 			<title>Sheet.203</title>
 			<desc>TRUE</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197"/>
 			<v:textRect cx="21.2598" cy="233.891" width="42.52" height="14.1732"/>
 			<rect x="0" y="226.804" width="42.5197" height="14.1732" class="st9"/>
-			<text x="6.67" y="236.29" class="st11" v:langID="2057"><v:paragraph v:indentLeft="5.67" v:indentRight="5.67"/><v:tabList/>TRUE</text>		</g>
-		<g id="shape204-102" v:mID="204" v:groupContext="shape" transform="translate(41.5154,-91.1587)">
+			<text x="6.67" y="236.59" class="st11" v:langID="2057"><v:paragraph v:indentLeft="5.67" v:indentRight="5.67"/><v:tabList/>TRUE</text>		</g>
+		<g id="shape204-105" v:mID="204" v:groupContext="shape" transform="translate(41.5154,-91.1587)">
 			<title>Sheet.204</title>
 			<desc>TRUE</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197"/>
 			<v:textRect cx="21.2598" cy="233.891" width="42.52" height="14.1732"/>
 			<rect x="0" y="226.804" width="42.5197" height="14.1732" class="st9"/>
-			<text x="18.57" y="236.29" class="st11" v:langID="2057"><v:paragraph v:indentLeft="5.67" v:indentRight="5.67"
+			<text x="16.41" y="236.59" class="st11" v:langID="2057"><v:paragraph v:indentLeft="5.67" v:indentRight="5.67"
 						v:horizAlign="2"/><v:tabList/>TRUE</text>		</g>
-		<g id="shape205-105" v:mID="205" v:groupContext="shape" transform="translate(140.728,-225.804)">
+		<g id="shape205-108" v:mID="205" v:groupContext="shape" transform="translate(136.913,-225.804)">
 			<title>Sheet.205</title>
 			<desc>TRUE</desc>
 			<v:textBlock v:margins="rect(1,1,1,1)" v:tabSpace="42.5197"/>
 			<v:textRect cx="21.2598" cy="233.891" width="42.52" height="14.1732"/>
 			<rect x="0" y="226.804" width="42.5197" height="14.1732" class="st9"/>
-			<text x="12.62" y="236.29" class="st11" v:langID="2057"><v:paragraph v:indentLeft="5.67" v:indentRight="5.67"
+			<text x="11.54" y="236.59" class="st11" v:langID="2057"><v:paragraph v:indentLeft="5.67" v:indentRight="5.67"
 						v:horizAlign="1"/><v:tabList/>TRUE</text>		</g>
 	</g>
 </svg>

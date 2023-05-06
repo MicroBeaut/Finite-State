@@ -596,7 +596,7 @@ When selecting the true-state timer, the condition for the next state will ignor
 
 <p align="center">
 	<img src="./images/timer-type/true-timer/true-timer-state-diagram.svg" width="63%" />
-  <h3 align="center">False-Timer State Diagram</h3>
+  <h3 align="center">True-Timer State Diagram</h3>
 </p>
 
 State transitions can be defined as three options,
