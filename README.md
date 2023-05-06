@@ -77,7 +77,6 @@ A Next-State has two destinations:
 
      A **Next State On TURE** will be defined by the Id number when the return value from the condition of the Timer and Predicate function is `TRUE`.
 
-
 ## Process Function
 
 The Process Function is a function to implement Input/Output control, read/write data, etc.
@@ -302,7 +301,6 @@ State transitions can be defined as three options,
 - [Transition Timer with Process](#transition-timer-with-process)
 - [Transition Timer with Event](#transition-timer-with-event)
 
-
 #### Transition Timer with Process and Event
 
 <p align="center">
@@ -401,7 +399,6 @@ State transitions can be defined as three options,
 - [Predicate Timer with Process and Event](#predicate-timer-with-process-and-event)
 - [Predicate Timer with Process](#predicate-timer-with-process)
 - [Predicate Timer with Event](#predicate-timer-with-event)
-
 
 #### Predicate Timer with Process and Event
 
@@ -505,7 +502,6 @@ State transitions can be defined as three options,
 - [False Timer with Process](#false-timer-with-process)
 - [False Timer with Event](#false-timer-with-event)
 
-
 #### False Timer with Process and Event
 
 <p align="center">
@@ -607,7 +603,6 @@ State transitions can be defined as three options,
 - [True Timer with Process and Event](#true-timer-with-process-and-event)
 - [True Timer with Process](#true-timer-with-process)
 - [True Timer with Event](#true-timer-with-event)
-
 
 #### True Timer with Process and Event
 
@@ -865,7 +860,6 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); //
 #### Sketch
 
 ![Wokwi](./images/wokwi-sim/Wokwi-Simulate-Black.svg) [Traffic Light with Customized Timer](https://wokwi.com/projects/362092485127898113)
-
 
 ```C
 #include "FiniteState.h"
@@ -1201,7 +1195,6 @@ Transition transitions[] = {
 };
 const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 ```
-
 
 #### Sketch
 
