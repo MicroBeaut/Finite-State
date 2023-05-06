@@ -718,7 +718,7 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 |`STOP`|`0`|`HighTempPredicate`|`0`|`1`|`FanStopProcess`|`-`|`-`|`-`|
 |`START`|`1`|`LowTempPredicate`|`1`|`0`|`FanStartProcess`|`-`|`-`|`-`|
 
-#### State-Transition Table Table -> Transition Declaration
+#### State-Transition Declaration
 
 ```C
 Transition transitions[] = {
@@ -834,7 +834,7 @@ const long ThermostatRead() {
 |`GREEN`|`1`|`TimePredicate`|`1`|`2`|`-`|`EventOnActionChanged`|`-`|`-`|
 |`YELLOW`|`2`|`TimePredicate`|`2`|`0`|`-`|`EventOnActionChanged`|`-`|`-`|
 
-#### State-Transition Table Table -> Transition Declaration
+#### State-Transition Declaration
 
 ```C
 Transition transitions[] = {
@@ -955,7 +955,7 @@ void EventOnActionChanged(EventArgs e) {
 |`GREEN`|`1`|`-`|`1`|`2`|`-`|`EventOnActionChanged`|`10,000`|`TRANS_TIMER`|
 |`YELLOW`|`2`|`-`|`2`|`0`|`-`|`EventOnActionChanged`|`3,000`|`TRANS_TIMER`|
 
-#### State-Transition Table Table -> Transition Declaration
+#### State-Transition Declaration
 
 ```C
 Transition transitions[] = {
@@ -1063,7 +1063,7 @@ void EventOnActionChanged(EventArgs e) {
 |`LOCKED`|`0`|`CoinPredicate`|`0`|`1`|`LockedProcess`|`-`|`-`|`-`|
 |`UNLOCKED`|`1`|`ArmPredicate`|`1`|`0`|`UnlockedProcess`|`-`|`-`|`-`|
 
-#### State-Transition Table Table -> Transition Declaration
+#### State-Transition Declaration
 
 ```C
 Transition transitions[] = {
@@ -1177,7 +1177,7 @@ void UnlockedProcess(id_t id) {
 |`LOCKED`|`0`|`CoinPredicate`|`0`|`1`|`-`|`EventOnActionChanged`|`-`|`-`|
 |`UNLOCKED`|`1`|`ArmPredicate`|`1`|`0`|`-`|`EventOnActionChanged`|`-`|`-`|
 
-#### State-Transition Table Table -> Transition Declaration
+#### State-Transition Declaration
 
 ```C
 Transition transitions[] = {
@@ -1287,7 +1287,7 @@ void EventOnActionChanged(EventArgs e) {
 |`LED_OFF`|`0`|`-`|`0`|`1`|`TurnOffProcess`|`-`|`500`|`TRANS_TIMER`|
 |`LED_ON`|`1`|`-`|`1`|`0`|`TrunOnProcess`|`-`|`1,000`|`TRANS_TIMER`|
 
-#### State-Transition Table Table -> Transition Declaration
+#### State-Transition Declaration
 
 ```C
 Transition transitions[] = {
@@ -1374,7 +1374,7 @@ void TurnOffProcess(id_t id) {
 |`PRESSED`|`2`|`ButtonPredicate`|`3`|`2`|`PressedProcess`|`-`|`-`|`-`|
 |`DEBOUNCE_F`|`3`|`ButtonPredicate`|`0`|`2`|`-`|`-`|`10`|`FALSE_TIMER`|
 
-#### State-Transition Table Table -> Transition Declaration
+#### State-Transition Declaration
 
 ```C
 #define debounce 10                                                             // Debounce Delay 10 milliseconds
@@ -1487,7 +1487,7 @@ void PressedProcess(id_t id) {
 |`PRE_ALARM`|`1`|`AnalogPredicate`|`0`|`2`|`PreAlarmProcess`|`-`|`3,000`|`TRUE_TIMER`|
 |`HIGH_ALARM`|`2`|`AnalogPredicate`|`2`|`0`|`HighAlarmProcess`|`-`|`-`|`-`|
 
-#### State-Transition Table Table -> Transition Declaration
+#### State-Transition Declaration
 
 ```C
 #define alarmDelay 3000         // Define alarm dalay
