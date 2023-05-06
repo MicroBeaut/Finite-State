@@ -34,7 +34,7 @@ typedef struct {
 A Predicate Function will determine whether the specified object meets the criteria.
 
 ```C
-typedef bool (*Predicate)(id_t);        //  Predicate Function Pointer
+typedef bool (*Predicate)(id_t);  // Predicate Function Pointer
 ```
 
 The following function accepts `id` from a caller; type is a parameter of type `id_t`. The return type is `boolean`. It will be used to determine a Next-State for the ***NextF*** and ***nextT***:
@@ -42,7 +42,7 @@ The following function accepts `id` from a caller; type is a parameter of type `
 Syntax:
 
 ```C
-bool PredicateCallbackFunction(id_t id);  //  Predicate Callback Function
+bool PredicateCallbackFunction(id_t id);  // Predicate Callback Function
 ```
 
 Example:
@@ -82,7 +82,7 @@ A Next-State has two destinations:
 The Process Function is a function to implement Input/Output control, read/write data, etc.
 
 ```C
-typedef void (*Process)(id_t);                //  Process Function Pointer
+typedef void (*Process)(id_t);                // Process Function Pointer
 ```
 
 The following function accepts `id` from a caller; type is parameters of type `id_t`:
@@ -90,7 +90,7 @@ The following function accepts `id` from a caller; type is parameters of type `i
 Syntax:
 
 ```C
-void ProcessCallbackFunction(id_t id);       //  Process Callback Function
+void ProcessCallbackFunction(id_t id);       // Process Callback Function
 ```
 
 Example:
@@ -121,7 +121,7 @@ id_t id = finiteStateMachine.id;
 An Event Handler Function is an option. Finite-State will handle events when the state changes for `ENTRY`, `DURINT`, and `EXIT` actions.
 
 ```C
-typedef void (*EventHandler)(EventArgs);    //  Event Handler Function Pointer
+typedef void (*EventHandler)(EventArgs);    // Event Handler Function Pointer
 ```
 
 EventArgs:
@@ -148,7 +148,7 @@ The following function accepts `id_t`, and `Action` from a caller; type is the p
 Syntax:
 
 ```C
-void EventCallbackFunction(EventArgs e);   //  Event Callback Function
+void EventCallbackFunction(EventArgs e);   // Event Callback Function
 ```
 
 Example:
