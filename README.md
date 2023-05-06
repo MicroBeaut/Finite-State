@@ -191,7 +191,7 @@ enum TimerType {
 When Timer is not used, The predicate function is non `nullptr`. The Predicate function's return value determines the condition for the next state.
 
 <p align="center">
-	<img src="./images/timer-type/not-used-timer/Not-Used-Timer-State-Diagram.svg" width="63%" />
+	<img src="./images/timer-type/not-used-timer/not-used-timer-state-diagram.svg" width="63%" />
   <h3 align="center">Not-Used Timer State Diagram</h3>
 </p>
 
