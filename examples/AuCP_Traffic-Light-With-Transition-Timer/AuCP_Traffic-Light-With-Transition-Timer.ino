@@ -29,7 +29,7 @@ const uint8_t numberOfLights = sizeof(lightPins) / sizeof(uint8_t); // Calculate
 
 void EventOnActionChanged(EventArgs e);   // Event State
 
-enum TraficState : id_t {
+enum LightState : id_t {
   RED,
   GREEN,
   YELLOW

@@ -843,7 +843,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); //
 Or,
 
 ```C
-enum TraficState {
+enum LightState {
   RED,
   GREEN,
   YELLOW
@@ -885,7 +885,7 @@ Timer delayTimes[] = {
 bool TimePredicate(id_t id);              // Predicate (Input)
 void EventOnActionChanged(EventArgs e);   // Event State
 
-enum TraficState {
+enum LightState {
   RED,
   GREEN,
   YELLOW
@@ -963,7 +963,7 @@ const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   
 Or,
 
 ```C
-enum TraficState : id_t {
+enum LightState : id_t {
   RED,
   GREEN,
   YELLOW
@@ -993,7 +993,7 @@ const uint8_t numberOfLights = sizeof(lightPins) / sizeof(uint8_t); // Calculate
 
 void EventOnActionChanged(EventArgs e);   // Event State
 
-enum TraficState : id_t {
+enum LightState : id_t {
   RED,
   GREEN,
   YELLOW

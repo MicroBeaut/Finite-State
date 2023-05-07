@@ -41,7 +41,7 @@ Timer delayTimes[] = {
 bool TimePredicate(id_t id);              // Predicate (Input)
 void EventOnActionChanged(EventArgs e);   // Event State
 
-enum TraficState {
+enum LightState {
   RED,
   GREEN,
   YELLOW
