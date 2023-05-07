@@ -118,7 +118,7 @@ id_t id = finiteStateMachine.id;
 
 ## Event Handler Function
 
-An Event Handler Function is an option. Finite-State will handle events when the state changes for `ENTRY`, `DURINT`, and `EXIT` actions.
+An Event Handler Function is an option. Finite-State will handle events when the state changes for `ENTRY` and `EXIT` actions.
 
 ```C
 typedef void (*EventHandler)(EventArgs);    // Event Handler Function Pointer
