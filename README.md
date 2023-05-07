@@ -289,7 +289,7 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 ### Transition Timer (`TRANS_TIMER`)
 
-When selecting the transition timer, the condition for the next state will ignore the Predicate function's return value. It is the only `NextT` condition possible during the timer timeout.
+When selecting the transition timer, the condition for the next state will ignore the Predicate function's return value. It is the only `NextT` condition possible during the timer timeout. The predicate function is  `nullptr`.
 
 <p align="center">
 	<img src="./images/timer-type/transition-timer/transition-timer-state-diagram.svg" width="63%" />
