@@ -703,7 +703,7 @@ FiniteState finiteStateMachine(transitions, numberOfTransitions);               
 
 <p align="center">
 	<img src="./images/example/Fan-Control-With-A-Thermostat-Diagram.png" width="30%" /> 
-  <h3 align="center">Wiring Diagram</h3>
+  <h3 align="center">Schematic Diagram</h3>
 </p>
 
 #### State-Transition Table Table
@@ -818,7 +818,7 @@ const long ThermostatRead() {
 
 <p align="center">
 	<img src="./images/example/Traffic-Light-Diagram.png" width="30%" /> 
-  <h3 align="center">Wiring Diagram</h3>
+  <h3 align="center">Schematic Diagram</h3>
 </p>
 
 #### State-Transition Table Table
@@ -938,7 +938,7 @@ void EventOnActionChanged(EventArgs e) {
 
 <p align="center">
 	<img src="./images/example/Traffic-Light-Diagram.png" width="30%" /> 
-  <h3 align="center">Wiring Diagram</h3>
+  <h3 align="center">Schematic Diagram</h3>
 </p>
 
 #### State-Transition Table Table
@@ -1047,7 +1047,7 @@ void EventOnActionChanged(EventArgs e) {
 
 <p align="center">
 	<img src="./images/example/Coin-Operated-Turnstile.png" width="30%" /> 
-  <h3 align="center">Wiring Diagram</h3>
+  <h3 align="center">Schematic Diagram</h3>
 </p>
 
 #### State-Transition Table Table
@@ -1161,7 +1161,7 @@ void UnlockedProcess(id_t id) {
 
 <p align="center">
 	<img src="./images/example/Coin-Operated-Turnstile.png" width="30%" /> 
-  <h3 align="center">Wiring Diagram</h3>
+  <h3 align="center">Schematic Diagram</h3>
 </p>
 
 #### State-Transition Table Table
@@ -1270,7 +1270,7 @@ void EventOnActionChanged(EventArgs e) {
 
 <p align="center">
 	<img src="./images/example/Blink.png" width="30%" /> 
-  <h3 align="center">Wiring Diagram</h3>
+  <h3 align="center">Schematic Diagram</h3>
 </p>
 
 #### State-Transition Table Table
@@ -1355,7 +1355,7 @@ void TurnOffProcess(id_t id) {
 
 <p align="center">
 	<img src="./images/example/Debounce.png" width="30%" /> 
-  <h3 align="center">Wiring Diagram</h3>
+  <h3 align="center">Schematic Diagram</h3>
 </p>
 
 #### State-Transition Table Table
@@ -1469,7 +1469,7 @@ void PressedProcess(id_t id) {
 
 <p align="center">
 	<img src="./images/example/Analog-High-Alarm.png" width="30%" /> 
-  <h3 align="center">Wiring Diagram</h3>
+  <h3 align="center">Schematic Diagram</h3>
 </p>
 
 #### State-Transition Table Table
