@@ -37,7 +37,7 @@ Transition transitions[] = {
   {HighTempPredicate, STOP, START, FanStopProcess},                           // State-0 - NextF = 0, NextT = 1
   {LowTempPredicate, START, STOP, FanStartProcess}                            // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);             // Finite-State Object
 

@@ -224,7 +224,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, ProcessFunction, EventOnActionChanged},             // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, ProcessFunction, EventOnActionChanged}              // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -253,7 +253,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, ProcessFunction},                                   // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, ProcessFunction}                                    // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -282,7 +282,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, nullptr, EventOnActionChanged},                     // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, nullptr, EventOnActionChanged}                      // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -325,7 +325,7 @@ Transition transitions[] = {
   {nullptr, 0, 1, ProcessFunction, EventOnActionChanged, 1000, TRANS_TIMER},    // State-0 - NextF = 0, NextT = 1
   {nullptr, 1, 0, ProcessFunction, EventOnActionChanged, 1000, TRANS_TIMER}     // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -353,7 +353,7 @@ Transition transitions[] = {
   {nullptr, 0, 1, ProcessFunction, nullptr, 1000, TRANS_TIMER},                 // State-0 - NextF = 0, NextT = 1
   {nullptr, 1, 0, ProcessFunction, nullptr, 1000, TRANS_TIMER}                  // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -381,7 +381,7 @@ Transition transitions[] = {
   {nullptr, 0, 1, nullptr, EventOnActionChanged, 1000, TRANS_TIMER},            // State-0 - NextF = 0, NextT = 1
   {nullptr, 1, 0, nullptr, EventOnActionChanged, 1000, TRANS_TIMER}             // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -425,7 +425,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, ProcessFunction, EventOnActionChanged, 1000, PREDIC_TIMER}, // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, ProcessFunction, EventOnActionChanged, 1000, PREDIC_TIMER}  // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);           // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);           // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);                       // Finite-State Object
 ```
@@ -454,7 +454,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, ProcessFunction, nullptr, 1000, PREDIC_TIMER},      // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, ProcessFunction, nullptr, 1000, PREDIC_TIMER}       // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -483,7 +483,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, nullptr, EventOnActionChanged, 1000, PREDIC_TIMER}, // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, nullptr, EventOnActionChanged, 1000, PREDIC_TIMER}  // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -527,7 +527,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, ProcessFunction, EventOnActionChanged, 1000, FALSE_TIMER},  // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, ProcessFunction, EventOnActionChanged, 1000, FALSE_TIMER}   // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);           // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);           // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);                       // Finite-State Object
 ```
@@ -556,7 +556,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, ProcessFunction, nullptr, 1000, FALSE_TIMER},       // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, ProcessFunction, nullptr, 1000, FALSE_TIMER}        // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -585,7 +585,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, nullptr, EventOnActionChanged, 1000, FALSE_TIMER},  // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, nullptr, EventOnActionChanged, 1000, FALSE_TIMER}   // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -629,7 +629,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, ProcessFunction, EventOnActionChanged, 1000, TRUE_TIMER}, // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, ProcessFunction, EventOnActionChanged, 1000, TRUE_TIMER}  // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);         // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);         // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);                     // Finite-State Object
 ```
@@ -658,7 +658,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, ProcessFunction, nullptr, 1000, TRUE_TIMER},        // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, ProcessFunction, nullptr, 1000, TRUE_TIMER}         // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -687,7 +687,7 @@ Transition transitions[] = {
   {PredicateFunction, 0, 1, nullptr, EventOnActionChanged, 1000, TRUE_TIMER},   // State-0 - NextF = 0, NextT = 1
   {PredicateFunction, 1, 0, nullptr, EventOnActionChanged, 1000, TRUE_TIMER}    // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);   // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);               // Finite-State Object
 ```
@@ -720,7 +720,7 @@ Transition transitions[] = {
   {HighTempPredicate, 0, 1, FanStopProcess},                                  // State-0 - NextF = 0, NextT = 1
   {LowTempPredicate, 1, 0, FanStartProcess}                                   // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
 
 Or,
@@ -735,7 +735,7 @@ Transition transitions[] = {
   {HighTempPredicate, STOP, START, FanStopProcess},                           // State-0 - NextF = 0, NextT = 1
   {LowTempPredicate, START, STOP, FanStartProcess}                            // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
 
 #### Sketch 
@@ -763,7 +763,7 @@ Transition transitions[] = {
   {HighTempPredicate, STOP, START, FanStopProcess},                           // State-0 - NextF = 0, NextT = 1
   {LowTempPredicate, START, STOP, FanStartProcess}                            // State-1 - NextF = 1, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);             // Finite-State Object
 
@@ -1490,7 +1490,7 @@ Transition transitions[] = {
   {AnalogPredicate, 0, 2, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
   {AnalogPredicate, 2, 0, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition); // Calculate the number of transitions.
 ```
 
 Or,
@@ -1509,7 +1509,7 @@ Transition transitions[] = {
   {AnalogPredicate, NORMAL, HIGH_ALARM, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
   {AnalogPredicate, HIGH_ALARM, NORMAL, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);               // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);               // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);                           // Finite-State Object
 ```
@@ -1562,7 +1562,7 @@ Transition transitions[] = {
   {AnalogPredicate, NORMAL, HIGH_ALARM, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
   {AnalogPredicate, HIGH_ALARM, NORMAL, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);               // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);               // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);                           // Finite-State Object
 

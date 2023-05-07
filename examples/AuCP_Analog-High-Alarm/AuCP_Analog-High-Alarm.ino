@@ -61,7 +61,7 @@ Transition transitions[] = {
   {AnalogPredicate, NORMAL, HIGH_ALARM, PreAlarmProcess, nullptr, alarmDelay, TRUE_TIMER},  // State-1 - NextF = 0, NextT = 2
   {AnalogPredicate, HIGH_ALARM, NORMAL, HighAlarmProcess}                                   // State-2 - NextF = 2, NextT = 0
 };
-const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);               // Number of Transitions
+const uint8_t numberOfTransitions = sizeof(transitions) / sizeof(Transition);               // Calculate the number of transitions.
 
 FiniteState finiteStateMachine(transitions, numberOfTransitions);                           // Finite-State Object
 
