@@ -134,7 +134,7 @@ void FiniteState::InternalNextStateAction(const id_t id) {
 }
 
 void FiniteState::InternalEntryAction(const id_t id) {
-  _startTime = micros();
+  _startTime = millis();
   _timeout = false;
   _eventArgs.id = id;
   this->InternalEventHandler(ENTRY);
@@ -161,8 +161,8 @@ const TriState FiniteState::InternalTimer() {
 
 const bool FiniteState::InternalTimeout() {
   if (_timeout) return true;
-  time_t elapsedTime = micros() - _startTime;
-  if (elapsedTime < MS2US(_transitions[_eventArgs.id].delayTime)) return false;
+  time_t elapsedTime = millis() - _startTime;
+  if (elapsedTime < _transitions[_eventArgs.id].delayTime) return false;
   _timeout = true;
   return true;
 }

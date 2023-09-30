@@ -12,7 +12,7 @@
 
 #include "Arduino.h"
 
-#define FINITE_STATE_VERSION "1.4.3"
+#define FINITE_STATE_VERSION "1.6.0"
 #define FINITE_STATE_AUTHOR "MicroBeaut"
 
 #define STATE_TRANSITION_MIN 1
@@ -62,7 +62,6 @@ typedef struct {
 
 class FiniteState {
   private:
-#define MS2US(ms) (ms * 1000UL)
     Transition *_transitions;             // Tranistion Pointer
     uint8_t _size;                        // Number of Transitions
     EventArgs _eventArgs;                 // Event Argument
